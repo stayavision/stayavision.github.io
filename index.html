@@ -427,8 +427,27 @@
             color: var(--text-secondary);
         }
 
+        /* Аватарки участников */
+        .participant-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+
+        .place-1 .participant-avatar {
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        }
+
         .participant-info {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .participant-name {
@@ -446,9 +465,35 @@
             color: var(--text-secondary);
         }
 
+        /* YouTube Link */
+        .youtube-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #ff4d4d;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 6px;
+            transition: all 0.3s;
+            width: max-content;
+        }
+
+        .youtube-link:hover {
+            color: #ff8080;
+            transform: scale(1.05);
+        }
+
+        .youtube-link svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
         .score {
             text-align: right;
-            margin-left: 20px;
+            margin-left: 15px;
+            flex-shrink: 0;
         }
 
         .score-number {
@@ -670,9 +715,15 @@
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);
         }
 
-        .hall-card-emoji {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .hall-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            border: 3px solid var(--gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            display: block;
         }
 
         .hall-card-name {
@@ -728,29 +779,43 @@
             75% { transform: rotateY(-15deg) scale(1.1); }
         }
 
-        /* Responsive */
+        /* Responsive Mobile Layout */
         @media (max-width: 600px) {
             .result-row {
-                padding: 15px 20px;
+                padding: 15px 12px;
             }
 
             .position {
-                width: 40px;
-                height: 40px;
+                width: 35px;
+                height: 35px;
                 font-size: 1rem;
-                margin-right: 15px;
+                margin-right: 12px;
+            }
+
+            .participant-avatar {
+                width: 45px;
+                height: 45px;
+                margin-right: 12px;
             }
 
             .participant-name {
-                font-size: 1.1rem;
+                font-size: 1.05rem;
+            }
+
+            .youtube-link {
+                font-size: 0.7rem;
+            }
+
+            .score {
+                margin-left: 10px;
             }
 
             .score-number {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
 
             .score-bar {
-                width: 80px;
+                width: 70px;
             }
 
             .nav-btn {
@@ -954,22 +1019,22 @@
                 <p class="hall-subtitle">Все победители Стаявидения</p>
                 <div class="hall-grid">
                     <div class="hall-card">
-                        <div class="hall-card-emoji">🎤</div>
+                        <img src="gira.jpg" alt="Гира" class="hall-avatar">
                         <div class="hall-card-name">Гира</div>
                         <div class="hall-card-wins">2 победы (SV1, SV4)</div>
                     </div>
                     <div class="hall-card">
-                        <div class="hall-card-emoji">🎵</div>
+                        <img src="ritix.jpg" alt="Ритикс" class="hall-avatar">
                         <div class="hall-card-name">Ритикс</div>
                         <div class="hall-card-wins">1 победа (SV2)</div>
                     </div>
                     <div class="hall-card">
-                        <div class="hall-card-emoji">🎶</div>
+                        <img src="egor.jpg" alt="Егорь" class="hall-avatar">
                         <div class="hall-card-name">Егорь</div>
                         <div class="hall-card-wins">2 победы (SV3, SV5)</div>
                     </div>
                     <div class="hall-card">
-                        <div class="hall-card-emoji">🏆</div>
+                        <img src="obalena.jpg" alt="Обалена" class="hall-avatar">
                         <div class="hall-card-name">Обалена</div>
                         <div class="hall-card-wins">1 победа (SV6)</div>
                     </div>
@@ -991,8 +1056,12 @@
             <div class="results-container">
                 <div class="result-row place-1">
                     <div class="position position-1">1</div>
+                    <img src="gira.jpg" alt="Гира" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Гира</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">6</div>
@@ -1002,8 +1071,12 @@
                 </div>
                 <div class="result-row place-2">
                     <div class="position position-2">2</div>
+                    <img src="obalena.jpg" alt="Обалена" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Обалена</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">3</div>
@@ -1013,8 +1086,12 @@
                 </div>
                 <div class="result-row place-3">
                     <div class="position position-3">3</div>
+                    <img src="egor.jpg" alt="Егорь" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Егорь</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">3</div>
@@ -1039,8 +1116,12 @@
             <div class="results-container">
                 <div class="result-row place-1">
                     <div class="position position-1">1</div>
+                    <img src="ritix.jpg" alt="Ритикс" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Ритикс</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">8</div>
@@ -1050,8 +1131,12 @@
                 </div>
                 <div class="result-row place-2">
                     <div class="position position-2">2</div>
+                    <img src="obalena.jpg" alt="Обалена" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Обалена</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">6</div>
@@ -1061,8 +1146,12 @@
                 </div>
                 <div class="result-row place-3">
                     <div class="position position-3">3</div>
+                    <img src="egor.jpg" alt="Егорь" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Егорь</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">3</div>
@@ -1072,8 +1161,12 @@
                 </div>
                 <div class="result-row">
                     <div class="position position-other">4</div>
+                    <img src="gira.jpg" alt="Гира" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Гира</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">2</div>
@@ -1098,8 +1191,12 @@
             <div class="results-container">
                 <div class="result-row place-1">
                     <div class="position position-1">1</div>
+                    <img src="egor.jpg" alt="Егорь" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Егорь</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">9</div>
@@ -1109,8 +1206,12 @@
                 </div>
                 <div class="result-row place-2">
                     <div class="position position-2">2</div>
+                    <img src="ritix.jpg" alt="Ритикс" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Ритикс</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">6</div>
@@ -1120,8 +1221,12 @@
                 </div>
                 <div class="result-row place-3">
                     <div class="position position-3">3</div>
+                    <img src="obalena.jpg" alt="Обалена" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Обалена</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">3</div>
@@ -1147,9 +1252,10 @@
             <div class="results-container">
                 <div class="result-row place-1">
                     <div class="position position-1">1</div>
+                    <img src="gira.jpg" alt="Гира" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Гира</div>
-                        <div class="participant-flag">Единственные известные данные</div>
+                        <div class="participant-flag">Единственные известные данные (Видео утеряно)</div>
                     </div>
                     <div class="score">
                         <div class="score-number">—</div>
@@ -1159,7 +1265,7 @@
             </div>
             <div class="lost-notice">
                 <div class="lost-notice-icon">⚠️</div>
-                <div class="lost-notice-text">Полные результаты этого конкурса были частично утеряны. Известно только имя победителя — <strong>Гира</strong>. Если у вас есть информация о полных результатах, сообщите организаторам.</div>
+                <div class="lost-notice-text">Полные результаты и выступления этого конкурса были частично утеряны. Известно только имя победителя — <strong>Гира</strong>. Если у вас есть информация, сообщите организаторам.</div>
             </div>
         </section>
 
@@ -1177,8 +1283,12 @@
             <div class="results-container">
                 <div class="result-row place-1">
                     <div class="position position-1">1</div>
+                    <img src="egor.jpg" alt="Егорь" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Егорь</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">7</div>
@@ -1188,8 +1298,12 @@
                 </div>
                 <div class="result-row place-2">
                     <div class="position position-2">2</div>
+                    <img src="obalena.jpg" alt="Обалена" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Обалена</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">5</div>
@@ -1199,8 +1313,12 @@
                 </div>
                 <div class="result-row place-3">
                     <div class="position position-3">3</div>
+                    <img src="ritix.jpg" alt="Ритикс" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Ритикс</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">4</div>
@@ -1226,9 +1344,13 @@
                 <!-- Финалисты -->
                 <div class="result-row place-1">
                     <div class="position position-1">1</div>
+                    <img src="obalena.jpg" alt="Обалена" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Обалена</div>
                         <div class="participant-flag">🏆 Победитель Финала</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">16</div>
@@ -1238,9 +1360,13 @@
                 </div>
                 <div class="result-row place-2">
                     <div class="position position-2">2</div>
+                    <img src="ritix.jpg" alt="Ритикс" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Ритикс</div>
                         <div class="participant-flag">★ Финалист</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">14</div>
@@ -1250,9 +1376,13 @@
                 </div>
                 <div class="result-row place-3">
                     <div class="position position-3">3</div>
+                    <img src="gira.jpg" alt="Гира" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Гира</div>
                         <div class="participant-flag">★ Финалист</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">12</div>
@@ -1262,9 +1392,13 @@
                 </div>
                 <div class="result-row">
                     <div class="position position-other">4</div>
+                    <img src="egor.jpg" alt="Егорь" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Егорь</div>
                         <div class="participant-flag">★ Финалист</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">8</div>
@@ -1276,9 +1410,13 @@
                 <!-- Не прошли в финал (визуальное разделение) -->
                 <div class="result-row" style="background: rgba(255,255,255,0.01); border-top: 2px dashed rgba(255,255,255,0.1);">
                     <div class="position position-other">5</div>
+                    <img src="enka.jpg" alt="Енька" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">Енька</div>
                         <div class="participant-flag" style="color: #ff6464;">✗ Выбыл в полуфинале</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">4</div>
@@ -1288,9 +1426,13 @@
                 </div>
                 <div class="result-row" style="background: rgba(255,255,255,0.01);">
                     <div class="position position-other">6</div>
+                    <img src="potuzhnost.jpg" alt="И. Потужность" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">И. Потужность</div>
                         <div class="participant-flag" style="color: #ff6464;">✗ Выбыл в полуфинале</div>
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
+                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
+                        </a>
                     </div>
                     <div class="score">
                         <div class="score-number">4</div>
