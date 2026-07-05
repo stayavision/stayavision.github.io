@@ -330,6 +330,12 @@
             color: #ff6464;
         }
 
+        .badge-pending {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(200, 200, 200, 0.05));
+            border: 1px solid #fff;
+            color: #fff;
+        }
+
         /* Results table */
         .results-container {
             background: var(--bg-card);
@@ -436,6 +442,7 @@
             margin-right: 20px;
             border: 2px solid rgba(255, 255, 255, 0.1);
             flex-shrink: 0;
+            background: #2a2a4a; /* Заглушка, если картинки нет */
         }
 
         .place-1 .participant-avatar {
@@ -573,16 +580,25 @@
             margin-top: 5px;
         }
 
-        /* Lost data notice */
-        .lost-notice {
-            background: linear-gradient(135deg, rgba(255, 100, 100, 0.1), rgba(200, 50, 50, 0.05));
-            border: 1px solid rgba(255, 100, 100, 0.2);
+        /* Notices */
+        .lost-notice, .pending-notice {
             border-radius: 12px;
             padding: 20px 25px;
             display: flex;
             align-items: center;
             gap: 15px;
             margin-top: 20px;
+        }
+
+        .lost-notice {
+            background: linear-gradient(135deg, rgba(255, 100, 100, 0.1), rgba(200, 50, 50, 0.05));
+            border: 1px solid rgba(255, 100, 100, 0.2);
+        }
+
+        .pending-notice {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(123, 47, 190, 0.05));
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            margin-bottom: 20px;
         }
 
         .lost-notice-icon {
@@ -593,6 +609,10 @@
         .lost-notice-text {
             color: #ff9999;
             font-size: 0.9rem;
+        }
+
+        .pending-notice .lost-notice-text {
+            color: var(--accent3);
         }
 
         /* All editions overview */
@@ -765,7 +785,7 @@
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
-        /* Trophy animation for edition 6 */
+        /* Trophy animation */
         .trophy-anim {
             font-size: 4rem;
             text-align: center;
@@ -919,6 +939,7 @@
             <button class="nav-btn" onclick="showSection('edition4')">SV 4</button>
             <button class="nav-btn" onclick="showSection('edition5')">SV 5</button>
             <button class="nav-btn" onclick="showSection('edition6')">SV 6</button>
+            <button class="nav-btn" onclick="showSection('edition7')">SV 7</button>
         </div>
     </nav>
 
@@ -928,7 +949,7 @@
         <section class="edition-section active" id="overview">
             <div class="stats-bar">
                 <div class="stat-card">
-                    <div class="stat-number">6</div>
+                    <div class="stat-number">7</div>
                     <div class="stat-label">Конкурсов</div>
                 </div>
                 <div class="stat-card">
@@ -1002,13 +1023,24 @@
                     </div>
                 </div>
 
-                <!-- Edition 6 (Combined) -->
+                <!-- Edition 6 -->
                 <div class="edition-mini-card" onclick="showSection('edition6')">
                     <div class="mini-card-number">📍 Дюшесово</div>
                     <div class="mini-card-title">Стаявидение 6</div>
                     <div class="mini-card-winner">
                         <span class="mini-card-crown">🏆</span>
                         <span class="mini-card-winner-name">Обалена</span>
+                    </div>
+                </div>
+
+                <!-- Edition 7 (NEW) -->
+                <div class="edition-mini-card" onclick="showSection('edition7')">
+                    <div class="mini-card-number">📍 Ожидается</div>
+                    <div class="mini-card-title">Стаявидение 7</div>
+                    <div class="mini-card-winner">
+                        <span class="mini-card-crown">⏳</span>
+                        <span class="mini-card-winner-name" style="color: var(--text-secondary);">Скоро</span>
+                        <span class="mini-card-badge badge-pending">Не началось</span>
                     </div>
                 </div>
             </div>
@@ -1329,7 +1361,7 @@
             </div>
         </section>
 
-        <!-- Edition 6 (Combined) -->
+        <!-- Edition 6 -->
         <section class="edition-section" id="edition6">
             <div class="edition-header">
                 <div class="edition-number">📍 Дюшесово</div>
@@ -1348,7 +1380,7 @@
                     <div class="participant-info">
                         <div class="participant-name">Обалена</div>
                         <div class="participant-flag">🏆 Победитель Финала</div>
-                        <a href="https://youtu.be/lrHDi6T-DaY" target="_blank" class="youtube-link">
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
                             <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
                         </a>
                     </div>
@@ -1364,7 +1396,7 @@
                     <div class="participant-info">
                         <div class="participant-name">Ритикс</div>
                         <div class="participant-flag">★ Финалист</div>
-                        <a href="https://youtu.be/acNNl2xKx2I" target="_blank" class="youtube-link">
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
                             <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
                         </a>
                     </div>
@@ -1380,7 +1412,7 @@
                     <div class="participant-info">
                         <div class="participant-name">Гира</div>
                         <div class="participant-flag">★ Финалист</div>
-                        <a href="https://youtu.be/UbUdpe3qGdM" target="_blank" class="youtube-link">
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
                             <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
                         </a>
                     </div>
@@ -1396,7 +1428,7 @@
                     <div class="participant-info">
                         <div class="participant-name">Егорь</div>
                         <div class="participant-flag">★ Финалист</div>
-                        <a href="https://youtu.be/HLHEO3nCZck" target="_blank" class="youtube-link">
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
                             <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
                         </a>
                     </div>
@@ -1414,7 +1446,7 @@
                     <div class="participant-info">
                         <div class="participant-name">Енька</div>
                         <div class="participant-flag" style="color: #ff6464;">✗ Выбыл в полуфинале</div>
-                        <a href="https://youtu.be/5KunAJMGxec" target="_blank" class="youtube-link">
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
                             <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
                         </a>
                     </div>
@@ -1430,7 +1462,7 @@
                     <div class="participant-info">
                         <div class="participant-name">И. Потужность</div>
                         <div class="participant-flag" style="color: #ff6464;">✗ Выбыл в полуфинале</div>
-                        <a href="https://youtu.be/2ykasba0e4M" target="_blank" class="youtube-link">
+                        <a href="СЮДА_ВСТАВИТЬ_ССЫЛКУ_НА_YOUTUBE" target="_blank" class="youtube-link">
                             <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть выступление
                         </a>
                     </div>
@@ -1442,6 +1474,115 @@
                 </div>
             </div>
         </section>
+
+        <!-- Edition 7 (NEW/PENDING) -->
+        <section class="edition-section" id="edition7">
+            <div class="edition-header">
+                <div class="edition-number">📍 Ожидается</div>
+                <h2 class="edition-title">Стаявидение 7</h2>
+            </div>
+            
+            <div class="winner-showcase">
+                <div class="winner-crown" style="animation: none;">⏳</div>
+                <div class="winner-name-big" style="background: none; color: var(--text-primary); -webkit-text-fill-color: var(--text-primary);">Не началось</div>
+                <div class="winner-label">Победитель неизвестен</div>
+            </div>
+
+            <div class="pending-notice">
+                <div class="lost-notice-icon">🗓️</div>
+                <div class="lost-notice-text">Седьмой конкурс Стаявидения <strong>ещё не начался</strong>. Заходите позже — здесь появятся списки участников, песни и результаты!</div>
+            </div>
+
+            <!-- Таблица с прозрачностью, чтобы показать, что данных еще нет -->
+            <div class="results-container" style="opacity: 0.4;">
+                <div class="result-row place-1">
+                    <div class="position position-1">1</div>
+                    <div class="participant-avatar"></div>
+                    <div class="participant-info">
+                        <div class="participant-name">Участник 1</div>
+                        <div class="participant-flag">Ожидание...</div>
+                        <a href="#" class="youtube-link">Смотреть выступление</a>
+                    </div>
+                    <div class="score">
+                        <div class="score-number">0</div>
+                        <div class="score-label">Баллов</div>
+                        <div class="score-bar"><div class="score-bar-fill" style="width: 0%"></div></div>
+                    </div>
+                </div>
+                <div class="result-row place-2">
+                    <div class="position position-2">2</div>
+                    <div class="participant-avatar"></div>
+                    <div class="participant-info">
+                        <div class="participant-name">Участник 2</div>
+                        <div class="participant-flag">Ожидание...</div>
+                        <a href="#" class="youtube-link">Смотреть выступление</a>
+                    </div>
+                    <div class="score">
+                        <div class="score-number">0</div>
+                        <div class="score-label">Баллов</div>
+                        <div class="score-bar"><div class="score-bar-fill" style="width: 0%"></div></div>
+                    </div>
+                </div>
+                <div class="result-row place-3">
+                    <div class="position position-3">3</div>
+                    <div class="participant-avatar"></div>
+                    <div class="participant-info">
+                        <div class="participant-name">Участник 3</div>
+                        <div class="participant-flag">Ожидание...</div>
+                        <a href="#" class="youtube-link">Смотреть выступление</a>
+                    </div>
+                    <div class="score">
+                        <div class="score-number">0</div>
+                        <div class="score-label">Баллов</div>
+                        <div class="score-bar"><div class="score-bar-fill" style="width: 0%"></div></div>
+                    </div>
+                </div>
+                <div class="result-row">
+                    <div class="position position-other">4</div>
+                    <div class="participant-avatar"></div>
+                    <div class="participant-info">
+                        <div class="participant-name">Участник 4</div>
+                        <div class="participant-flag">Ожидание...</div>
+                        <a href="#" class="youtube-link">Смотреть выступление</a>
+                    </div>
+                    <div class="score">
+                        <div class="score-number">0</div>
+                        <div class="score-label">Баллов</div>
+                        <div class="score-bar"><div class="score-bar-fill" style="width: 0%"></div></div>
+                    </div>
+                </div>
+                
+                <div class="result-row" style="background: rgba(255,255,255,0.01); border-top: 2px dashed rgba(255,255,255,0.1);">
+                    <div class="position position-other">5</div>
+                    <div class="participant-avatar"></div>
+                    <div class="participant-info">
+                        <div class="participant-name">Участник 5</div>
+                        <div class="participant-flag">Ожидание...</div>
+                        <a href="#" class="youtube-link">Смотреть выступление</a>
+                    </div>
+                    <div class="score">
+                        <div class="score-number">0</div>
+                        <div class="score-label">Балла</div>
+                        <div class="score-bar"><div class="score-bar-fill" style="width: 0%"></div></div>
+                    </div>
+                </div>
+                <div class="result-row" style="background: rgba(255,255,255,0.01);">
+                    <div class="position position-other">6</div>
+                    <div class="participant-avatar"></div>
+                    <div class="participant-info">
+                        <div class="participant-name">Участник 6</div>
+                        <div class="participant-flag">Ожидание...</div>
+                        <a href="#" class="youtube-link">Смотреть выступление</a>
+                    </div>
+                    <div class="score">
+                        <div class="score-number">0</div>
+                        <div class="score-label">Балла</div>
+                        <div class="score-bar"><div class="score-bar-fill" style="width: 0%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- Footer -->
@@ -1482,8 +1623,8 @@
             // Scroll to top of main
             window.scrollTo({ top: document.querySelector('nav').offsetTop, behavior: 'smooth' });
 
-            // Trigger confetti for winners
-            if (sectionId === 'edition6') {
+            // Trigger confetti only for finished final editions
+            if (sectionId === 'edition6' || sectionId === 'edition5' || sectionId === 'edition3' || sectionId === 'edition2' || sectionId === 'edition1') {
                 triggerConfetti();
             }
         }
