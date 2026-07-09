@@ -24,6 +24,7 @@
             --accent3: #00D4FF;
             --text-primary: #ffffff;
             --text-secondary: #b0b0cc;
+            --danger: #ff4d4d;
         }
 
         body {
@@ -54,15 +55,9 @@
             animation: floatOrb 20s infinite ease-in-out;
         }
 
-        .bg-animation .orb:nth-child(1) {
-            width: 600px; height: 600px; background: var(--accent1); top: -200px; left: -200px; animation-delay: 0s;
-        }
-        .bg-animation .orb:nth-child(2) {
-            width: 500px; height: 500px; background: var(--accent2); top: 50%; right: -200px; animation-delay: -7s;
-        }
-        .bg-animation .orb:nth-child(3) {
-            width: 400px; height: 400px; background: var(--accent3); bottom: -150px; left: 30%; animation-delay: -14s;
-        }
+        .bg-animation .orb:nth-child(1) { width: 600px; height: 600px; background: var(--accent1); top: -200px; left: -200px; animation-delay: 0s; }
+        .bg-animation .orb:nth-child(2) { width: 500px; height: 500px; background: var(--accent2); top: 50%; right: -200px; animation-delay: -7s; }
+        .bg-animation .orb:nth-child(3) { width: 400px; height: 400px; background: var(--accent3); bottom: -150px; left: 30%; animation-delay: -14s; }
 
         @keyframes floatOrb {
             0%, 100% { transform: translate(0, 0) scale(1); }
@@ -149,6 +144,22 @@
         /* Main content */
         main { position: relative; z-index: 10; max-width: 1000px; margin: 0 auto; padding: 40px 20px 100px; }
 
+        /* Global Closure Banner */
+        .global-closure-banner {
+            background: linear-gradient(135deg, rgba(255, 50, 50, 0.1), rgba(20, 10, 20, 0.8));
+            border-left: 5px solid var(--danger);
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(255, 77, 77, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .closure-icon { font-size: 2.5rem; flex-shrink: 0; }
+        .closure-content h3 { color: var(--danger); font-size: 1.3rem; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
+        .closure-content p { color: var(--text-primary); font-size: 0.95rem; line-height: 1.6; }
+
         .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 50px; }
         .stat-card {
             background: linear-gradient(135deg, rgba(123, 47, 190, 0.2), rgba(233, 30, 140, 0.1));
@@ -168,6 +179,7 @@
         .badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 10px; }
         .badge-lost { background: rgba(255, 100, 100, 0.1); border: 1px solid #ff6464; color: #ff6464; }
         .badge-pending { background: rgba(0, 212, 255, 0.1); border: 1px solid var(--accent3); color: var(--accent3); }
+        .badge-cancelled { background: rgba(255, 77, 77, 0.15); border: 1px solid var(--danger); color: var(--danger); }
 
         /* Media Links per Edition */
         .edition-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
@@ -192,7 +204,6 @@
 
         /* Results table */
         .results-container { background: var(--bg-card); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
-        .results-container.transparent { opacity: 0.6; pointer-events: none; }
         
         .result-row { display: flex; align-items: center; padding: 20px 30px; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05); position: relative; }
         .result-row:hover { background: rgba(255, 255, 255, 0.03); }
@@ -206,7 +217,6 @@
         .position-2 { background: linear-gradient(135deg, #E8E8E8, #A0A0A0); color: #1a1a1a; box-shadow: 0 0 15px rgba(192, 192, 192, 0.3); }
         .position-3 { background: linear-gradient(135deg, #CD7F32, #8B5A2B); color: white; box-shadow: 0 0 15px rgba(205, 127, 50, 0.3); }
         .position-other { background: rgba(255, 255, 255, 0.1); color: var(--text-secondary); }
-        .position-pending { background: transparent; border: 2px dashed rgba(255,255,255,0.2); color: var(--text-secondary); }
 
         @keyframes winnerGlow { 0%, 100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); } 50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.7); } }
 
@@ -236,7 +246,7 @@
         /* Notices */
         .notice-box { border-radius: 12px; padding: 20px 25px; display: flex; align-items: center; gap: 15px; margin: 20px 0; }
         .notice-lost { background: rgba(255, 100, 100, 0.1); border: 1px solid rgba(255, 100, 100, 0.2); color: #ff9999; }
-        .notice-pending { background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.2); color: var(--accent3); }
+        .notice-cancelled { background: rgba(255, 77, 77, 0.1); border: 1px solid rgba(255, 77, 77, 0.2); color: #ff9999; }
         .notice-icon { font-size: 1.5rem; flex-shrink: 0; }
         .notice-text { font-size: 0.95rem; line-height: 1.5; }
 
@@ -244,8 +254,10 @@
         .all-editions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
         .edition-mini-card { background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 25px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
         .edition-mini-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3)); }
+        .edition-mini-card.cancelled::before { background: var(--danger); }
         .edition-mini-card:hover { transform: translateY(-5px); border-color: rgba(233, 30, 140, 0.3); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); }
         .mini-card-number { font-size: 0.75rem; color: var(--accent2); letter-spacing: 3px; text-transform: uppercase; font-weight: 700; }
+        .edition-mini-card.cancelled .mini-card-number { color: var(--danger); }
         .mini-card-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; margin: 8px 0 15px; }
         .mini-card-winner { display: flex; align-items: center; gap: 10px; }
         .mini-card-winner-name { font-weight: 700; color: var(--gold); }
@@ -265,7 +277,7 @@
         .confetti-piece { position: absolute; width: 10px; height: 10px; top: -10px; animation: confettiFall linear forwards; }
         @keyframes confettiFall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
 
-        /* JS Умная Мобильная Адаптация (Mobile Mode) */
+        /* Умная Мобильная Адаптация */
         body.mobile-mode .result-row { padding: 15px; flex-wrap: wrap; }
         body.mobile-mode .position { width: 40px; height: 40px; font-size: 1rem; margin-right: 15px; }
         body.mobile-mode .participant-avatar { width: 50px; height: 50px; margin-right: 15px; }
@@ -312,7 +324,12 @@
         <p class="subtitle">Музыкальный конкурс</p>
         
         <div class="header-actions" id="headerActions">
-            <!-- Кнопка Telegram сгенерируется через JS -->
+            <a href="https://t.me/+ewb2OfjSIeoxYmVi" target="_blank" class="tg-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.888-.666 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
+                Telegram Архив
+            </a>
         </div>
     </header>
 
@@ -323,8 +340,8 @@
     <main id="appContainer"></main>
 
     <footer>
-        <p>© 2026 <span>Стаявидение</span> — Все права открыты</p>
-        <p style="margin-top: 8px; font-size: 0.7rem;">Сайт оптимизирован под любые устройства</p>
+        <p>© 2026 <a href="generator.html" style="text-decoration: none; color: inherit;"><span>Стаявидение</span></a> — Все права открыты</p>
+        <p style="margin-top: 8px; font-size: 0.7rem;">Проект официально завершён.</p>
     </footer>
 
     <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
@@ -332,16 +349,15 @@
     <script>
         /**
          * ==========================================
-         * 🛠️ БАЗА ДАННЫХ КОНКУРСА (ЛЕГКО РЕДАКТИРОВАТЬ)
+         * 🛠️ БАЗА ДАННЫХ КОНКУРСА
          * ==========================================
          */
         const DATA = {
-            tgLink: "https://t.me/+ewb2OfjSIeoxYmVi", // Ссылка на тг канал
             editions: [
                 {
                     id: "edition1", shortName: "SV 1", name: "Стаявидение 1", location: "Дюшесово",
-                    started: true, isLost: false, winner: { name: "Гира", avatar: "gira.jpg" },
-                    links: {}, // Нет ссылок на видео
+                    started: true, isLost: false, isCancelled: false, winner: { name: "Гира", avatar: "gira.jpg" },
+                    links: {},
                     final: [
                         { name: "Гира", avatar: "gira.jpg", score: 6, note: "" },
                         { name: "Обалена", avatar: "obalena.jpg", score: 3, note: "" },
@@ -350,7 +366,7 @@
                 },
                 {
                     id: "edition2", shortName: "SV 2", name: "Стаявидение 2", location: "Дюшесово",
-                    started: true, isLost: false, winner: { name: "Ритикс", avatar: "ritix.jpg" },
+                    started: true, isLost: false, isCancelled: false, winner: { name: "Ритикс", avatar: "ritix.jpg" },
                     links: {},
                     final: [
                         { name: "Ритикс", avatar: "ritix.jpg", score: 8, note: "" },
@@ -361,7 +377,7 @@
                 },
                 {
                     id: "edition3", shortName: "SV 3", name: "Стаявидение 3", location: "Дюшесово",
-                    started: true, isLost: false, winner: { name: "Егорь", avatar: "egor.jpg" },
+                    started: true, isLost: false, isCancelled: false, winner: { name: "Егорь", avatar: "egor.jpg" },
                     links: {},
                     final: [
                         { name: "Егорь", avatar: "egor.jpg", score: 9, note: "" },
@@ -371,7 +387,7 @@
                 },
                 {
                     id: "edition4", shortName: "SV 4", name: "Стаявидение 4", location: "Дюшесово",
-                    started: true, isLost: true, winner: { name: "Гира", avatar: "gira.jpg" }, // isLost = частично утеряно
+                    started: true, isLost: true, isCancelled: false, winner: { name: "Гира", avatar: "gira.jpg" },
                     links: {},
                     final: [
                         { name: "Гира", avatar: "gira.jpg", score: null, note: "Единственные известные данные (Видео утеряно)" }
@@ -379,7 +395,7 @@
                 },
                 {
                     id: "edition5", shortName: "SV 5", name: "Стаявидение 5", location: "Стаево",
-                    started: true, isLost: false, winner: { name: "Егорь", avatar: "egor.jpg" },
+                    started: true, isLost: false, isCancelled: false, winner: { name: "Егорь", avatar: "egor.jpg" },
                     links: {},
                     final: [
                         { name: "Егорь", avatar: "egor.jpg", score: 7, note: "" },
@@ -389,11 +405,10 @@
                 },
                 {
                     id: "edition6", shortName: "SV 6", name: "Стаявидение 6", location: "Дюшесово",
-                    started: true, isLost: false, winner: { name: "Обалена", avatar: "obalena.jpg" },
-                    // Ссылки на полный просмотр 6-го стаявидения:
+                    started: true, isLost: false, isCancelled: false, winner: { name: "Обалена", avatar: "obalena.jpg" },
                     links: { 
-                        semifinal: "https://youtu.be/dQw4w9WgXcQ?si=ctZmC65vLY8ssQQE", 
-                        final: "https://youtu.be/jSq5Xf30oaI?si=oDtN7EHBikkpvHHG" 
+                        semifinal: "https://youtube.com/полуфинал_ссылка", 
+                        final: "https://youtube.com/финал_ссылка" 
                     },
                     final: [
                         { name: "Обалена", avatar: "obalena.jpg", score: 16, note: "🏆 Победитель Финала" },
@@ -402,27 +417,20 @@
                         { name: "Егорь", avatar: "egor.jpg", score: 8, note: "★ Финалист" }
                     ],
                     semifinal: [
-                        { name: "Ритикс", avatar: "ritix.jpg", score: 16, note: "Прошел в финал" },
-                        { name: "Обалена", avatar: "obalena.jpg", score: 14, note: "Прошел в финал" },
-                        { name: "Гира", avatar: "gira.jpg", score: 12, note: "Прошел в финал" },
-                        { name: "Егорь", avatar: "egor.jpg", score: 9, note: "Прошел в финал" },
+                        { name: "Обалена", avatar: "obalena.jpg", score: 20, note: "Прошел в финал" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 18, note: "Прошел в финал" },
+                        { name: "Гира", avatar: "gira.jpg", score: 15, note: "Прошел в финал" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 10, note: "Прошел в финал" },
                         { name: "Енька", avatar: "enka.jpg", score: 4, note: "✗ Выбыл в полуфинале", eliminated: true },
                         { name: "И. Потужность", avatar: "potuzhnost.jpg", score: 4, note: "✗ Выбыл в полуфинале", eliminated: true }
                     ]
                 },
                 {
-                    id: "edition7", shortName: "SV 7", name: "Стаявидение 7", location: "Стаево",
-                    started: false, isLost: false, winner: null,
+                    // ОБНОВЛЕНИЕ: СТАЯВИДЕНИЕ 7 ОТМЕНЕНО
+                    id: "edition7", shortName: "SV 7", name: "Стаявидение 7", location: "Отменено",
+                    started: false, isLost: false, isCancelled: true, winner: null,
                     links: {},
-                    // Так как started: false, мы показываем только список участников без разделения и мест
-                    participants: [
-                        { name: "Егорь", avatar: "egor.jpg", note: "Хост" },
-                        { name: "Енька", avatar: "enka.jpg", note: "Заявка принята" },
-                        { name: "Ритикс", avatar: "ritix.jpg", note: "Заявка принята" },
-                        { name: "Обалена", avatar: "obalena.jpg", note: "В ожидании" },
-                        { name: "Нет участника", avatar: "default.jpg", note: "В ожидании" },
-                        { name: "Нет участника", avatar: "default.jpg", note: "В ожидании" }
-                    ]
+                    participants: [] // Участников нет
                 }
             ],
             hallOfFame: [
@@ -442,24 +450,11 @@
         const appContainer = document.getElementById('appContainer');
         const navContainer = document.getElementById('navContainer');
 
-        // Инициализация
         function init() {
-            renderHeaderButtons();
             renderNavigation();
             renderAllSections();
-            setupWindowResizeOptimizer(); // Умная адаптация
+            setupWindowResizeOptimizer();
             showSection('overview');
-        }
-
-        function renderHeaderButtons() {
-            document.getElementById('headerActions').innerHTML = `
-                <a href="${DATA.tgLink}" target="_blank" class="tg-btn">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                        <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.888-.666 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-                    </svg>
-                    Следить за Стаявидением
-                </a>
-            `;
         }
 
         function renderNavigation() {
@@ -479,12 +474,23 @@
         }
 
         function renderOverviewSection() {
-            let totalEditions = DATA.editions.length;
-            let finishedEditions = DATA.editions.filter(e => e.started).length;
+            // Исключаем отмененные из счетчика "Проведено"
+            let totalEditions = DATA.editions.filter(e => !e.isCancelled).length;
+            let finishedEditions = DATA.editions.filter(e => e.started && !e.isCancelled).length;
             let totalWinners = DATA.hallOfFame.length;
 
             let html = `
                 <section class="edition-section active" id="overview">
+                    
+                    <!-- БАННЕР О ЗАКРЫТИИ ПРОЕКТА -->
+                    <div class="global-closure-banner">
+                        <div class="closure-icon">🛑</div>
+                        <div class="closure-content">
+                            <h3>Проект официально закрыт</h3>
+                            <p>Конкурс «Стаявидение» завершает свою долгую историю. 7-й сезон был полностью отменён, и новых конкурсов в будущем не планируется. Этот сайт остаётся архивом и залом славы всех прошедших событий. Спасибо всем участникам, жюри и зрителям за этот невероятный путь!</p>
+                        </div>
+                    </div>
+
                     <div class="stats-bar">
                         <div class="stat-card"><div class="stat-number">${totalEditions}</div><div class="stat-label">Конкурсов</div></div>
                         <div class="stat-card"><div class="stat-number">${finishedEditions}</div><div class="stat-label">Проведено</div></div>
@@ -497,16 +503,21 @@
 
             DATA.editions.forEach(ed => {
                 let badge = "";
-                if (!ed.started) badge = `<span class="badge badge-pending">Не началось</span>`;
+                if (ed.isCancelled) badge = `<span class="badge badge-cancelled">Отменено</span>`;
+                else if (!ed.started) badge = `<span class="badge badge-pending">Не началось</span>`;
                 else if (ed.isLost) badge = `<span class="badge badge-lost">Потеряно</span>`;
 
+                let cardClass = ed.isCancelled ? "edition-mini-card cancelled" : "edition-mini-card";
+                let winnerIcon = ed.winner ? '👑' : (ed.isCancelled ? '❌' : '⏳');
+                let winnerName = ed.winner ? ed.winner.name : (ed.isCancelled ? 'Отменён' : 'Скоро');
+
                 html += `
-                    <div class="edition-mini-card" onclick="showSection('${ed.id}')">
+                    <div class="${cardClass}" onclick="showSection('${ed.id}')">
                         <div class="mini-card-number">📍 ${ed.location}</div>
                         <div class="mini-card-title">${ed.name}</div>
                         <div class="mini-card-winner">
-                            <span style="font-size: 1.2rem;">${ed.winner ? '👑' : '⏳'}</span>
-                            <span class="mini-card-winner-name" style="${!ed.winner ? 'color: var(--text-secondary);' : ''}">${ed.winner ? ed.winner.name : 'Скоро'}</span>
+                            <span style="font-size: 1.2rem; filter: ${ed.isCancelled ? 'grayscale(1)' : 'none'};">${winnerIcon}</span>
+                            <span class="mini-card-winner-name" style="${!ed.winner ? 'color: var(--text-secondary);' : ''} ${ed.isCancelled ? 'color: var(--danger);' : ''}">${winnerName}</span>
                             ${badge ? `<div style="margin-left: auto;">${badge}</div>` : ''}
                         </div>
                     </div>
@@ -535,18 +546,29 @@
         }
 
         function renderEditionHTML(ed) {
-            let statusBadge = ed.isLost ? `<span class="badge badge-lost">⚠ Частично потеряно</span>` : '';
             let html = `
                 <section class="edition-section" id="${ed.id}">
                     <div class="edition-header">
                         <div class="edition-number">📍 ${ed.location}</div>
                         <h2 class="edition-title">${ed.name}</h2>
-                        ${statusBadge}
                     </div>
             `;
 
             // Winner Showcase
-            if (ed.winner) {
+            if (ed.isCancelled) {
+                html += `
+                    <div class="winner-showcase">
+                        <div class="winner-crown" style="animation:none; filter: grayscale(1);">❌</div>
+                        <div class="winner-name-big" style="background: none; color: var(--danger); -webkit-text-fill-color: unset;">Конкурс отменён</div>
+                        <div class="winner-label">Победителя нет</div>
+                    </div>
+                    
+                    <div class="notice-box notice-cancelled">
+                        <div class="notice-icon">🛑</div>
+                        <div class="notice-text"><strong>${ed.name} был официально отменён.</strong> Участники были распущены, а сам проект Стаявидение завершил свою историю. Спасибо всем, кто был с нами!</div>
+                    </div>
+                `;
+            } else if (ed.winner) {
                 html += `
                     <div class="winner-showcase">
                         <div class="winner-crown">👑</div>
@@ -564,76 +586,67 @@
                 `;
             }
 
-            // Media Links (Финал/Полуфинал общие кнопки)
+            // Media Links
             if (ed.links && (ed.links.final || ed.links.semifinal)) {
                 html += `<div class="edition-links">`;
                 if (ed.links.semifinal) {
-                    html += `
-                        <a href="${ed.links.semifinal}" target="_blank" class="watch-btn">
-                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> 
-                            Смотреть Полуфинал
-                        </a>`;
+                    html += `<a href="${ed.links.semifinal}" target="_blank" class="watch-btn"><svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть Полуфинал</a>`;
                 }
                 if (ed.links.final) {
-                    html += `
-                        <a href="${ed.links.final}" target="_blank" class="watch-btn">
-                            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> 
-                            Смотреть Финал
-                        </a>`;
+                    html += `<a href="${ed.links.final}" target="_blank" class="watch-btn"><svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть Финал</a>`;
                 }
                 html += `</div>`;
             }
 
-            // Уведомления
+            // Уведомления (потеряно / не началось)
             if (ed.isLost) {
                 html += `
                     <div class="notice-box notice-lost">
                         <div class="notice-icon">⚠️</div>
-                        <div class="notice-text">Полные результаты и видео частично утеряны. Известен только победитель — <strong>${ed.winner.name}</strong>.</div>
+                        <div class="notice-text">Полные результаты и видео частично утеряны. Известно только имя победителя — <strong>${ed.winner.name}</strong>.</div>
                     </div>
                 `;
-            } else if (!ed.started) {
+            } else if (!ed.started && !ed.isCancelled) {
                 html += `
                     <div class="notice-box notice-pending">
                         <div class="notice-icon">🗓️</div>
-                        <div class="notice-text">Конкурс <strong>ещё не начался</strong>. Заходите позже — здесь появятся баллы и результаты! Ниже представлены известные участники.</div>
+                        <div class="notice-text">Конкурс <strong>ещё не начался</strong>. Заходите позже — здесь появятся баллы и результаты!</div>
                     </div>
                 `;
             }
 
-            // Таблицы результатов (с переключателем если есть полуфинал)
-            if (!ed.started && ed.participants) {
-                // Еще не началось - просто список без мест
-                html += `<div class="results-container transparent">`;
-                ed.participants.forEach(p => {
-                    html += renderParticipantRow(p, null, true); // true = pending
-                });
-                html += `</div>`;
-            } else {
-                // Если есть и финал и полуфинал - делаем вкладки
-                if (ed.final && ed.semifinal) {
-                    html += `
-                        <div class="stage-tabs">
-                            <button class="stage-tab active" onclick="switchStage('${ed.id}', 'final')">Финал</button>
-                            <button class="stage-tab" onclick="switchStage('${ed.id}', 'semifinal')">Полуфинал</button>
-                        </div>
-                    `;
-                    
-                    html += `<div id="${ed.id}-final" class="stage-content active"><div class="results-container">`;
-                    let maxScore = Math.max(...ed.final.map(p => p.score || 1));
-                    ed.final.forEach((p, index) => html += renderParticipantRow(p, index + 1, false, maxScore));
-                    html += `</div></div>`;
-
-                    html += `<div id="${ed.id}-semifinal" class="stage-content"><div class="results-container">`;
-                    let maxScoreSemi = Math.max(...ed.semifinal.map(p => p.score || 1));
-                    ed.semifinal.forEach((p, index) => html += renderParticipantRow(p, index + 1, false, maxScoreSemi));
-                    html += `</div></div>`;
-                } else if (ed.final) {
-                    // Только финал
-                    html += `<div class="results-container">`;
-                    let maxScore = Math.max(...ed.final.map(p => p.score || 1));
-                    ed.final.forEach((p, index) => html += renderParticipantRow(p, index + 1, false, maxScore));
+            // Таблицы результатов (не выводим для отмененных)
+            if (!ed.isCancelled) {
+                if (!ed.started && ed.participants && ed.participants.length > 0) {
+                    html += `<div class="results-container transparent">`;
+                    ed.participants.forEach(p => {
+                        html += renderParticipantRow(p, null, true);
+                    });
                     html += `</div>`;
+                } else if (ed.started) {
+                    if (ed.final && ed.semifinal) {
+                        html += `
+                            <div class="stage-tabs">
+                                <button class="stage-tab active" onclick="switchStage('${ed.id}', 'final')">Финал</button>
+                                <button class="stage-tab" onclick="switchStage('${ed.id}', 'semifinal')">Полуфинал</button>
+                            </div>
+                        `;
+                        
+                        html += `<div id="${ed.id}-final" class="stage-content active"><div class="results-container">`;
+                        let maxScore = Math.max(...ed.final.map(p => p.score || 1));
+                        ed.final.forEach((p, index) => html += renderParticipantRow(p, index + 1, false, maxScore));
+                        html += `</div></div>`;
+
+                        html += `<div id="${ed.id}-semifinal" class="stage-content"><div class="results-container">`;
+                        let maxScoreSemi = Math.max(...ed.semifinal.map(p => p.score || 1));
+                        ed.semifinal.forEach((p, index) => html += renderParticipantRow(p, index + 1, false, maxScoreSemi));
+                        html += `</div></div>`;
+                    } else if (ed.final) {
+                        html += `<div class="results-container">`;
+                        let maxScore = Math.max(...ed.final.map(p => p.score || 1));
+                        ed.final.forEach((p, index) => html += renderParticipantRow(p, index + 1, false, maxScore));
+                        html += `</div>`;
+                    }
                 }
             }
 
@@ -650,7 +663,7 @@
             
             if (p.eliminated) classes += " eliminated";
 
-            let posHTML = isPending ? `<div class="position position-pending">-</div>` : 
+            let posHTML = isPending ? `<div class="position position-other">-</div>` : 
                 `<div class="position ${position <= 3 ? 'position-'+position : 'position-other'}">${position}</div>`;
             
             let fillPercent = p.score ? (p.score / maxScore * 100) : 0;
@@ -699,8 +712,6 @@
             if(target) target.classList.add('active');
 
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            // Найти нужную кнопку в навигации
             let buttons = document.querySelectorAll('.nav-btn');
             for(let b of buttons) {
                 if(b.getAttribute('onclick').includes(sectionId)) {
@@ -712,12 +723,11 @@
             window.scrollTo({ top: document.querySelector('nav').offsetTop - 20, behavior: 'smooth' });
 
             let edData = DATA.editions.find(e => e.id === sectionId);
-            if (edData && edData.started && !edData.isLost) {
+            if (edData && edData.started && !edData.isLost && !edData.isCancelled) {
                 triggerConfetti();
             }
         };
 
-        /** Умная адаптация под мобильные устройства (Resolution Optimizer) */
         function setupWindowResizeOptimizer() {
             const checkRes = () => {
                 if (window.innerWidth <= 768) {
@@ -727,10 +737,9 @@
                 }
             };
             window.addEventListener('resize', checkRes);
-            checkRes(); // При загрузке
+            checkRes(); 
         }
 
-        // Эффекты: Конфетти
         function triggerConfetti() {
             const container = document.getElementById('confetti');
             container.innerHTML = '';
@@ -750,7 +759,6 @@
             setTimeout(() => container.innerHTML = '', 4000);
         }
 
-        // Эффекты: Искры
         function createParticles() {
             const container = document.getElementById('particles');
             for (let i = 0; i < 30; i++) {
@@ -765,14 +773,12 @@
             }
         }
 
-        // Кнопка наверх
         window.addEventListener('scroll', () => {
             const btn = document.getElementById('scrollTop');
             if (window.scrollY > 300) btn.classList.add('visible');
             else btn.classList.remove('visible');
         });
 
-        // Старт!
         createParticles();
         init();
 
