@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор Скорборда — Стаявидение</title>
+    <title>Генератор Скорборда — Стаявидение </title>
     <!-- Подключаем библиотеку для скриншотов -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -12,408 +12,409 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --gold: #FFD700;
-            --silver: #C0C0C0;
-            --bronze: #CD7F32;
-            --bg-dark: #0a0a1a;
-            --bg-card: #12122a;
-            --accent1: #7B2FBE;
-            --accent2: #E91E8C;
-            --accent3: #00D4FF;
-            --text-primary: #ffffff;
-            --text-secondary: #b0b0cc;
+            --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
+            --bg-dark: #0a0a1a; --accent1: #7B2FBE; --accent2: #E91E8C; --accent3: #00D4FF;
+            --text-primary: #ffffff; --text-secondary: #b0b0cc;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            overflow-x: hidden;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background: var(--bg-dark); color: var(--text-primary);
+            min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
         }
 
-        /* Animated background */
-        .bg-animation {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
-        }
-        .bg-animation .orb {
-            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
-        }
-        .orb:nth-child(1) { width: 600px; height: 600px; background: var(--accent1); top: -200px; left: -200px; }
-        .orb:nth-child(2) { width: 500px; height: 500px; background: var(--accent2); top: 50%; right: -200px; }
+        header { text-align: center; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(10,10,26,0.9); z-index: 10; }
+        h1 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; background: linear-gradient(135deg, var(--gold), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; }
 
-        header { text-align: center; padding: 30px 20px; position: relative; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(10,10,26,0.8); }
-        h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg, var(--gold), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; }
-        .subtitle { color: var(--text-secondary); font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 5px; }
+        .app-container { display: flex; flex-wrap: wrap; gap: 30px; max-width: 1500px; margin: 0 auto; padding: 30px 20px; flex: 1; width: 100%; }
 
-        /* Разметка приложения */
-        .app-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px 20px;
-            position: relative;
-            z-index: 10;
-            flex: 1;
-        }
-
-        /* Левая панель - Настройки */
-        .controls-panel {
-            flex: 1;
-            min-width: 350px;
-            background: rgba(18, 18, 42, 0.7);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-        }
-
-        .control-group { margin-bottom: 20px; }
-        .control-group label { display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
-        .control-group input[type="text"], .control-group select {
-            width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.3); color: white; font-family: 'Montserrat', sans-serif; font-size: 1rem;
-        }
-        .control-group input[type="text"]:focus { outline: none; border-color: var(--accent2); }
-
-        .participants-editor { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
-        .editor-row { 
-            display: flex; gap: 10px; align-items: center; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); 
-            flex-wrap: wrap;
-        }
-        .editor-row input[type="text"] { flex: 2; min-width: 120px; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; }
-        .editor-row input[type="number"] { flex: 1; min-width: 80px; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; }
-        .editor-row input[type="file"] { display: none; }
+        /* --- ЛЕВАЯ ПАНЕЛЬ (НАСТРОЙКИ) --- */
+        .controls-panel { flex: 1; min-width: 350px; background: rgba(18, 18, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 25px; }
         
-        .avatar-upload-btn {
-            width: 40px; height: 40px; border-radius: 50%; background: var(--accent1); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; flex-shrink: 0;
-            background-size: cover; background-position: center; border: 2px solid transparent; transition: all 0.2s;
+        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        @media (max-width: 600px) { .settings-grid { grid-template-columns: 1fr; } }
+        
+        .control-group label { display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
+        .control-group input[type="text"], .control-group select, .control-group input[type="file"] {
+            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-family: 'Montserrat', sans-serif;
         }
-        .avatar-upload-btn:hover { border-color: var(--gold); }
+        .control-group input[type="file"] { padding: 7px; font-size: 0.8rem; }
+        
+        .btn-action { background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: 600; width: 100%; margin-top: 10px; }
+        .btn-action:hover { background: rgba(255,255,255,0.2); }
+        .btn-random { background: linear-gradient(135deg, var(--accent1), var(--accent3)); margin-bottom: 15px; }
 
-        .btn-remove { background: #ff4d4d; color: white; border: none; width: 35px; height: 35px; border-radius: 8px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
-        .btn-remove:hover { background: #ff1a1a; }
+        .participants-editor { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; max-height: 400px; overflow-y: auto; padding-right: 5px; }
+        .participants-editor::-webkit-scrollbar { width: 5px; }
+        .participants-editor::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 5px; }
+        
+        .editor-row { display: flex; gap: 8px; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .editor-row select { flex: 1; min-width: 100px; padding: 8px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: none; }
+        .editor-row input { flex: 2; min-width: 80px; padding: 8px; border-radius: 6px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .editor-row input[type="number"] { flex: 0.5; min-width: 60px; }
+        .btn-remove { background: #ff4d4d; color: white; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
-        .btn-add { background: rgba(0, 212, 255, 0.1); color: var(--accent3); border: 1px dashed var(--accent3); padding: 12px; width: 100%; border-radius: 12px; cursor: pointer; font-weight: 700; font-family: 'Montserrat'; transition: all 0.3s; margin-bottom: 20px; }
-        .btn-add:hover { background: var(--accent3); color: #000; }
+        /* --- ПРАВАЯ ПАНЕЛЬ (ПРЕВЬЮ) --- */
+        .preview-panel { flex: 1.8; min-width: 350px; display: flex; flex-direction: column; align-items: center; width: 100%; }
 
-        /* Правая панель - Превью */
-        .preview-panel {
-            flex: 1.5;
-            min-width: 350px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* САМ СКОРБОРД (То, что рендерится в картинку) */
+        /* КОНТЕЙНЕР ДЛЯ РЕНДЕРА (Скриншот делается отсюда) */
         #scoreboard-capture {
-            width: 100%;
-            max-width: 800px;
-            background: linear-gradient(135deg, #0a0a1a, #12122a); /* Сплошной фон для html2canvas */
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
+            width: 100%; max-width: 1200px; position: relative;
+            background-size: cover; background-position: center;
+            border-radius: 12px; padding: 40px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden; display: flex; flex-direction: column;
         }
 
-        .board-header { text-align: center; margin-bottom: 30px; }
-        .board-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; color: white; margin-bottom: 10px; line-height: 1.2; }
-        .board-subtitle { color: var(--gold); font-size: 1rem; text-transform: uppercase; letter-spacing: 3px; font-weight: 700; }
+        .board-header { text-align: center; margin-bottom: 25px; }
+        .board-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; color: white; line-height: 1.2; text-transform: uppercase; }
+        .board-subtitle { color: var(--gold); font-size: 1.2rem; text-transform: uppercase; letter-spacing: 4px; font-weight: 700; margin-top: 5px; }
 
-        .board-results { display: flex; flex-direction: column; }
-        
-        .result-row { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        .result-row:last-child { border-bottom: none; }
-        .result-row.place-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent); border-radius: 10px; border-bottom: none; margin-bottom: 5px; }
-        .result-row.place-2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.08), transparent); border-radius: 10px; border-bottom: none; margin-bottom: 5px; }
-        .result-row.place-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.08), transparent); border-radius: 10px; border-bottom: none; margin-bottom: 5px; }
+        .board-results { display: grid; gap: 12px; flex: 1; align-content: start; }
 
-        .position { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.2rem; margin-right: 20px; flex-shrink: 0; color: #fff; }
-        .position-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #1a1a1a; box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
-        .position-2 { background: linear-gradient(135deg, #E8E8E8, #A0A0A0); color: #1a1a1a; }
-        .position-3 { background: linear-gradient(135deg, #CD7F32, #8B5A2B); }
-        .position-other { background: rgba(255, 255, 255, 0.1); }
+        /* ОБЩИЕ СТИЛИ СТРОК */
+        .result-row { display: flex; align-items: center; transition: all 0.3s ease; }
+        .position { display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; }
+        .participant-avatar { object-fit: cover; flex-shrink: 0; background: #2a2a4a; }
+        .participant-info { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; white-space: nowrap; }
+        .participant-name { font-weight: 700; text-overflow: ellipsis; overflow: hidden; }
+        .participant-note { color: var(--text-secondary); text-overflow: ellipsis; overflow: hidden; }
+        .score { text-align: right; flex-shrink: 0; }
+        .score-number { font-weight: 900; line-height: 1; }
 
-        .participant-avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; margin-right: 20px; border: 2px solid rgba(255, 255, 255, 0.1); flex-shrink: 0; background: #2a2a4a; }
-        .place-1 .participant-avatar { border-color: var(--gold); }
+        /* === СТИЛЬ: СТАЯВИДЕНИЕ (Толстые плашки) === */
+        .style-stayavision { background-color: #0a0a1a; background-image: linear-gradient(135deg, rgba(10,10,26,0.9), rgba(18,18,42,0.9)); }
+        .style-stayavision .result-row { padding: 15px 25px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; }
+        .style-stayavision .result-row.place-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent); border: 1px solid rgba(255,215,0,0.3); }
+        .style-stayavision .result-row.place-2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), transparent); }
+        .style-stayavision .result-row.place-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), transparent); }
+        .style-stayavision .position { width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; margin-right: 20px; background: rgba(255,255,255,0.1); }
+        .style-stayavision .place-1 .position { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+        .style-stayavision .place-2 .position { background: linear-gradient(135deg, #E8E8E8, #A0A0A0); color: #000; }
+        .style-stayavision .place-3 .position { background: linear-gradient(135deg, #CD7F32, #8B5A2B); color: #fff; }
+        .style-stayavision .participant-avatar { width: 55px; height: 55px; border-radius: 50%; margin-right: 20px; border: 2px solid rgba(255,255,255,0.1); }
+        .style-stayavision .place-1 .participant-avatar { border-color: #FFD700; }
+        .style-stayavision .participant-name { font-size: 1.4rem; color: #fff; }
+        .style-stayavision .place-1 .participant-name { color: #FFD700; }
+        .style-stayavision .participant-note { font-size: 0.85rem; }
+        .style-stayavision .score-number { font-size: 2rem; color: #fff; }
+        .style-stayavision .place-1 .score-number { color: #FFD700; }
+        .style-stayavision .score-label { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; }
+        .style-stayavision .score-bar { width: 100px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 5px; margin-left: auto; }
+        .style-stayavision .score-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent2)); }
+        .style-stayavision .place-1 .score-bar-fill { background: #FFD700; }
 
-        .participant-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .participant-name { font-size: 1.4rem; font-weight: 700; color: white; }
-        .place-1 .participant-name { color: var(--gold); font-size: 1.6rem; }
-        .participant-note { font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; }
-
-        .score { text-align: right; margin-left: 15px; flex-shrink: 0; min-width: 80px; }
-        .score-number { font-size: 2rem; font-weight: 900; line-height: 1; color: white; }
-        .place-1 .score-number { color: var(--gold); }
-        .score-label { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
-        .score-bar { width: 100px; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; margin-top: 8px; margin-left: auto; overflow: hidden; }
-        .score-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); }
-        .place-1 .score-bar-fill { background: linear-gradient(90deg, var(--gold), #FFA500); }
-
-        /* Водяной знак для скриншота */
-        .watermark { position: absolute; bottom: 15px; right: 20px; font-size: 0.7rem; color: rgba(255,255,255,0.2); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+        /* === СТИЛЬ: ЕВРОВИДЕНИЕ (Тонкие неоновые плашки) === */
+        .style-eurovision { background-color: #02020a; background-image: linear-gradient(135deg, rgba(2,2,10,0.9), rgba(10,10,40,0.9)); }
+        .style-eurovision .result-row { padding: 6px 15px; background: linear-gradient(90deg, rgba(20,20,50,0.8), rgba(40,40,90,0.6)); border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); border-left: 4px solid var(--accent3); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .style-eurovision .result-row.place-1 { border-left-color: #FFD700; background: linear-gradient(90deg, rgba(40,40,20,0.9), rgba(40,40,90,0.6)); }
+        .style-eurovision .result-row.place-2 { border-left-color: #C0C0C0; }
+        .style-eurovision .result-row.place-3 { border-left-color: #CD7F32; }
+        .style-eurovision .position { width: 35px; height: 35px; font-size: 1.1rem; margin-right: 15px; border-right: 1px solid rgba(255,255,255,0.2); padding-right: 10px; justify-content: flex-start; color: #fff; }
+        .style-eurovision .place-1 .position { color: #FFD700; border-right-color: #FFD700; }
+        .style-eurovision .participant-avatar { width: 38px; height: 38px; border-radius: 4px; margin-right: 15px; }
+        .style-eurovision .participant-name { font-size: 1.15rem; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        .style-eurovision .participant-note { font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: #aaa; }
+        .style-eurovision .score-number { font-size: 1.6rem; color: #00D4FF; }
+        .style-eurovision .place-1 .score-number { color: #FFD700; }
+        .style-eurovision .score-label { display: none; }
+        .style-eurovision .score-bar { display: none; }
 
         /* Кнопка скачивания */
         .btn-download {
-            margin-top: 30px;
-            background: linear-gradient(135deg, #00D4FF, #7B2FBE);
-            color: white; border: none; padding: 15px 40px; border-radius: 30px;
-            font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
-            cursor: pointer; box-shadow: 0 10px 30px rgba(123, 47, 190, 0.4);
-            transition: all 0.3s; font-family: 'Montserrat', sans-serif;
-            display: flex; align-items: center; gap: 10px;
+            margin-top: 25px; background: linear-gradient(135deg, #00D4FF, #7B2FBE); color: white; border: none; padding: 15px 40px; border-radius: 30px;
+            font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; box-shadow: 0 10px 30px rgba(123, 47, 190, 0.4);
+            transition: all 0.3s; display: flex; align-items: center; gap: 10px;
         }
         .btn-download:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(123, 47, 190, 0.6); }
-        .btn-download:active { transform: translateY(0); }
-
     </style>
 </head>
 <body>
-    <div class="bg-animation">
-        <div class="orb"></div><div class="orb"></div>
-    </div>
-
     <header>
         <h1>Генератор Скорборда</h1>
-        <p class="subtitle">Инструмент для создания топов</p>
     </header>
 
     <div class="app-container">
         <!-- ПАНЕЛЬ НАСТРОЕК -->
         <div class="controls-panel">
-            <div class="control-group">
-                <label>Заголовок (Название конкурса)</label>
-                <input type="text" id="inputTitle" value="Стаявидение 6 - Финал" oninput="updatePreview()">
-            </div>
-
-            <div class="control-group">
-                <label>Режим топа</label>
-                <select id="inputMode" onchange="updatePreview()">
-                    <option value="overall">Общий итог (Места 1, 2, 3...)</option>
-                    <option value="jury">Голосование жюри (Высшие баллы сверху)</option>
-                </select>
-            </div>
-            
-            <div class="control-group" id="juryNameGroup" style="display: none;">
-                <label>Имя члена жюри / Страна</label>
-                <input type="text" id="inputJury" value="Голосует: Имя" oninput="updatePreview()">
-            </div>
-
-            <div class="control-group">
-                <label>Участники</label>
-                <div class="participants-editor" id="participantsEditor">
-                    <!-- Сюда добавляются инпуты через JS -->
+            <div class="settings-grid">
+                <div class="control-group">
+                    <label>Заголовок</label>
+                    <input type="text" id="inTitle" value="Стаявидение 6" oninput="updateState('title', this.value)">
                 </div>
-                <button class="btn-add" onclick="addParticipant()">+ Добавить участника</button>
+                <div class="control-group">
+                    <label>Подзаголовок</label>
+                    <input type="text" id="inSubtitle" value="Итоговые результаты" oninput="updateState('subtitle', this.value)">
+                </div>
+                <div class="control-group">
+                    <label>Стиль графики</label>
+                    <select id="inStyle" onchange="updateState('style', this.value)">
+                        <option value="stayavision">Стаявидение (Толстые)</option>
+                        <option value="eurovision">Eurovision (Тонкие)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Режим экрана</label>
+                    <select id="inMode" onchange="updateState('viewMode', this.value)">
+                        <option value="results">Результаты (с баллами)</option>
+                        <option value="running_order">Running Order (Жеребьевка)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Разрешение (Формат)</label>
+                    <select id="inRatio" onchange="updateState('aspectRatio', this.value)">
+                        <option value="16/9">16:9 (Стандарт видео)</option>
+                        <option value="21/9">21:9 (Широкий)</option>
+                        <option value="4/3">4:3 (Старый ТВ)</option>
+                        <option value="1/1">1:1 (Квадрат)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Колонки участников</label>
+                    <select id="inCols" onchange="updateState('columns', this.value)">
+                        <option value="1">1 колонка</option>
+                        <option value="2">2 колонки</option>
+                    </select>
+                </div>
             </div>
+
+            <div class="control-group" style="margin-bottom: 20px;">
+                <label>Кастомный фон (Картинка)</label>
+                <div style="display:flex; gap:10px;">
+                    <input type="file" accept="image/*" onchange="handleBgUpload(event)">
+                    <button class="btn-action" style="margin:0; width:auto;" onclick="clearBg()">Удалить</button>
+                </div>
+            </div>
+
+            <hr style="border-color: rgba(255,255,255,0.1); margin-bottom: 20px;">
+
+            <button class="btn-action btn-random" onclick="randomizeParticipants()">🎲 СЛУЧАЙНЫЙ ПОРЯДОК (Жеребьевка)</button>
+
+            <div class="participants-editor" id="editorContainer"></div>
+            
+            <button class="btn-action" style="border: 1px dashed var(--accent3); color: var(--accent3); background: transparent;" onclick="addParticipant()">+ ДОБАВИТЬ УЧАСТНИКА</button>
         </div>
 
         <!-- ПАНЕЛЬ ПРЕВЬЮ -->
         <div class="preview-panel">
-            
-            <!-- Контейнер для рендера в PNG -->
             <div id="scoreboard-capture">
                 <div class="board-header">
-                    <div class="board-title" id="renderTitle">Стаявидение 6 - Финал</div>
-                    <div class="board-subtitle" id="renderSubtitle">Итоговые результаты</div>
+                    <div class="board-title" id="renderTitle"></div>
+                    <div class="board-subtitle" id="renderSubtitle"></div>
                 </div>
-                <div class="board-results" id="renderBoard">
-                    <!-- Сюда рендерится таблица -->
-                </div>
-                <div class="watermark">STAYVIDENIE GENERATOR</div>
+                <div class="board-results" id="renderBoard"></div>
             </div>
 
             <button class="btn-download" onclick="downloadImage()">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                Скачать картинку
+                Сохранить картинку
             </button>
         </div>
     </div>
 
     <script>
-        // Состояние приложения
+        // Глобальное состояние
         let state = {
-            title: "Стаявидение 6 - Финал",
-            mode: "overall", // 'overall' или 'jury'
-            juryName: "Голосует: Жюри",
+            title: "Стаявидение 6",
+            subtitle: "Итоговые результаты",
+            style: "stayavision",
+            viewMode: "results",
+            aspectRatio: "16/9",
+            columns: 1,
+            bgImage: "",
             participants: [
-                { id: 1, name: "Обалена", score: 16, note: "🏆 Победитель", avatarData: "" },
-                { id: 2, name: "Ритикс", score: 14, note: "", avatarData: "" },
-                { id: 3, name: "Гира", score: 12, note: "", avatarData: "" },
-                { id: 4, name: "Егорь", score: 8, note: "", avatarData: "" }
+                { id: 1, name: "Обалена", score: 16, note: "Песня Обалены", avatar: "obalena.jpg" },
+                { id: 2, name: "Ритикс", score: 14, note: "Песня Ритикса", avatar: "ritix.jpg" },
+                { id: 3, name: "Гира", score: 12, note: "Песня Гиры", avatar: "gira.jpg" },
+                { id: 4, name: "Егорь", score: 8, note: "Песня Егоря", avatar: "egor.jpg" },
+                { id: 5, name: "Енька", score: 4, note: "Песня Еньки", avatar: "enka.jpg" },
+                { id: 6, name: "И. Потужность", score: 2, note: "Песня", avatar: "potuzhnost.jpg" }
             ]
         };
 
-        // Заглушка, если нет картинки
-        const defaultAvatar = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzJhMmE0YSIvPjxwYXRoIGQ9Ik01MCA1NWEyMCAyMCAwIDEgMCAwLTQwIDIwIDIwIDAgMCAwIDAgNDB6bTMyIDM1YTM4LjggMzguOCAwIDAgMC0zMi0yM2MtMTQuMSAwLTI2LjUgNy42LTMyIDIzQTEwLjUgMTAuNSAwIDAgMCAyOCA5OGg0NGExMC41IDEwLjUgMCAwIDAgOC04eiIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+PC9zdmc+';
+        const serverImages = [
+            { file: "default.jpg", name: "Дефолт" },
+            { file: "gira.jpg", name: "Гира" },
+            { file: "obalena.jpg", name: "Обалена" },
+            { file: "egor.jpg", name: "Егорь" },
+            { file: "ritix.jpg", name: "Ритикс" },
+            { file: "enka.jpg", name: "Енька" },
+            { file: "potuzhnost.jpg", name: "Потужность" }
+        ];
 
-        // Инициализация
         function init() {
-            document.getElementById('inputMode').addEventListener('change', function() {
-                document.getElementById('juryNameGroup').style.display = this.value === 'jury' ? 'block' : 'none';
-                state.mode = this.value;
-                updatePreview();
-            });
             renderEditor();
             updatePreview();
         }
 
-        // Рендер редактора участников
+        function updateState(key, value) {
+            state[key] = value;
+            updatePreview();
+        }
+
+        function updateParticipant(id, field, value) {
+            const p = state.participants.find(x => x.id === id);
+            if(p) { p[field] = field === 'score' ? Number(value) : value; updatePreview(); }
+        }
+
+        // Рендер левой панели
         function renderEditor() {
-            const container = document.getElementById('participantsEditor');
+            const container = document.getElementById('editorContainer');
             container.innerHTML = '';
             
-            state.participants.forEach((p, index) => {
-                const row = document.createElement('div');
-                row.className = 'editor-row';
+            state.participants.forEach((p) => {
+                let optionsHtml = serverImages.map(img => 
+                    `<option value="${img.file}" ${p.avatar === img.file ? 'selected' : ''}>${img.name}</option>`
+                ).join('');
                 
-                // Кнопка-аватар (загрузка base64)
-                const avatarBg = p.avatarData ? `background-image: url(${p.avatarData})` : `background-image: url('${defaultAvatar}')`;
-                
-                row.innerHTML = `
-                    <label class="avatar-upload-btn" style="${avatarBg}">
-                        ${p.avatarData ? '' : '+'}
-                        <input type="file" accept="image/*" onchange="handleImageUpload(event, ${p.id})">
-                    </label>
-                    <input type="text" placeholder="Имя участника" value="${p.name}" oninput="updateData(${p.id}, 'name', this.value)">
-                    <input type="number" placeholder="Баллы" value="${p.score}" oninput="updateData(${p.id}, 'score', this.value)">
-                    <input type="text" placeholder="Заметка (доп.)" value="${p.note}" oninput="updateData(${p.id}, 'note', this.value)">
-                    <button class="btn-remove" onclick="removeParticipant(${p.id})">×</button>
+                let isCustom = p.avatar.startsWith('data:');
+                optionsHtml += `<option value="custom" ${isCustom ? 'selected' : ''}>Своя (Файл)...</option>`;
+
+                container.innerHTML += `
+                    <div class="editor-row">
+                        <select onchange="handleAvatarSelect(event, ${p.id})">${optionsHtml}</select>
+                        <input type="file" id="file-${p.id}" style="display:none" accept="image/*" onchange="handleCustomAvatar(event, ${p.id})">
+                        
+                        <input type="text" placeholder="Имя" value="${p.name}" oninput="updateParticipant(${p.id}, 'name', this.value)">
+                        <input type="text" placeholder="Заметка" value="${p.note}" oninput="updateParticipant(${p.id}, 'note', this.value)">
+                        <input type="number" placeholder="Балл" value="${p.score}" oninput="updateParticipant(${p.id}, 'score', this.value)">
+                        
+                        <button class="btn-remove" onclick="removeParticipant(${p.id})" title="Удалить">×</button>
+                    </div>
                 `;
-                container.appendChild(row);
             });
         }
 
-        // Обработка загрузки картинки в Base64 (чтобы html2canvas не ругался на CORS)
-        function handleImageUpload(event, id) {
-            const file = event.target.files[0];
+        function handleAvatarSelect(e, id) {
+            if (e.target.value === 'custom') {
+                document.getElementById('file-' + id).click();
+            } else {
+                updateParticipant(id, 'avatar', e.target.value);
+            }
+        }
+
+        function handleCustomAvatar(e, id) {
+            const file = e.target.files[0];
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    updateData(id, 'avatarData', e.target.result);
-                    renderEditor(); // Обновить аватарку в редакторе
-                };
-                reader.readAsDataURL(file);
+                const r = new FileReader();
+                r.onload = ev => { updateParticipant(id, 'avatar', ev.target.result); renderEditor(); };
+                r.readAsDataURL(file);
             }
         }
 
-        // Обновление данных
-        function updateData(id, field, value) {
-            const p = state.participants.find(x => x.id === id);
-            if (p) {
-                p[field] = field === 'score' ? Number(value) : value;
-                updatePreview();
+        function handleBgUpload(e) {
+            const file = e.target.files[0];
+            if(file) {
+                const r = new FileReader();
+                r.onload = ev => { state.bgImage = ev.target.result; updatePreview(); };
+                r.readAsDataURL(file);
             }
         }
 
-        // Добавление участника
+        function clearBg() { state.bgImage = ""; updatePreview(); }
+
         function addParticipant() {
             const newId = state.participants.length > 0 ? Math.max(...state.participants.map(p => p.id)) + 1 : 1;
-            state.participants.push({ id: newId, name: "Новый участник", score: 0, note: "", avatarData: "" });
-            renderEditor();
-            updatePreview();
+            state.participants.push({ id: newId, name: "Новый", score: 0, note: "", avatar: "default.jpg" });
+            renderEditor(); updatePreview();
         }
 
-        // Удаление участника
         function removeParticipant(id) {
             state.participants = state.participants.filter(p => p.id !== id);
-            renderEditor();
-            updatePreview();
+            renderEditor(); updatePreview();
         }
 
-        // Рендер Превью (Доски)
+        function randomizeParticipants() {
+            for (let i = state.participants.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [state.participants[i], state.participants[j]] = [state.participants[j], state.participants[i]];
+            }
+            renderEditor(); updatePreview();
+        }
+
+        // Рендер правой панели
         function updatePreview() {
-            // Читаем глобальные настройки
-            state.title = document.getElementById('inputTitle').value;
-            state.juryName = document.getElementById('inputJury').value;
-            state.mode = document.getElementById('inputMode').value;
-
-            // Обновляем шапку доски
             document.getElementById('renderTitle').innerText = state.title;
-            document.getElementById('renderSubtitle').innerText = state.mode === 'jury' ? state.juryName : 'Итоговые результаты';
+            document.getElementById('renderSubtitle').innerText = state.subtitle;
 
-            // Копируем и сортируем участников по убыванию баллов
-            let sorted = [...state.participants].sort((a, b) => b.score - a.score);
-            let maxScore = sorted.length > 0 ? sorted[0].score : 10;
-            if (maxScore <= 0) maxScore = 1;
+            const capture = document.getElementById('scoreboard-capture');
+            capture.className = `style-${state.style}`;
+            capture.style.aspectRatio = state.aspectRatio;
+            
+            // Если включен 1/1, корректируем отступы для квадрата
+            if(state.aspectRatio === '1/1') { capture.style.maxWidth = '800px'; } else { capture.style.maxWidth = '1200px'; }
+
+            if(state.bgImage) {
+                capture.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${state.bgImage})`;
+            } else {
+                capture.style.backgroundImage = '';
+            }
 
             const board = document.getElementById('renderBoard');
             board.innerHTML = '';
+            board.style.gridTemplateColumns = state.columns == 2 ? '1fr 1fr' : '1fr';
 
-            sorted.forEach((p, index) => {
+            let list = [...state.participants];
+            // Сортировка только если режим Результаты
+            if (state.viewMode === 'results') {
+                list.sort((a,b) => b.score - a.score);
+            }
+
+            let maxScore = Math.max(...list.map(p => p.score), 1);
+
+            list.forEach((p, index) => {
                 let position = index + 1;
-                let isTop3 = state.mode === 'overall' && position <= 3;
-                
                 let rowClass = "result-row";
-                if (isTop3) rowClass += ` place-${position}`;
-
-                let posClass = "position-other";
-                if (isTop3) posClass = `position-${position}`;
+                if (state.viewMode === 'results' && position <= 3) rowClass += ` place-${position}`;
 
                 let fillPercent = (p.score / maxScore) * 100;
-                let avatarSrc = p.avatarData ? p.avatarData : defaultAvatar;
 
-                let rowHTML = `
-                    <div class="${rowClass}">
-                        <div class="position ${posClass}">${position}</div>
-                        <img src="${avatarSrc}" class="participant-avatar" alt="avatar">
-                        <div class="participant-info">
-                            <div class="participant-name">${p.name}</div>
-                            ${p.note ? `<div class="participant-note">${p.note}</div>` : ''}
-                        </div>
+                let scoreBlock = '';
+                if (state.viewMode === 'results') {
+                    scoreBlock = `
                         <div class="score">
                             <div class="score-number">${p.score}</div>
                             <div class="score-label">Баллов</div>
                             <div class="score-bar"><div class="score-bar-fill" style="width: ${fillPercent}%"></div></div>
                         </div>
+                    `;
+                }
+
+                board.innerHTML += `
+                    <div class="${rowClass}">
+                        <div class="position">${position}</div>
+                        <img src="${p.avatar}" class="participant-avatar" alt="av">
+                        <div class="participant-info">
+                            <div class="participant-name">${p.name}</div>
+                            ${p.note ? `<div class="participant-note">${p.note}</div>` : ''}
+                        </div>
+                        ${scoreBlock}
                     </div>
                 `;
-                board.innerHTML += rowHTML;
             });
         }
 
-        // Скачивание картинки
+        // Скачивание
         function downloadImage() {
             const target = document.getElementById('scoreboard-capture');
             const btn = document.querySelector('.btn-download');
-            
-            // Визуальный отклик кнопки
-            btn.innerText = "Генерация...";
-            btn.style.opacity = '0.7';
+            btn.innerText = "Генерация..."; btn.style.opacity = '0.7';
 
-            // Настройки html2canvas
             html2canvas(target, {
-                scale: 2, // Высокое качество (Retina)
-                backgroundColor: "#0a0a1a",
-                logging: false,
-                useCORS: true // Разрешить внешние картинки, если они есть
+                scale: 2, backgroundColor: null, useCORS: true, logging: false
             }).then(canvas => {
-                // Создаем ссылку и качаем
                 const link = document.createElement('a');
-                link.download = `Scoreboard_${state.title.replace(/\s+/g, '_')}.png`;
+                link.download = `${state.title}_${state.viewMode}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-
-                // Возвращаем кнопку
-                btn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Скачать картинку`;
+                btn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Сохранить картинку`;
                 btn.style.opacity = '1';
             }).catch(err => {
-                alert("Ошибка при создании картинки! " + err);
-                btn.innerHTML = `Скачать картинку`;
-                btn.style.opacity = '1';
+                alert("Ошибка! " + err);
+                btn.innerHTML = `Сохранить картинку`; btn.style.opacity = '1';
             });
         }
 
-        // Запуск
         init();
-
     </script>
 </body>
 </html>
