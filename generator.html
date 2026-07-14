@@ -184,7 +184,6 @@
     <div class="app-container show-editor" id="appMain">
         <div class="controls-panel">
             
-            <!-- Заголовок с кнопкой сброса -->
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; margin-top: 10px; padding-bottom: 5px;">
                 <div class="section-title" style="margin: 0; border: none; padding: 0;">Текст и Формат</div>
                 <button class="btn-reset" onclick="resetState()">🗑️ Сбросить всё</button>
@@ -336,7 +335,6 @@
     </div>
 
     <script>
-        // ДЕФОЛТНОЕ СОСТОЯНИЕ (Используется при сбросе)
         const DEFAULT_STATE = {
             title: "Стаявидение 6", subtitle: "Итоговые результаты", style: "stayavision", viewMode: "results",
             aspectRatio: "16/9", customW: 1920, customH: 1080, columns: 1, 
@@ -354,7 +352,6 @@
             ]
         };
 
-        // Текущее состояние
         let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
         const STORAGE_KEY = 'stayavision_generator_state';
 
@@ -371,30 +368,23 @@
         }
         function rgbToHex(r, g, b) { return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase(); }
 
-        // --- Local Storage Logic ---
         function loadState() {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    state = { ...DEFAULT_STATE, ...parsed }; // Сливаем, чтобы не было undefined если добавились новые ключи
-                } catch(e) { console.error("Error parsing saved state", e); }
+                try { state = { ...DEFAULT_STATE, ...JSON.parse(saved) }; } catch(e) {}
             }
         }
         function saveState() {
             try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } 
-            catch(e) { console.warn("Не удалось сохранить (вероятно, файлы кастомных картинок слишком большие для куки)"); }
+            catch(e) { console.warn("Файлы картинок слишком большие для автосохранения"); }
         }
         function resetState() {
             if(confirm("Вы уверены, что хотите сбросить все настройки и участников?")) {
                 state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-                syncUI();
-                renderEditor();
-                updatePreview();
+                syncUI(); renderEditor(); updatePreview();
             }
         }
 
-        // --- UI Sync ---
         function syncUI() {
             document.getElementById('inTitle').value = state.title;
             document.getElementById('inSubtitle').value = state.subtitle;
@@ -432,10 +422,7 @@
         }
 
         function init() { 
-            loadState();
-            syncUI();
-            renderEditor(); 
-            updatePreview(); 
+            loadState(); syncUI(); renderEditor(); updatePreview(); 
             window.addEventListener('resize', adjustMobileScale);
         }
 
@@ -557,7 +544,7 @@
         }
 
         function updatePreview() {
-            saveState(); // СОХРАНЯЕМ СОСТОЯНИЕ В LOCALSTORAGE
+            saveState();
 
             document.getElementById('renderTitle').innerText = state.title;
             document.getElementById('renderSubtitle').innerText = state.subtitle;
@@ -611,7 +598,6 @@
             if (state.viewMode === 'results') list.sort((a,b) => b.score - a.score);
             let maxScore = Math.max(...list.map(p => p.score), 1);
 
-            // КОЛОНКИ СВЕРХУ ВНИЗ (grid-auto-flow: column)
             let rowsCount = Math.ceil(list.length / state.columns);
             board.style.gridTemplateColumns = `repeat(${state.columns}, 1fr)`;
             board.style.gridTemplateRows = `repeat(${rowsCount}, auto)`;
@@ -622,7 +608,9 @@
                 let rowClass = "result-row";
                 if (state.viewMode === 'results' && position <= 3) rowClass += ` place-${position}`;
 
-                let fillPercent = Math.max((p.score / maxScore) * 100, 0.1); 
+                let fillPercent = 0;
+                if (maxScore > 0 && p.score > 0) fillPercent = (p.score / maxScore) * 100;
+                let fillStyle = fillPercent > 0 ? `width: ${fillPercent}%; min-width: 2px;` : `display: none;`;
                 
                 let scoreBlock = '';
                 if (state.viewMode === 'results') {
@@ -630,7 +618,7 @@
                         <div class="score">
                             <div class="score-number">${p.score}</div>
                             <div class="score-label">Баллов</div>
-                            <div class="score-bar"><div class="score-bar-fill" style="width: ${fillPercent}%"></div></div>
+                            <div class="score-bar"><div class="score-bar-fill" style="${fillStyle}"></div></div>
                         </div>`;
                 }
 
