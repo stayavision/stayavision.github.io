@@ -64,8 +64,12 @@
         .btn-action { background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: 600; width: 100%; }
         .btn-action:hover { background: rgba(255,255,255,0.2); }
         .btn-random { background: linear-gradient(135deg, var(--accent1), var(--accent3)); margin-top: 15px; }
+        
         .btn-auto-color { background: rgba(0, 212, 255, 0.15); color: var(--accent3); border: 1px solid rgba(0, 212, 255, 0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .btn-auto-color:hover { background: var(--accent3); color: #000; }
+
+        .btn-reset { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-reset:hover { background: #ff4d4d; color: #fff; }
 
         .participants-editor { display: flex; flex-direction: column; gap: 8px; max-height: 450px; overflow-y: auto; padding-right: 5px; margin: 15px 0; }
         .participants-editor::-webkit-scrollbar { width: 5px; }
@@ -179,7 +183,13 @@
 
     <div class="app-container show-editor" id="appMain">
         <div class="controls-panel">
-            <div class="section-title">Текст и Формат</div>
+            
+            <!-- Заголовок с кнопкой сброса -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; margin-top: 10px; padding-bottom: 5px;">
+                <div class="section-title" style="margin: 0; border: none; padding: 0;">Текст и Формат</div>
+                <button class="btn-reset" onclick="resetState()">🗑️ Сбросить всё</button>
+            </div>
+
             <div class="settings-grid">
                 <div class="control-group"><label>Заголовок</label><input type="text" id="inTitle" value="Стаявидение 6" oninput="updateState('title', this.value)"></div>
                 <div class="control-group"><label>Подзаголовок</label><input type="text" id="inSubtitle" value="Итоговые результаты" oninput="updateState('subtitle', this.value)"></div>
@@ -255,15 +265,15 @@
             <div class="settings-grid">
                 <div class="control-group">
                     <label>Отступ по бокам (X px)</label>
-                    <input type="range" min="0" max="200" value="40" oninput="updateState('padX', this.value)">
+                    <input type="range" id="inPadX" min="0" max="200" value="40" oninput="updateState('padX', this.value)">
                 </div>
                 <div class="control-group">
                     <label>Отступ сверху/снизу (Y px)</label>
-                    <input type="range" min="0" max="200" value="40" oninput="updateState('padY', this.value)">
+                    <input type="range" id="inPadY" min="0" max="200" value="40" oninput="updateState('padY', this.value)">
                 </div>
                 <div class="control-group">
                     <label>Масштаб контента</label>
-                    <input type="range" min="0.4" max="1.5" step="0.05" value="1" oninput="updateState('scale', this.value)">
+                    <input type="range" id="inScale" min="0.4" max="1.5" step="0.05" value="1" oninput="updateState('scale', this.value)">
                 </div>
                 <div class="control-group">
                     <label>Задний фон (Авторазмытие)</label>
@@ -289,7 +299,7 @@
                     </select>
                 </div>
                 <div class="control-group" style="justify-content: center;">
-                    <label class="checkbox-group"><input type="checkbox" checked onchange="updateState('showNotes', this.checked)"> Показывать заметки</label>
+                    <label class="checkbox-group"><input type="checkbox" id="inShowNotes" checked onchange="updateState('showNotes', this.checked)"> Показывать заметки</label>
                 </div>
             </div>
 
@@ -326,7 +336,8 @@
     </div>
 
     <script>
-        let state = {
+        // ДЕФОЛТНОЕ СОСТОЯНИЕ (Используется при сбросе)
+        const DEFAULT_STATE = {
             title: "Стаявидение 6", subtitle: "Итоговые результаты", style: "stayavision", viewMode: "results",
             aspectRatio: "16/9", customW: 1920, customH: 1080, columns: 1, 
             bgType: "none", bgCustomData: "",
@@ -343,6 +354,10 @@
             ]
         };
 
+        // Текущее состояние
+        let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+        const STORAGE_KEY = 'stayavision_generator_state';
+
         const serverImages = [
             { file: "default.jpg", name: "Дефолт" }, { file: "gira.jpg", name: "Гира" },
             { file: "obalena.jpg", name: "Обалена" }, { file: "egor.jpg", name: "Егорь" },
@@ -354,9 +369,58 @@
             let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
+        function rgbToHex(r, g, b) { return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase(); }
 
-        function rgbToHex(r, g, b) {
-            return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase();
+        // --- Local Storage Logic ---
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    state = { ...DEFAULT_STATE, ...parsed }; // Сливаем, чтобы не было undefined если добавились новые ключи
+                } catch(e) { console.error("Error parsing saved state", e); }
+            }
+        }
+        function saveState() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } 
+            catch(e) { console.warn("Не удалось сохранить (вероятно, файлы кастомных картинок слишком большие для куки)"); }
+        }
+        function resetState() {
+            if(confirm("Вы уверены, что хотите сбросить все настройки и участников?")) {
+                state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+                syncUI();
+                renderEditor();
+                updatePreview();
+            }
+        }
+
+        // --- UI Sync ---
+        function syncUI() {
+            document.getElementById('inTitle').value = state.title;
+            document.getElementById('inSubtitle').value = state.subtitle;
+            document.getElementById('inRatio').value = state.aspectRatio;
+            document.getElementById('inCols').value = state.columns;
+            document.getElementById('inW').value = state.customW;
+            document.getElementById('inH').value = state.customH;
+            document.getElementById('inStyle').value = state.style;
+            document.getElementById('inAvatar').value = state.avatarShape;
+            document.getElementById('inBarColor1').value = state.barColor1;
+            document.getElementById('inBarColor2').value = state.barColor2;
+            document.getElementById('inBarAlpha').value = state.barAlpha;
+            document.getElementById('inTop3').checked = state.highlightTop3;
+            document.getElementById('inC1').value = state.c1;
+            document.getElementById('inC2').value = state.c2;
+            document.getElementById('inC3').value = state.c3;
+            document.getElementById('inPadX').value = state.padX;
+            document.getElementById('inPadY').value = state.padY;
+            document.getElementById('inScale').value = state.scale;
+            document.getElementById('inBgType').value = state.bgType;
+            document.getElementById('inMode').value = state.viewMode;
+            document.getElementById('inShowNotes').checked = state.showNotes;
+
+            document.getElementById('customResBlock').style.display = state.aspectRatio === 'custom' ? 'block' : 'none';
+            document.getElementById('top3Colors').style.opacity = state.highlightTop3 ? '1' : '0.3';
+            document.getElementById('inBgCustom').style.display = state.bgType === 'custom' ? 'block' : 'none';
         }
 
         function switchMobileTab(tabName, btn) {
@@ -368,6 +432,8 @@
         }
 
         function init() { 
+            loadState();
+            syncUI();
             renderEditor(); 
             updatePreview(); 
             window.addEventListener('resize', adjustMobileScale);
@@ -403,57 +469,36 @@
             if (state.bgType === 'custom' && state.bgCustomData) bgUrl = state.bgCustomData;
             else if (state.bgType !== 'none') bgUrl = state.bgType;
 
-            if (!bgUrl) {
-                alert("Сначала выберите фон, чтобы определить его цвет!");
-                return;
-            }
+            if (!bgUrl) { alert("Сначала выберите фон!"); return; }
 
             const img = new Image();
             img.crossOrigin = "Anonymous";
             img.onload = function() {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                canvas.width = img.width;
-                canvas.height = img.height;
+                canvas.width = img.width; canvas.height = img.height;
                 ctx.drawImage(img, 0, 0, img.width, img.height);
-                
                 try {
                     const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
                     let rSum = 0, gSum = 0, bSum = 0, weightSum = 0;
-                    
                     for (let i = 0; i < data.length; i += 16) { 
                         let r = data[i], g = data[i+1], b = data[i+2];
                         let max = Math.max(r, g, b), min = Math.min(r, g, b);
-                        let sat = max - min; 
-                        let weight = sat + 5; 
+                        let weight = (max - min) + 5; 
                         rSum += r * weight; gSum += g * weight; bSum += b * weight;
                         weightSum += weight;
                     }
-                    
-                    let rAvg = Math.floor(rSum / weightSum);
-                    let gAvg = Math.floor(gSum / weightSum);
-                    let bAvg = Math.floor(bSum / weightSum);
-
+                    let rAvg = Math.floor(rSum / weightSum), gAvg = Math.floor(gSum / weightSum), bAvg = Math.floor(bSum / weightSum);
                     let lum = 0.299 * rAvg + 0.587 * gAvg + 0.114 * bAvg;
-                    if (lum > 70) { 
-                        let factor = 70 / lum;
-                        rAvg = Math.floor(rAvg * factor);
-                        gAvg = Math.floor(gAvg * factor);
-                        bAvg = Math.floor(bAvg * factor);
-                    }
-
+                    if (lum > 70) { let f = 70 / lum; rAvg = Math.floor(rAvg * f); gAvg = Math.floor(gAvg * f); bAvg = Math.floor(bAvg * f); }
+                    
                     const hex1 = rgbToHex(rAvg, gAvg, bAvg);
                     const hex2 = rgbToHex(Math.floor(rAvg * 0.4), Math.floor(gAvg * 0.4), Math.floor(bAvg * 0.4));
-
-                    document.getElementById('inBarColor1').value = hex1;
-                    document.getElementById('inBarColor2').value = hex2;
                     
-                    state.barColor1 = hex1;
-                    state.barColor2 = hex2;
+                    document.getElementById('inBarColor1').value = hex1; document.getElementById('inBarColor2').value = hex2;
+                    state.barColor1 = hex1; state.barColor2 = hex2;
                     updatePreview();
-                } catch (e) {
-                    alert("Не удалось определить цвет. Попробуйте другой фон.");
-                }
+                } catch (e) { alert("Не удалось определить цвет."); }
             };
             img.src = bgUrl;
         }
@@ -512,6 +557,8 @@
         }
 
         function updatePreview() {
+            saveState(); // СОХРАНЯЕМ СОСТОЯНИЕ В LOCALSTORAGE
+
             document.getElementById('renderTitle').innerText = state.title;
             document.getElementById('renderSubtitle').innerText = state.subtitle;
 
@@ -564,7 +611,7 @@
             if (state.viewMode === 'results') list.sort((a,b) => b.score - a.score);
             let maxScore = Math.max(...list.map(p => p.score), 1);
 
-            // Настройка колонок (Заполнение сверху вниз, слева направо)
+            // КОЛОНКИ СВЕРХУ ВНИЗ (grid-auto-flow: column)
             let rowsCount = Math.ceil(list.length / state.columns);
             board.style.gridTemplateColumns = `repeat(${state.columns}, 1fr)`;
             board.style.gridTemplateRows = `repeat(${rowsCount}, auto)`;
