@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор Скорборда PRO — Стаявидение</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
+            --bg-dark: #0a0a1a; --accent1: #7B2FBE; --accent2: #E91E8C; --accent3: #00D4FF;
+            --text-primary: #ffffff; --text-secondary: #b0b0cc;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-dark); color: var(--text-primary);
+            min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
+        }
+
+        header { text-align: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(10,10,26,0.9); z-index: 10; position: relative; }
+        h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; background: linear-gradient(135deg, var(--gold), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; margin: 0; }
+        
+        .admin-login-btn { position: absolute; top: 15px; right: 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .admin-login-btn:hover { background: rgba(255,255,255,0.2); }
+        .admin-login-btn.logged-in { background: rgba(0, 212, 255, 0.2); border-color: var(--accent3); color: var(--accent3); }
+
+        .mobile-tabs {
+            display: none; width: 100%; background: rgba(18,18,42,0.95); padding: 10px; 
+            position: sticky; top: 0; z-index: 100; justify-content: center; gap: 10px;
+            backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .mobile-tabs button {
+            flex: 1; padding: 12px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1);
+            color: var(--text-secondary); font-weight: 700; font-family: Montserrat; cursor: pointer; transition: 0.3s;
+        }
+        .mobile-tabs button.active { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; box-shadow: 0 4px 15px rgba(233, 30, 140, 0.4); }
+
+        .app-container { display: flex; flex-wrap: wrap; gap: 20px; max-width: 1600px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; align-items: flex-start; }
+
+        .controls-panel { flex: 1; min-width: 350px; max-width: 500px; background: rgba(18, 18, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; height: max-content; }
+        
+        .section-title { font-size: 1rem; color: var(--accent3); margin: 20px 0 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .section-title:first-child { margin-top: 0; }
+
+        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 600px) { .settings-grid { grid-template-columns: 1fr; } }
+        
+        .control-group { display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
+        .control-group label { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
+        .control-group input[type="text"], .control-group select, .control-group input[type="file"], .control-group input[type="number"] {
+            width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-family: 'Montserrat', sans-serif;
+        }
+        
+        .control-row { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
+        .control-row input[type="color"] { flex-shrink: 0; padding: 0; width: 40px; height: 35px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; background: transparent; }
+        .control-row input[type="range"] { flex: 1; accent-color: var(--accent3); }
+
+        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-top: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: white; }
+        .checkbox-group input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent2); }
+
+        .btn-action { background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: 600; width: 100%; }
+        .btn-action:hover { background: rgba(255,255,255,0.2); }
+        .btn-random { background: linear-gradient(135deg, var(--accent1), var(--accent3)); margin-top: 15px; }
+        .btn-auto-color { background: rgba(0, 212, 255, 0.15); color: var(--accent3); border: 1px solid rgba(0, 212, 255, 0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .btn-auto-color:hover { background: var(--accent3); color: #000; }
+        .btn-reset { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-reset:hover { background: #ff4d4d; color: #fff; }
+
+        .participants-editor { display: flex; flex-direction: column; gap: 8px; max-height: 450px; overflow-y: auto; padding-right: 5px; margin: 15px 0; }
+        .participants-editor::-webkit-scrollbar { width: 5px; }
+        .participants-editor::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 5px; }
+        
+        .editor-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .editor-row select { flex: 1; min-width: 100px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: none; font-size: 0.8rem; }
+        .editor-row input { flex: 1; min-width: 80px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; }
+        .editor-row input[type="number"] { flex: 0.5; min-width: 50px; }
+        
+        .btn-icon { background: rgba(255,255,255,0.1); border:none; color: white; border-radius: 4px; cursor:pointer; width:22px; height:18px; font-size:10px; display:flex; align-items:center; justify-content:center; }
+        .btn-icon:hover { background: var(--accent3); }
+        .btn-remove { background: #ff4d4d; color: white; border: none; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
+
+        .preview-panel { flex: 2; display: flex; flex-direction: column; align-items: center; min-width: 300px; overflow: hidden; }
+        .preview-wrapper { width: 100%; position: relative; display: flex; justify-content: center; }
+
+        #scoreboard-capture {
+            position: absolute; top: 0; left: 0; transform-origin: top left;
+            background: #0a0a1a; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden; display: flex; flex-direction: column;
+        }
+
+        .bg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .bg-layer-blur { background-size: cover; background-position: center; filter: blur(30px) brightness(0.6); transform: scale(1.1); }
+        .bg-layer-clear { background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.9; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0, var(--bg-darken, 0.2)); z-index: 0; }
+
+        .capture-inner {
+            position: relative; z-index: 1; width: 100%; height: 100%;
+            padding: var(--pad-y, 40px) var(--pad-x, 40px);
+            display: flex; flex-direction: column; transform-origin: center center;
+        }
+
+        .board-header { text-align: center; margin-bottom: 25px; }
+        .board-title { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 4vw, 3rem); font-weight: 900; color: white; line-height: 1.2; text-transform: uppercase; }
+        .board-subtitle { color: var(--gold); font-size: clamp(0.8rem, 2vw, 1.2rem); text-transform: uppercase; letter-spacing: 4px; font-weight: 700; margin-top: 5px; }
+
+        .board-results { display: grid; gap: 12px; align-content: start; flex: 1; }
+
+        .result-row { display: flex; align-items: center; transition: all 0.3s ease; }
+        .position { display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; }
+        .participant-avatar { object-fit: cover; flex-shrink: 0; background: #2a2a4a; border-radius: var(--avatar-radius, 50%); }
+        .participant-info { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; white-space: nowrap; margin-right: 10px; }
+        .participant-name { font-weight: 700; text-overflow: ellipsis; overflow: hidden; }
+        .participant-note { color: var(--text-secondary); text-overflow: ellipsis; overflow: hidden; font-size: 0.85rem; }
+        .score { text-align: right; flex-shrink: 0; }
+        .score-number { font-weight: 900; line-height: 1; }
+
+        /* === СТИЛИ === */
+        .style-stayavision .result-row { padding: 12px 20px; border-radius: 12px; background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); }
+        .style-stayavision .position { width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; margin-right: 15px; background: rgba(255,255,255,0.1); color: white; }
+        .style-stayavision .participant-avatar { width: 50px; height: 50px; margin-right: 15px; border: 2px solid rgba(255,255,255,0.1); }
+        .style-stayavision .participant-name { font-size: 1.3rem; color: #fff; }
+        .style-stayavision .score-number { font-size: 1.8rem; color: #fff; }
+        .style-stayavision .score-label { font-size: 0.65rem; color: var(--text-secondary); text-transform: uppercase; }
+        .style-stayavision .score-bar { width: 90px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 5px; margin-left: auto; }
+        .style-stayavision .score-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent2)); }
+
+        .highlight-top3.style-stayavision .result-row.place-1 { background: linear-gradient(90deg, var(--top1-bg), var(--bar-c2)); border-color: var(--top1); }
+        .highlight-top3.style-stayavision .result-row.place-2 { background: linear-gradient(90deg, var(--top2-bg), var(--bar-c2)); border-color: rgba(255,255,255,0.1); }
+        .highlight-top3.style-stayavision .result-row.place-3 { background: linear-gradient(90deg, var(--top3-bg), var(--bar-c2)); border-color: rgba(255,255,255,0.1); }
+        .highlight-top3.style-stayavision .place-1 .position { background: var(--top1); color: #000; box-shadow: 0 0 15px var(--top1-bg); }
+        .highlight-top3.style-stayavision .place-2 .position { background: var(--top2); color: #000; }
+        .highlight-top3.style-stayavision .place-3 .position { background: var(--top3); color: #fff; }
+        .highlight-top3.style-stayavision .place-1 .participant-avatar { border-color: var(--top1); }
+        .highlight-top3.style-stayavision .place-1 .participant-name { color: var(--top1); }
+        .highlight-top3.style-stayavision .place-1 .score-number { color: var(--top1); }
+        .highlight-top3.style-stayavision .place-1 .score-bar-fill { background: var(--top1); }
+
+        .style-eurovision .result-row { padding: 6px 12px; background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); border-left: 4px solid var(--accent3); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .style-eurovision .position { width: 35px; height: 35px; font-size: 1.1rem; margin-right: 12px; border-right: 1px solid rgba(255,255,255,0.2); padding-right: 10px; justify-content: flex-start; color: #fff; }
+        .style-eurovision .participant-avatar { width: 35px; height: 35px; margin-right: 12px; }
+        .style-eurovision .participant-name { font-size: 1.1rem; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        .style-eurovision .score-number { font-size: 1.5rem; color: var(--accent3); }
+        .style-eurovision .score-label, .style-eurovision .score-bar { display: none; }
+        .highlight-top3.style-eurovision .result-row.place-1 { border-left-color: var(--top1); background: linear-gradient(90deg, var(--top1-bg), var(--bar-c2)); }
+        .highlight-top3.style-eurovision .result-row.place-2 { border-left-color: var(--top2); background: linear-gradient(90deg, var(--top2-bg), var(--bar-c2)); }
+        .highlight-top3.style-eurovision .result-row.place-3 { border-left-color: var(--top3); background: linear-gradient(90deg, var(--top3-bg), var(--bar-c2)); }
+        .highlight-top3.style-eurovision .place-1 .position { color: var(--top1); border-right-color: var(--top1); }
+        .highlight-top3.style-eurovision .place-1 .score-number { color: var(--top1); }
+
+        .btn-download {
+            margin-top: 25px; background: linear-gradient(135deg, #00D4FF, #7B2FBE); color: white; border: none; padding: 15px 30px; border-radius: 30px;
+            font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; box-shadow: 0 10px 30px rgba(123, 47, 190, 0.4);
+            transition: all 0.3s; display: flex; align-items: center; gap: 10px; z-index: 10;
+        }
+        .btn-download:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(123, 47, 190, 0.6); }
+
+        /* Админка Модалка */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000; display: none; justify-content: center; align-items: center; }
+        .modal-box { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 16px; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .modal-box h2 { color: var(--accent3); margin-bottom: 20px; font-size: 1.5rem; text-align: center; }
+        .modal-box input, .modal-box select { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white; }
+        .modal-btns { display: flex; gap: 10px; }
+        
+        @media (max-width: 900px) {
+            .mobile-tabs { display: flex; }
+            .app-container { padding: 10px; }
+            .controls-panel, .preview-panel { display: none; width: 100%; max-width: 100%; border: none; background: transparent; padding: 0; }
+            .settings-grid { grid-template-columns: 1fr; }
+            .show-editor .controls-panel { display: flex; flex-direction: column; }
+            .show-preview .preview-panel { display: flex; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Генератор Скорборда PRO</h1>
+        <button class="admin-login-btn" id="btnAdminAuth" onclick="handleAdminLogin()">Вход / Админ</button>
+    </header>
+
+    <div class="mobile-tabs">
+        <button class="active" onclick="switchMobileTab('editor', this)">⚙️ Настройки</button>
+        <button onclick="switchMobileTab('preview', this)">👁️ Превью</button>
+    </div>
+
+    <div class="app-container show-editor" id="appMain">
+        <div class="controls-panel">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; padding-bottom: 5px;">
+                <div class="section-title" style="margin: 0; border: none; padding: 0;">Текст и Формат</div>
+                <button class="btn-reset" onclick="resetState()">🗑️ Сбросить всё</button>
+            </div>
+
+            <div class="control-group" style="margin-bottom: 15px;">
+                <label style="color: var(--gold);">База пресетов (История конкурсов)</label>
+                <select id="inPreset" onchange="loadPreset(this.value)" style="border-color: var(--gold); background: rgba(255,215,0,0.1);">
+                    <option value="">-- Выберите для загрузки --</option>
+                </select>
+            </div>
+
+            <div class="settings-grid">
+                <div class="control-group"><label>Заголовок</label><input type="text" id="inTitle" oninput="updateState('title', this.value)"></div>
+                <div class="control-group"><label>Подзаголовок</label><input type="text" id="inSubtitle" oninput="updateState('subtitle', this.value)"></div>
+                
+                <div class="control-group">
+                    <label>Разрешение экрана</label>
+                    <select id="inRatio" onchange="updateState('aspectRatio', this.value)">
+                        <option value="16/9">16:9 (Стандарт)</option><option value="21/9">21:9 (Широкий)</option>
+                        <option value="4/3">4:3 (ТВ)</option><option value="1/1">1:1 (Квадрат)</option><option value="custom">Свой размер...</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Колонки (1-6)</label>
+                    <select id="inCols" onchange="updateState('columns', this.value)">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="customResBlock" style="display: none; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                <div style="display:flex; gap:10px;">
+                    <div class="control-group" style="flex:1;"><label>Ширина (px)</label><input type="number" id="inW" oninput="updateState('customW', this.value)"></div>
+                    <div class="control-group" style="flex:1;"><label>Высота (px)</label><input type="number" id="inH" oninput="updateState('customH', this.value)"></div>
+                </div>
+            </div>
+
+            <div class="section-title">Дизайн и Цвета</div>
+            <div class="settings-grid">
+                <div class="control-group"><label>Стиль дизайна</label><select id="inStyle" onchange="updateState('style', this.value)"><option value="stayavision">Стаявидение (Толстые)</option><option value="eurovision">Eurovision (Тонкие)</option></select></div>
+                <div class="control-group"><label>Форма аватарок</label><select id="inAvatar" onchange="updateState('avatarShape', this.value)"><option value="50%">Круг</option><option value="8px">Закругленный квадрат</option><option value="0px">Квадрат</option></select></div>
+            </div>
+
+            <div class="control-group" style="margin-top:10px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <label>Градиент плашек (Начало / Конец / Прозр.)</label>
+                    <button class="btn-auto-color" onclick="extractColorFromBg()">🎨 Авто-цвет из фона</button>
+                </div>
+                <div class="control-row">
+                    <input type="color" id="inBarColor1" oninput="updateState('barColor1', this.value)" title="Левый цвет">
+                    <input type="color" id="inBarColor2" oninput="updateState('barColor2', this.value)" title="Правый цвет">
+                    <input type="range" id="inBarAlpha" min="0" max="1" step="0.05" oninput="updateState('barAlpha', this.value)">
+                </div>
+            </div>
+
+            <label class="checkbox-group" style="margin-top: 15px;"><input type="checkbox" id="inTop3" onchange="updateState('highlightTop3', this.checked)"> Выделять 1, 2, 3 места</label>
+            <div id="top3Colors" style="display: flex; gap:10px; margin-top: 10px;">
+                <div class="control-group" style="flex:1"><label>1 место</label><input type="color" id="inC1" oninput="updateState('c1', this.value)"></div>
+                <div class="control-group" style="flex:1"><label>2 место</label><input type="color" id="inC2" oninput="updateState('c2', this.value)"></div>
+                <div class="control-group" style="flex:1"><label>3 место</label><input type="color" id="inC3" oninput="updateState('c3', this.value)"></div>
+            </div>
+
+            <div class="section-title">Макет и Фон</div>
+            <div class="settings-grid">
+                <div class="control-group"><label>Отступ X (px)</label><input type="range" id="inPadX" min="0" max="200" oninput="updateState('padX', this.value)"></div>
+                <div class="control-group"><label>Отступ Y (px)</label><input type="range" id="inPadY" min="0" max="200" oninput="updateState('padY', this.value)"></div>
+                <div class="control-group"><label>Масштаб контента</label><input type="range" id="inScale" min="0.4" max="1.5" step="0.05" oninput="updateState('scale', this.value)"></div>
+                <div class="control-group">
+                    <label>Задний фон (Авторазмытие)</label>
+                    <select id="inBgType" onchange="updateState('bgType', this.value)">
+                        <option value="none">Тёмная заливка</option><option value="wolfs.jpg">Волки (wolfs.jpg)</option>
+                        <option value="sv6.webp">Стаявидение 6 (sv6.webp)</option><option value="sv7.webp">Стаявидение 7 (sv7.webp)</option>
+                        <option value="custom">Свой фон...</option>
+                    </select>
+                    <input type="file" id="inBgCustom" style="display:none; margin-top:5px;" accept="image/*" onchange="handleBgUpload(event)">
+                </div>
+            </div>
+
+            <div class="section-title">Участники</div>
+            <div class="settings-grid" style="margin-bottom: 10px;">
+                <div class="control-group"><label>Режим экрана</label><select id="inMode" onchange="updateState('viewMode', this.value)"><option value="results">Результаты (с баллами)</option><option value="running_order">Running Order (Жеребьевка)</option></select></div>
+                <div class="control-group" style="justify-content: center;"><label class="checkbox-group"><input type="checkbox" id="inShowNotes" onchange="updateState('showNotes', this.checked)"> Показывать заметки</label></div>
+            </div>
+
+            <button class="btn-action btn-random" onclick="randomizeParticipants()">🎲 СЛУЧАЙНАЯ ЖЕРЕБЬЕВКА</button>
+            <div class="participants-editor" id="editorContainer"></div>
+            <button class="btn-action" style="border: 1px dashed var(--accent3); color: var(--accent3); background: transparent;" onclick="addParticipant()">+ ДОБАВИТЬ УЧАСТНИКА</button>
+        </div>
+
+        <div class="preview-panel">
+            <div class="preview-wrapper" id="previewWrapper">
+                <div id="scoreboard-capture" class="highlight-top3">
+                    <div class="bg-layer bg-layer-blur" id="bgBlur"></div>
+                    <div class="bg-layer bg-layer-clear" id="bgClear"></div>
+                    <div class="bg-overlay"></div>
+                    <div class="capture-inner" id="captureInner">
+                        <div class="board-header">
+                            <div class="board-title" id="renderTitle"></div>
+                            <div class="board-subtitle" id="renderSubtitle"></div>
+                        </div>
+                        <div class="board-results" id="renderBoard"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-download" onclick="downloadImage()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                Сохранить картинку
+            </button>
+        </div>
+    </div>
+
+    <!-- Модалка Админа -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-box">
+            <h2>🛠 Меню Админа</h2>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 15px;">Вы вошли как администратор. Здесь можно сохранять текущие настройки как новые пресеты или генерировать случайные баллы.</p>
+            
+            <label style="font-size: 0.8rem; font-weight:bold;">Имя нового пресета:</label>
+            <input type="text" id="newPresetName" placeholder="Например: Полуфинал 8">
+            <button class="btn-action" style="background: var(--accent3); color: black;" onclick="adminSavePreset()">💾 Сохранить как Пресет</button>
+
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+
+            <label style="font-size: 0.8rem; font-weight:bold;">Удалить пресет:</label>
+            <select id="delPresetSelect"><option value="">-- Выберите --</option></select>
+            <button class="btn-action" style="background: #ff4d4d; margin-bottom: 20px;" onclick="adminDeletePreset()">🗑 Удалить</button>
+
+            <button class="btn-action" style="background: var(--accent1);" onclick="adminAutoResults()">⚡ Сгенерировать авторезультаты</button>
+            <button class="btn-action" style="background: rgba(255,255,255,0.1);" onclick="closeAdminModal()">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        // ВСТРОЕННАЯ БАЗА ПРЕСЕТОВ ИСТОРИИ
+        const DEFAULT_PRESETS = [
+            { id: "sv1", name: "Стаявидение 1", title: "Стаявидение 1", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results",
+                participants: [ { id:1, name:"Гира", score:6, avatar:"gira.jpg" }, { id:2, name:"Обалена", score:3, avatar:"obalena.jpg" }, { id:3, name:"Егорь", score:3, avatar:"egor.jpg" } ] },
+            { id: "sv2", name: "Стаявидение 2", title: "Стаявидение 2", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results",
+                participants: [ { id:1, name:"Ритикс", score:8, avatar:"ritix.jpg" }, { id:2, name:"Обалена", score:6, avatar:"obalena.jpg" }, { id:3, name:"Егорь", score:3, avatar:"egor.jpg" }, { id:4, name:"Гира", score:2, avatar:"gira.jpg" } ] },
+            { id: "sv3", name: "Стаявидение 3", title: "Стаявидение 3", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results",
+                participants: [ { id:1, name:"Егорь", score:9, avatar:"egor.jpg" }, { id:2, name:"Ритикс", score:6, avatar:"ritix.jpg" }, { id:3, name:"Обалена", score:3, avatar:"obalena.jpg" } ] },
+            { id: "sv4", name: "Стаявидение 4", title: "Стаявидение 4", subtitle: "Частично потеряно", bgType: "wolfs.jpg", viewMode: "results",
+                participants: [ { id:1, name:"Гира", score:0, note:"Победитель", avatar:"gira.jpg" } ] },
+            { id: "sv5", name: "Стаявидение 5", title: "Стаявидение 5", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results",
+                participants: [ { id:1, name:"Егорь", score:7, avatar:"egor.jpg" }, { id:2, name:"Обалена", score:5, avatar:"obalena.jpg" }, { id:3, name:"Ритикс", score:4, avatar:"ritix.jpg" } ] },
+            { id: "sv6s", name: "Стаявидение 6 (Полуфинал)", title: "Стаявидение 6", subtitle: "Полуфинал", bgType: "sv6.webp", viewMode: "results",
+                participants: [ { id:1, name:"Ритикс", score:16, avatar:"ritix.jpg" }, { id:2, name:"Обалена", score:14, avatar:"obalena.jpg" }, { id:3, name:"Гира", score:12, avatar:"gira.jpg" }, { id:4, name:"Егорь", score:7, avatar:"egor.jpg" }, { id:5, name:"Енька", score:4, avatar:"enka.jpg" }, { id:6, name:"И. Потужность", score:4, avatar:"potuzhnost.jpg" } ] },
+            { id: "sv6f", name: "Стаявидение 6 (Финал)", title: "Стаявидение 6", subtitle: "Финал", bgType: "sv6.webp", viewMode: "results",
+                participants: [ { id:1, name:"Обалена", score:16, avatar:"obalena.jpg" }, { id:2, name:"Ритикс", score:14, avatar:"ritix.jpg" }, { id:3, name:"Гира", score:12, avatar:"gira.jpg" }, { id:4, name:"Егорь", score:8, avatar:"egor.jpg" } ] },
+            { id: "sv7", name: "Стаявидение 7 (Жеребьевка)", title: "Стаявидение 7", subtitle: "Running Order", bgType: "sv7.webp", viewMode: "running_order",
+                participants: [ { id:1, name:"Машонка", score:0, avatar:"mashonka.jpg" }, { id:2, name:"Balepa", score:0, avatar:"balepa.jpg" }, { id:3, name:"Обалена", score:0, avatar:"obalena.jpg" }, { id:4, name:"Егорь", score:0, avatar:"egor.jpg" }, { id:5, name:"Ритикс", score:0, avatar:"ritix.jpg" }, { id:6, name:"Енька", score:0, avatar:"enka.jpg" } ] }
+        ];
+
+        const DEFAULT_STATE = {
+            title: "Стаявидение 6", subtitle: "Финал", style: "stayavision", viewMode: "results",
+            aspectRatio: "16/9", customW: 1920, customH: 1080, columns: 1, 
+            bgType: "sv6.webp", bgCustomData: "", padX: 40, padY: 40, scale: 1, showNotes: true, avatarShape: "50%",
+            barColor1: "#2a1b42", barColor2: "#0a0a1a", barAlpha: 0.85, highlightTop3: true, c1: "#FFD700", c2: "#C0C0C0", c3: "#CD7F32",
+            customPresets: [],
+            participants: [
+                { id: 1, name: "Обалена", score: 16, note: "", avatar: "obalena.jpg" }, { id: 2, name: "Ритикс", score: 14, note: "", avatar: "ritix.jpg" },
+                { id: 3, name: "Гира", score: 12, note: "", avatar: "gira.jpg" }, { id: 4, name: "Егорь", score: 8, note: "", avatar: "egor.jpg" }
+            ]
+        };
+
+        let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+        const STORAGE_KEY = 'stayavision_generator_state';
+
+        const serverImages = [
+            { file: "default.jpg", name: "Дефолт" }, { file: "gira.jpg", name: "Гира" },
+            { file: "obalena.jpg", name: "Обалена" }, { file: "egor.jpg", name: "Егорь" },
+            { file: "ritix.jpg", name: "Ритикс" }, { file: "enka.jpg", name: "Енька" },
+            { file: "potuzhnost.jpg", name: "Потужн." }, { file: "mashonka.jpg", name: "Машонка" }, { file: "balepa.jpg", name: "Balepa" }
+        ];
+
+        function hexToRgba(hex, alpha) { let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
+        function rgbToHex(r, g, b) { return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase(); }
+
+        // --- Админка ---
+        function checkAdminUI() {
+            const btn = document.getElementById('btnAdminAuth');
+            if(sessionStorage.getItem('isAdmin') === 'true') { btn.innerText = "🛠 DEBUG Админка"; btn.classList.add('logged-in'); } 
+            else { btn.innerText = "Вход / Админ"; btn.classList.remove('logged-in'); }
+        }
+        function handleAdminLogin() {
+            if(sessionStorage.getItem('isAdmin') === 'true') { openAdminModal(); } 
+            else {
+                let u = prompt("Логин:"); let p = prompt("Пароль:");
+                if(u === 'admin' && p === 'admin') { sessionStorage.setItem('isAdmin', 'true'); checkAdminUI(); openAdminModal(); } else if(u || p) { alert("Неверные данные!"); }
+            }
+        }
+        function openAdminModal() { updatePresetLists(); document.getElementById('adminModal').style.display = 'flex'; }
+        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
+        
+        function adminSavePreset() {
+            let name = document.getElementById('newPresetName').value;
+            if(!name) return alert("Введите имя пресета!");
+            let newPreset = {
+                id: 'custom_' + Date.now(), name: name, title: state.title, subtitle: state.subtitle, bgType: state.bgType, viewMode: state.viewMode,
+                participants: JSON.parse(JSON.stringify(state.participants))
+            };
+            if(!state.customPresets) state.customPresets = [];
+            state.customPresets.push(newPreset);
+            document.getElementById('newPresetName').value = '';
+            alert("Пресет сохранен!"); updatePresetLists(); saveState();
+        }
+        function adminDeletePreset() {
+            let id = document.getElementById('delPresetSelect').value;
+            if(!id) return;
+            state.customPresets = state.customPresets.filter(p => p.id !== id);
+            alert("Пресет удален!"); updatePresetLists(); saveState();
+        }
+        function adminAutoResults() {
+            if(!confirm("Заменить текущие баллы на случайные?")) return;
+            state.participants.forEach(p => { p.score = Math.floor(Math.random() * 20) + 1; });
+            state.participants.sort((a,b) => b.score - a.score);
+            state.viewMode = 'results';
+            closeAdminModal(); syncUI(); renderEditor(); updatePreview();
+        }
+
+        // --- Пресеты ---
+        function updatePresetLists() {
+            let all = [...DEFAULT_PRESETS, ...(state.customPresets || [])];
+            let mainSel = document.getElementById('inPreset');
+            let delSel = document.getElementById('delPresetSelect');
+            
+            let html = '<option value="">-- Выберите для загрузки --</option>';
+            all.forEach(p => html += `<option value="${p.id}">${p.name}</option>`);
+            mainSel.innerHTML = html; mainSel.value = "";
+
+            let delHtml = '<option value="">-- Выберите кастомный пресет --</option>';
+            (state.customPresets || []).forEach(p => delHtml += `<option value="${p.id}">${p.name}</option>`);
+            if(delSel) { delSel.innerHTML = delHtml; delSel.value = ""; }
+        }
+
+        function loadPreset(id) {
+            if(!id) return;
+            let all = [...DEFAULT_PRESETS, ...(state.customPresets || [])];
+            let p = all.find(x => x.id === id);
+            if(!p) return;
+
+            state.title = p.title; state.subtitle = p.subtitle; state.bgType = p.bgType; state.viewMode = p.viewMode;
+            state.participants = JSON.parse(JSON.stringify(p.participants));
+            
+            // Фишка: Если это SV7, сразу рандомим
+            if(id === 'sv7') {
+                for (let i = state.participants.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [state.participants[i], state.participants[j]] = [state.participants[j], state.participants[i]];
+                }
+            }
+            
+            syncUI(); renderEditor(); updatePreview();
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) { try { state = { ...DEFAULT_STATE, ...JSON.parse(saved) }; } catch(e) {} }
+            if(!state.customPresets) state.customPresets = [];
+        }
+        function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+        
+        function resetState() {
+            if(confirm("Сбросить все настройки на по умолчанию? (Ваши кастомные пресеты останутся)")) {
+                let savedCustom = state.customPresets;
+                state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+                state.customPresets = savedCustom;
+                syncUI(); renderEditor(); updatePreview();
+            }
+        }
+
+        function syncUI() {
+            document.getElementById('inTitle').value = state.title; document.getElementById('inSubtitle').value = state.subtitle;
+            document.getElementById('inRatio').value = state.aspectRatio; document.getElementById('inCols').value = state.columns;
+            document.getElementById('inW').value = state.customW; document.getElementById('inH').value = state.customH;
+            document.getElementById('inStyle').value = state.style; document.getElementById('inAvatar').value = state.avatarShape;
+            document.getElementById('inBarColor1').value = state.barColor1; document.getElementById('inBarColor2').value = state.barColor2;
+            document.getElementById('inBarAlpha').value = state.barAlpha; document.getElementById('inTop3').checked = state.highlightTop3;
+            document.getElementById('inC1').value = state.c1; document.getElementById('inC2').value = state.c2; document.getElementById('inC3').value = state.c3;
+            document.getElementById('inPadX').value = state.padX; document.getElementById('inPadY').value = state.padY;
+            document.getElementById('inScale').value = state.scale; document.getElementById('inBgType').value = state.bgType;
+            document.getElementById('inMode').value = state.viewMode; document.getElementById('inShowNotes').checked = state.showNotes;
+
+            document.getElementById('customResBlock').style.display = state.aspectRatio === 'custom' ? 'block' : 'none';
+            document.getElementById('top3Colors').style.opacity = state.highlightTop3 ? '1' : '0.3';
+            document.getElementById('inBgCustom').style.display = state.bgType === 'custom' ? 'block' : 'none';
+            updatePresetLists();
+        }
+
+        function switchMobileTab(tabName, btn) {
+            document.querySelectorAll('.mobile-tabs button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); document.getElementById('appMain').className = `app-container show-${tabName}`;
+            if(tabName === 'preview') setTimeout(adjustMobileScale, 50);
+        }
+
+        function init() { 
+            loadState(); checkAdminUI(); syncUI(); renderEditor(); updatePreview(); 
+            window.addEventListener('resize', adjustMobileScale);
+        }
+
+        function updateState(key, value) {
+            state[key] = value;
+            if(key === 'aspectRatio') document.getElementById('customResBlock').style.display = value === 'custom' ? 'block' : 'none';
+            if(key === 'highlightTop3') document.getElementById('top3Colors').style.opacity = value ? '1' : '0.3';
+            if(key === 'bgType') {
+                const fileIn = document.getElementById('inBgCustom');
+                if (value === 'custom') { fileIn.style.display = 'block'; fileIn.click(); } else { fileIn.style.display = 'none'; }
+            }
+            updatePreview();
+        }
+
+        function updateParticipant(id, field, value) { const p = state.participants.find(x => x.id === id); if(p) { p[field] = field === 'score' ? Number(value) : value; updatePreview(); } }
+
+        function moveParticipant(id, dir) {
+            const idx = state.participants.findIndex(p => p.id === id); if (idx < 0) return;
+            const nIdx = idx + dir; if (nIdx < 0 || nIdx >= state.participants.length) return;
+            [state.participants[idx], state.participants[nIdx]] = [state.participants[nIdx], state.participants[idx]];
+            renderEditor(); updatePreview();
+        }
+
+        function extractColorFromBg() {
+            let bgUrl = "";
+            if (state.bgType === 'custom' && state.bgCustomData) bgUrl = state.bgCustomData; else if (state.bgType !== 'none') bgUrl = state.bgType;
+            if (!bgUrl) { alert("Сначала выберите фон!"); return; }
+            const img = new Image(); img.crossOrigin = "Anonymous";
+            img.onload = function() {
+                const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                canvas.width = img.width; canvas.height = img.height; ctx.drawImage(img, 0, 0, img.width, img.height);
+                try {
+                    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data; let rS=0, gS=0, bS=0, wS=0;
+                    for (let i=0; i<data.length; i+=16) { 
+                        let r=data[i], g=data[i+1], b=data[i+2]; let max=Math.max(r,g,b), min=Math.min(r,g,b); let w=(max-min)+5; 
+                        rS+=r*w; gS+=g*w; bS+=b*w; wS+=w;
+                    }
+                    let rA=Math.floor(rS/wS), gA=Math.floor(gS/wS), bA=Math.floor(bS/wS);
+                    let lum = 0.299*rA + 0.587*gA + 0.114*bA;
+                    if (lum>70) { let f=70/lum; rA=Math.floor(rA*f); gA=Math.floor(gA*f); bA=Math.floor(bA*f); }
+                    const hex1 = rgbToHex(rA, gA, bA); const hex2 = rgbToHex(Math.floor(rA*0.4), Math.floor(gA*0.4), Math.floor(bA*0.4));
+                    document.getElementById('inBarColor1').value=hex1; document.getElementById('inBarColor2').value=hex2;
+                    state.barColor1=hex1; state.barColor2=hex2; updatePreview();
+                } catch (e) { alert("Не удалось определить цвет."); }
+            };
+            img.src = bgUrl;
+        }
+
+        function renderEditor() {
+            const container = document.getElementById('editorContainer'); container.innerHTML = '';
+            state.participants.forEach((p) => {
+                let opts = serverImages.map(img => `<option value="${img.file}" ${p.avatar === img.file ? 'selected' : ''}>${img.name}</option>`).join('');
+                opts += `<option value="custom" ${p.avatar.startsWith('data:') ? 'selected' : ''}>Своя...</option>`;
+                container.innerHTML += `
+                    <div class="editor-row">
+                        <div style="display:flex; flex-direction:column; gap:2px; margin-right: 2px;">
+                            <button type="button" class="btn-icon" onclick="moveParticipant(${p.id}, -1)">▲</button>
+                            <button type="button" class="btn-icon" onclick="moveParticipant(${p.id}, 1)">▼</button>
+                        </div>
+                        <select onchange="handleAvatarSelect(event, ${p.id})">${opts}</select>
+                        <input type="text" placeholder="Имя" value="${p.name}" oninput="updateParticipant(${p.id}, 'name', this.value)">
+                        <input type="text" placeholder="Заметка" value="${p.note||''}" oninput="updateParticipant(${p.id}, 'note', this.value)">
+                        <input type="number" placeholder="Балл" value="${p.score}" oninput="updateParticipant(${p.id}, 'score', this.value)">
+                        <input type="file" id="file-${p.id}" style="display:none" accept="image/*" onchange="handleCustomAvatar(event, ${p.id})">
+                        <button type="button" class="btn-remove" onclick="removeParticipant(${p.id})" title="Удалить">×</button>
+                    </div>`;
+            });
+        }
+
+        function handleAvatarSelect(e, id) { if(e.target.value==='custom') document.getElementById('file-'+id).click(); else updateParticipant(id, 'avatar', e.target.value); }
+        function handleCustomAvatar(e, id) { const f = e.target.files[0]; if(f){ const r=new FileReader(); r.onload=ev=>{ updateParticipant(id,'avatar',ev.target.result); renderEditor(); }; r.readAsDataURL(f); } }
+        function handleBgUpload(e) { const f = e.target.files[0]; if(f){ const r=new FileReader(); r.onload=ev=>{ state.bgCustomData=ev.target.result; updatePreview(); }; r.readAsDataURL(f); } }
+        
+        function addParticipant() { const nId = state.participants.length>0 ? Math.max(...state.participants.map(p=>p.id))+1 : 1; state.participants.push({ id: nId, name: "Новый", score: 0, note: "", avatar: "default.jpg" }); renderEditor(); updatePreview(); }
+        function removeParticipant(id) { state.participants = state.participants.filter(p=>p.id!==id); renderEditor(); updatePreview(); }
+        
+        function randomizeParticipants() {
+            for (let i = state.participants.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [state.participants[i], state.participants[j]] = [state.participants[j], state.participants[i]]; }
+            renderEditor(); updatePreview();
+        }
+
+        function updatePreview() {
+            saveState();
+            document.getElementById('renderTitle').innerText = state.title; document.getElementById('renderSubtitle').innerText = state.subtitle;
+            const capture = document.getElementById('scoreboard-capture'); const inner = document.getElementById('captureInner');
+            
+            let lW = 1200;
+            if (state.aspectRatio === 'custom') { lW = state.customW; capture.style.aspectRatio = `${state.customW}/${state.customH}`; } 
+            else { if(state.aspectRatio === '1/1' || state.aspectRatio === '4/3') lW = 900; capture.style.aspectRatio = state.aspectRatio; }
+            capture.style.width = lW + 'px';
+            
+            capture.className = `style-${state.style}`;
+            if (state.highlightTop3) capture.classList.add('highlight-top3'); else capture.classList.remove('highlight-top3');
+            
+            capture.style.setProperty('--bar-c1', hexToRgba(state.barColor1, state.barAlpha)); capture.style.setProperty('--bar-c2', hexToRgba(state.barColor2, state.barAlpha * 0.7));
+            capture.style.setProperty('--avatar-radius', state.avatarShape);
+            
+            capture.style.setProperty('--top1', state.c1); capture.style.setProperty('--top1-bg', hexToRgba(state.c1, state.barAlpha * 0.5));
+            capture.style.setProperty('--top2', state.c2); capture.style.setProperty('--top2-bg', hexToRgba(state.c2, state.barAlpha * 0.3));
+            capture.style.setProperty('--top3', state.c3); capture.style.setProperty('--top3-bg', hexToRgba(state.c3, state.barAlpha * 0.3));
+
+            inner.style.setProperty('--pad-x', state.padX + 'px'); inner.style.setProperty('--pad-y', state.padY + 'px');
+            inner.style.transform = `scale(${state.scale})`;
+
+            let bgUrl = (state.bgType === 'custom') ? state.bgCustomData : (state.bgType !== 'none' ? state.bgType : "");
+            document.getElementById('bgBlur').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
+            document.getElementById('bgClear').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
+
+            const board = document.getElementById('renderBoard'); board.innerHTML = '';
+            
+            let list = [...state.participants];
+            if (state.viewMode === 'results') list.sort((a,b) => b.score - a.score);
+            let maxScore = Math.max(...list.map(p => p.score), 1);
+
+            board.style.gridTemplateColumns = `repeat(${state.columns}, 1fr)`;
+            board.style.gridTemplateRows = `repeat(${Math.ceil(list.length / state.columns)}, auto)`;
+            board.style.gridAutoFlow = 'column';
+
+            list.forEach((p, index) => {
+                let pos = index + 1; let rC = "result-row";
+                if (state.viewMode === 'results' && pos <= 3) rC += ` place-${pos}`;
+                let fill = Math.max((p.score / maxScore) * 100, 0.1); 
+                let sb = '';
+                if (state.viewMode === 'results') {
+                    sb = `<div class="score"><div class="score-number">${p.score}</div><div class="score-label">Баллов</div><div class="score-bar"><div class="score-bar-fill" style="${fill>0?`width:${fill}%; min-width:2px;`:'display:none;'}"></div></div></div>`;
+                }
+                board.innerHTML += `
+                    <div class="${rC}">
+                        <div class="position">${pos}</div>
+                        <img src="${p.avatar}" class="participant-avatar" alt="av">
+                        <div class="participant-info"><div class="participant-name">${p.name}</div>${state.showNotes && p.note ? `<div class="participant-note">${p.note}</div>` : ''}</div>
+                        ${sb}
+                    </div>`;
+            });
+            setTimeout(adjustMobileScale, 10);
+        }
+
+        function adjustMobileScale() {
+            const capture = document.getElementById('scoreboard-capture'); const wrapper = document.getElementById('previewWrapper');
+            if(!capture || !wrapper || capture.offsetWidth === 0) return;
+            let scale = Math.min(wrapper.clientWidth / capture.offsetWidth, 1);
+            capture.style.transform = `scale(${scale})`; wrapper.style.height = (capture.offsetHeight * scale) + 'px';
+        }
+
+        function downloadImage() {
+            const target = document.getElementById('scoreboard-capture'); const btn = document.querySelector('.btn-download');
+            btn.innerText = "Генерация..."; btn.style.opacity = '0.7';
+            const oldTrans = target.style.transform; target.style.transform = 'none';
+            let sc = (state.aspectRatio === 'custom' && (state.customW > 2000 || state.customH > 2000)) ? 1 : 2;
+
+            html2canvas(target, { scale: sc, backgroundColor: null, useCORS: true, logging: false }).then(canvas => {
+                target.style.transform = oldTrans; 
+                const link = document.createElement('a'); link.download = `${state.title}_${state.viewMode}.png`;
+                link.href = canvas.toDataURL('image/png'); link.click();
+                btn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Сохранить картинку`; btn.style.opacity = '1';
+            }).catch(err => { target.style.transform = oldTrans; alert("Ошибка!"); btn.innerHTML = `Сохранить картинку`; btn.style.opacity = '1'; });
+        }
+
+        init();
+    </script>
+</body>
+</html>
