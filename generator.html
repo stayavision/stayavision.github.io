@@ -6,7 +6,6 @@
     <title>Генератор Скорборда PRO — Стаявидение</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* Расширенный импорт шрифтов */
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700;900&family=Roboto:wght@400;700;900&family=Oswald:wght@400;700&family=Open+Sans:wght@400;700;800&family=Caveat:wght@700&family=Comfortaa:wght@700&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -61,8 +60,8 @@
         .control-row input[type="color"] { flex-shrink: 0; padding: 0; width: 40px; height: 35px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; background: transparent; }
         .control-row input[type="range"] { flex: 1; accent-color: var(--accent3); }
 
-        .checkbox-group { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: white; }
-        .checkbox-group input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent2); }
+        .checkbox-group { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: white; }
+        .checkbox-group input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--accent2); }
 
         .btn-action { background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: 600; width: 100%; }
         .btn-action:hover { background: rgba(255,255,255,0.2); }
@@ -92,7 +91,6 @@
             position: absolute; top: 0; left: 0; transform-origin: top left;
             background: #0a0a1a; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             overflow: hidden; display: flex; flex-direction: column;
-            font-family: var(--custom-font, 'Montserrat'), sans-serif;
         }
 
         .bg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
@@ -107,33 +105,29 @@
         }
 
         .board-header { text-align: center; margin-bottom: 25px; }
-        .board-title { font-family: var(--custom-font, 'Playfair Display'), serif; font-size: calc(clamp(1.5rem, 4vw, 3rem) * var(--text-scale, 1)); font-weight: 900; color: white; line-height: 1.2; text-transform: uppercase; }
-        .board-subtitle { color: var(--gold); font-size: calc(clamp(0.8rem, 2vw, 1.2rem) * var(--text-scale, 1)); text-transform: uppercase; letter-spacing: 4px; font-weight: 700; margin-top: 5px; }
+        .board-title { font-family: var(--font-title, 'Playfair Display'), serif; font-size: calc(clamp(1.5rem, 4vw, 3rem) * var(--text-scale, 1)); font-weight: 900; color: white; line-height: 1.2; text-transform: var(--text-case, uppercase); }
+        .board-subtitle { color: var(--gold); font-family: var(--font-title, 'Playfair Display'), serif; font-size: calc(clamp(0.8rem, 2vw, 1.2rem) * var(--text-scale, 1)); text-transform: var(--text-case, uppercase); letter-spacing: 4px; font-weight: 700; margin-top: 5px; }
 
-        .board-results { display: grid; gap: calc(12px * var(--bar-scale, 1)); align-content: start; flex: 1; }
+        .board-results { display: grid; gap: 12px; align-content: start; flex: 1; }
 
-        .result-row { display: flex; align-items: center; transition: all 0.3s ease; }
+        .result-row { display: flex; align-items: center; transition: all 0.3s ease; font-family: var(--font-board, 'Montserrat'), sans-serif; text-transform: var(--text-case, uppercase); }
         .position { display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; }
         .participant-avatar { object-fit: cover; flex-shrink: 0; background: #2a2a4a; border-radius: var(--avatar-radius, 50%); }
-        .participant-info { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; white-space: nowrap; margin-right: 10px; }
+        .participant-info { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; white-space: nowrap; margin-right: 10px; transform: translate(var(--name-x, 0px), var(--name-y, 0px)); }
         .participant-name { font-weight: 700; text-overflow: ellipsis; overflow: hidden; }
-        .participant-note { color: var(--text-secondary); text-overflow: ellipsis; overflow: hidden; }
-        .score { text-align: right; flex-shrink: 0; }
+        .participant-note { color: var(--text-secondary); text-overflow: ellipsis; overflow: hidden; font-size: 0.85em; }
+        .score { text-align: right; flex-shrink: 0; transform: translate(var(--score-x, 0px), var(--score-y, 0px)); }
         .score-number { font-weight: 900; line-height: 1; }
 
         /* === СТИЛИ === */
+        
         /* СТАЯВИДЕНИЕ */
-        .style-stayavision .result-row { 
-            padding: calc(12px * var(--bar-scale, 1)) calc(20px * var(--bar-scale, 1)); 
-            border-radius: calc(12px * var(--bar-scale, 1)); 
-            background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); 
-        }
+        .style-stayavision .result-row { padding: calc(12px * var(--bar-h-mult, 1) * var(--bar-scale, 1)) calc(20px * var(--bar-scale, 1)); border-radius: calc(12px * var(--bar-scale, 1)); background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); }
         .style-stayavision .position { width: calc(45px * var(--bar-scale, 1)); height: calc(45px * var(--bar-scale, 1)); font-size: calc(1.2rem * var(--text-scale, 1)); margin-right: calc(15px * var(--bar-scale, 1)); background: rgba(255,255,255,0.1); color: white; }
-        .style-stayavision .participant-avatar { width: calc(50px * var(--bar-scale, 1)); height: calc(50px * var(--bar-scale, 1)); margin-right: calc(15px * var(--bar-scale, 1)); border: 2px solid rgba(255,255,255,0.1); }
+        .style-stayavision .participant-avatar { width: calc(50px * var(--bar-scale, 1) * var(--avatar-size, 1)); height: calc(50px * var(--bar-scale, 1) * var(--avatar-size, 1)); margin-right: calc(15px * var(--bar-scale, 1)); border: 2px solid rgba(255,255,255,0.1); }
         .style-stayavision .participant-name { font-size: calc(1.3rem * var(--text-scale, 1)); color: #fff; }
-        .style-stayavision .participant-note { font-size: calc(0.85rem * var(--text-scale, 1)); }
         .style-stayavision .score-number { font-size: calc(1.8rem * var(--text-scale, 1)); color: #fff; }
-        .style-stayavision .score-label { font-size: calc(0.65rem * var(--text-scale, 1)); color: var(--text-secondary); text-transform: uppercase; }
+        .style-stayavision .score-label { font-size: calc(0.65rem * var(--text-scale, 1)); color: var(--text-secondary); }
         .style-stayavision .score-bar { width: calc(90px * var(--bar-scale, 1)); height: calc(4px * var(--bar-scale, 1)); background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 5px; margin-left: auto; }
         .style-stayavision .score-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent2)); }
 
@@ -149,15 +143,10 @@
         .highlight-top3.style-stayavision .place-1 .score-bar-fill { background: var(--top1); }
 
         /* ЕВРОВИДЕНИЕ */
-        .style-eurovision .result-row { 
-            padding: calc(6px * var(--bar-scale, 1)) calc(12px * var(--bar-scale, 1)); 
-            background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); 
-            border-left: calc(4px * var(--bar-scale, 1)) solid var(--accent3); box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
-        }
+        .style-eurovision .result-row { padding: calc(6px * var(--bar-h-mult, 1) * var(--bar-scale, 1)) calc(12px * var(--bar-scale, 1)); background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); border-left: calc(4px * var(--bar-scale, 1)) solid var(--accent3); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .style-eurovision .position { width: calc(35px * var(--bar-scale, 1)); height: calc(35px * var(--bar-scale, 1)); font-size: calc(1.1rem * var(--text-scale, 1)); margin-right: calc(12px * var(--bar-scale, 1)); border-right: 1px solid rgba(255,255,255,0.2); padding-right: 10px; justify-content: flex-start; color: #fff; }
-        .style-eurovision .participant-avatar { width: calc(35px * var(--bar-scale, 1)); height: calc(35px * var(--bar-scale, 1)); margin-right: calc(12px * var(--bar-scale, 1)); }
-        .style-eurovision .participant-name { font-size: calc(1.1rem * var(--text-scale, 1)); color: #fff; text-transform: uppercase; letter-spacing: 1px; }
-        .style-eurovision .participant-note { font-size: calc(0.75rem * var(--text-scale, 1)); }
+        .style-eurovision .participant-avatar { width: calc(35px * var(--bar-scale, 1) * var(--avatar-size, 1)); height: calc(35px * var(--bar-scale, 1) * var(--avatar-size, 1)); margin-right: calc(12px * var(--bar-scale, 1)); }
+        .style-eurovision .participant-name { font-size: calc(1.1rem * var(--text-scale, 1)); color: #fff; letter-spacing: 1px; }
         .style-eurovision .score-number { font-size: calc(1.5rem * var(--text-scale, 1)); color: var(--accent3); }
         .style-eurovision .score-label, .style-eurovision .score-bar { display: none; }
         
@@ -166,6 +155,40 @@
         .highlight-top3.style-eurovision .result-row.place-3 { border-left-color: var(--top3); background: linear-gradient(90deg, var(--top3-bg), var(--bar-c2)); }
         .highlight-top3.style-eurovision .place-1 .position { color: var(--top1); border-right-color: var(--top1); }
         .highlight-top3.style-eurovision .place-1 .score-number { color: var(--top1); }
+
+        /* СПЛИТ-СКРИН (ДУЭЛИ) */
+        .style-splitscreen .board-results { gap: 20px; }
+        .style-splitscreen .result-row { 
+            flex-direction: column; text-align: center; justify-content: center;
+            padding: calc(30px * var(--bar-h-mult, 1) * var(--bar-scale, 1)); 
+            border-radius: 20px; background: linear-gradient(180deg, var(--bar-c1), var(--bar-c2)); 
+            border: 1px solid rgba(255,255,255,0.05); position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .style-splitscreen .participant-avatar { 
+            width: calc(150px * var(--bar-scale, 1) * var(--avatar-size, 1)); 
+            height: calc(150px * var(--bar-scale, 1) * var(--avatar-size, 1)); 
+            margin: 0 auto 15px auto; border: 3px solid rgba(255,255,255,0.1);
+        }
+        .style-splitscreen .participant-info { margin: 0 0 15px 0; align-items: center; }
+        .style-splitscreen .participant-name { font-size: calc(1.8rem * var(--text-scale, 1)); color: #fff; }
+        .style-splitscreen .participant-note { font-size: calc(1rem * var(--text-scale, 1)); }
+        .style-splitscreen .score { margin: 0; text-align: center; }
+        .style-splitscreen .score-number { font-size: calc(3rem * var(--text-scale, 1)); color: #fff; }
+        .style-splitscreen .score-label { font-size: calc(0.8rem * var(--text-scale, 1)); color: var(--text-secondary); }
+        .style-splitscreen .score-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 10px; }
+        .style-splitscreen .score-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent2)); }
+        
+        .style-splitscreen .position { 
+            position: absolute; top: 15px; left: 15px; width: calc(40px * var(--bar-scale, 1)); height: calc(40px * var(--bar-scale, 1)); 
+            background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;
+        }
+
+        .highlight-top3.style-splitscreen .result-row.place-1 { background: linear-gradient(180deg, var(--top1-bg), var(--bar-c2)); border-color: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .participant-avatar { border-color: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .participant-name { color: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .score-number { color: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .score-bar-fill { background: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .position { background: var(--top1); color: #000; box-shadow: 0 0 15px var(--top1-bg); }
 
         .btn-download {
             margin-top: 25px; background: linear-gradient(135deg, #00D4FF, #7B2FBE); color: white; border: none; padding: 15px 30px; border-radius: 30px;
@@ -176,7 +199,7 @@
 
         /* Админка Модалка */
         .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000; display: none; justify-content: center; align-items: center; }
-        .modal-box { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 16px; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .modal-box { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 16px; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; }
         .modal-box h2 { color: var(--accent3); margin-bottom: 20px; font-size: 1.5rem; text-align: center; }
         .modal-box input, .modal-box select { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white; }
         .modal-btns { display: flex; gap: 10px; }
@@ -220,16 +243,37 @@
             <div class="settings-grid">
                 <div class="control-group"><label>Заголовок</label><input type="text" id="inTitle" oninput="updateState('title', this.value)"></div>
                 <div class="control-group"><label>Подзаголовок</label><input type="text" id="inSubtitle" oninput="updateState('subtitle', this.value)"></div>
+                
                 <div class="control-group">
-                    <label>Шрифт</label>
-                    <select id="inFont" onchange="updateState('font', this.value)">
-                        <option value="Montserrat">Montserrat (Стандарт)</option>
+                    <label>Шрифт заголовка</label>
+                    <select id="inFontTitle" onchange="updateState('fontTitle', this.value)">
                         <option value="Playfair Display">Playfair Display (Засечки)</option>
+                        <option value="Montserrat">Montserrat</option>
                         <option value="Roboto">Roboto</option>
                         <option value="Oswald">Oswald (Узкий)</option>
                         <option value="Open Sans">Open Sans</option>
                         <option value="Caveat">Caveat (Рукописный)</option>
                         <option value="Comfortaa">Comfortaa (Круглый)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Шрифт плашек</label>
+                    <select id="inFontBoard" onchange="updateState('fontBoard', this.value)">
+                        <option value="Montserrat">Montserrat</option>
+                        <option value="Playfair Display">Playfair Display</option>
+                        <option value="Roboto">Roboto</option>
+                        <option value="Oswald">Oswald (Узкий)</option>
+                        <option value="Open Sans">Open Sans</option>
+                        <option value="Caveat">Caveat (Рукописный)</option>
+                        <option value="Comfortaa">Comfortaa (Круглый)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Разрешение экрана</label>
+                    <select id="inRatio" onchange="updateState('aspectRatio', this.value)">
+                        <option value="16/9">16:9 (Стандарт)</option><option value="21/9">21:9 (Широкий)</option>
+                        <option value="4/3">4:3 (ТВ)</option><option value="1/1">1:1 (Квадрат)</option><option value="custom">Свой размер...</option>
                     </select>
                 </div>
                 <div class="control-group">
@@ -239,13 +283,10 @@
                         <option value="4">4</option><option value="5">5</option><option value="6">6</option>
                     </select>
                 </div>
-                <div class="control-group">
-                    <label>Разрешение экрана</label>
-                    <select id="inRatio" onchange="updateState('aspectRatio', this.value)">
-                        <option value="16/9">16:9 (Стандарт)</option><option value="21/9">21:9 (Широкий)</option>
-                        <option value="4/3">4:3 (ТВ)</option><option value="1/1">1:1 (Квадрат)</option><option value="custom">Свой размер...</option>
-                    </select>
-                </div>
+            </div>
+
+            <div class="control-group" style="margin-top: 10px;">
+                <label class="checkbox-group"><input type="checkbox" id="inUppercase" onchange="updateState('textUppercase', this.checked)"> ВСЕ ЗАГЛАВНЫМИ (CAPS LOCK)</label>
             </div>
 
             <div id="customResBlock" style="display: none; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
@@ -257,7 +298,14 @@
 
             <div class="section-title">Дизайн и Цвета</div>
             <div class="settings-grid">
-                <div class="control-group"><label>Стиль дизайна</label><select id="inStyle" onchange="updateState('style', this.value)"><option value="stayavision">Стаявидение (Толстые)</option><option value="eurovision">Eurovision (Тонкие)</option></select></div>
+                <div class="control-group">
+                    <label>Стиль дизайна</label>
+                    <select id="inStyle" onchange="updateState('style', this.value)">
+                        <option value="stayavision">Стаявидение (Толстые)</option>
+                        <option value="eurovision">Eurovision (Тонкие)</option>
+                        <option value="splitscreen">Сплит-скрин (VS Дуэли)</option>
+                    </select>
+                </div>
                 <div class="control-group"><label>Форма аватарок</label><select id="inAvatar" onchange="updateState('avatarShape', this.value)"><option value="50%">Круг</option><option value="8px">Закругленный квадрат</option><option value="0px">Квадрат</option></select></div>
             </div>
 
@@ -284,29 +332,44 @@
             <div class="settings-grid">
                 <div class="control-group"><label>Отступ X (px)</label><input type="range" id="inPadX" min="0" max="200" oninput="updateState('padX', this.value)"></div>
                 <div class="control-group"><label>Отступ Y (px)</label><input type="range" id="inPadY" min="0" max="200" oninput="updateState('padY', this.value)"></div>
+                <div class="control-group"><label style="color: var(--accent3);">Масштаб (Общий)</label><input type="range" id="inScale" min="0.4" max="1.5" step="0.05" oninput="updateState('scale', this.value)"></div>
+                <div class="control-group"><label style="color: var(--accent3);">Масштаб Плашек</label><input type="range" id="inBarScale" min="0.5" max="2" step="0.05" oninput="updateState('barScale', this.value)"></div>
+                <div class="control-group"><label style="color: var(--accent2);">Масштаб Текста</label><input type="range" id="inTextScale" min="0.5" max="2" step="0.05" oninput="updateState('textScale', this.value)"></div>
                 
-                <div class="control-group"><label>Масштаб (Общий)</label><input type="range" id="inScale" min="0.4" max="1.5" step="0.05" oninput="updateState('scale', this.value)"></div>
-                <div class="control-group"><label>Задний фон (Авторазмытие)</label>
+                <div class="control-group">
+                    <label>Задний фон (Авторазмытие)</label>
                     <select id="inBgType" onchange="updateState('bgType', this.value)">
                         <option value="none">Тёмная заливка</option><option value="wolfs.jpg">Волки (wolfs.jpg)</option>
                         <option value="sv6.webp">Стаявидение 6 (sv6.webp)</option><option value="sv7.webp">Стаявидение 7 (sv7.webp)</option>
+                        <option value="sv8.webp">Стаявидение 8 (sv8.webp)</option>
                         <option value="custom">Свой фон...</option>
                     </select>
                     <input type="file" id="inBgCustom" style="display:none; margin-top:5px;" accept="image/*" onchange="handleBgUpload(event)">
                 </div>
-                <div class="control-group"><label style="color: var(--accent3);">Масштаб плашек</label><input type="range" id="inBarScale" min="0.5" max="2" step="0.05" oninput="updateState('barScale', this.value)"></div>
-                <div class="control-group"><label style="color: var(--accent2);">Масштаб текста</label><input type="range" id="inTextScale" min="0.5" max="2" step="0.05" oninput="updateState('textScale', this.value)"></div>
+            </div>
+
+            <!-- ПРОДВИНУТЫЙ РЕДАКТОР -->
+            <div class="section-title">Продвинутый Редактор</div>
+            <div class="settings-grid">
+                <div class="control-group"><label>Сдвиг текста (↔ X px)</label><input type="range" id="inNameX" min="-100" max="100" value="0" oninput="updateState('nameX', this.value)"></div>
+                <div class="control-group"><label>Сдвиг текста (↕ Y px)</label><input type="range" id="inNameY" min="-100" max="100" value="0" oninput="updateState('nameY', this.value)"></div>
+                <div class="control-group"><label>Сдвиг баллов (↔ X px)</label><input type="range" id="inScoreX" min="-100" max="100" value="0" oninput="updateState('scoreX', this.value)"></div>
+                <div class="control-group"><label>Сдвиг баллов (↕ Y px)</label><input type="range" id="inScoreY" min="-100" max="100" value="0" oninput="updateState('scoreY', this.value)"></div>
+                <div class="control-group"><label>Размер аватарки</label><input type="range" id="inAvaSize" min="0.2" max="2.5" step="0.1" value="1" oninput="updateState('avatarSize', this.value)"></div>
+                <div class="control-group"><label>Высота плашки</label><input type="range" id="inBarHeight" min="0.5" max="3" step="0.1" value="1" oninput="updateState('barHeightMultiplier', this.value)"></div>
             </div>
 
             <div class="section-title">Участники</div>
             <div class="settings-grid" style="margin-bottom: 15px;">
-                <div class="control-group" style="grid-column: 1 / -1;"><label>Режим экрана</label><select id="inMode" onchange="updateState('viewMode', this.value)"><option value="results">Результаты (с баллами)</option><option value="running_order">Running Order (Жеребьевка)</option></select></div>
+                <div class="control-group" style="grid-column: 1 / -1;"><label>Режим экрана</label><select id="inMode" onchange="updateState('viewMode', this.value)"><option value="results">Результаты (Сортировка)</option><option value="running_order">Running Order (Жеребьевка)</option></select></div>
             </div>
             
-            <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; justify-content: center;">
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 15px; justify-content: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
                 <label class="checkbox-group"><input type="checkbox" id="inShowPos" onchange="updateState('showPositions', this.checked)"> Места</label>
                 <label class="checkbox-group"><input type="checkbox" id="inShowAva" onchange="updateState('showAvatars', this.checked)"> Аватарки</label>
                 <label class="checkbox-group"><input type="checkbox" id="inShowNotes" onchange="updateState('showNotes', this.checked)"> Заметки</label>
+                <label class="checkbox-group"><input type="checkbox" id="inShowScores" onchange="updateState('showScores', this.checked)"> Баллы</label>
+                <label class="checkbox-group"><input type="checkbox" id="inShowBars" onchange="updateState('showScoreBars', this.checked)"> Полоски баллов</label>
             </div>
 
             <button class="btn-action btn-random" onclick="randomizeParticipants()">🎲 СЛУЧАЙНАЯ ЖЕРЕБЬЕВКА</button>
@@ -379,10 +442,11 @@
 
         const DEFAULT_STATE = {
             title: "Стаявидение 6", subtitle: "Финал", style: "stayavision", viewMode: "results",
-            aspectRatio: "16/9", customW: 1920, customH: 1080, columns: 1, font: "Montserrat",
-            bgType: "sv6.webp", bgCustomData: "", padX: 40, padY: 40, scale: 1, textScale: 1, barScale: 1,
-            showNotes: true, showPositions: true, showAvatars: true, avatarShape: "50%",
+            aspectRatio: "16/9", customW: 1920, customH: 1080, columns: 1, fontTitle: "Playfair Display", fontBoard: "Montserrat",
+            textUppercase: true, bgType: "sv6.webp", bgCustomData: "", padX: 40, padY: 40, scale: 1, textScale: 1, barScale: 1,
+            showNotes: true, showPositions: true, showAvatars: true, showScores: true, showScoreBars: true, avatarShape: "50%",
             barColor1: "#2a1b42", barColor2: "#0a0a1a", barAlpha: 0.85, highlightTop3: true, c1: "#FFD700", c2: "#C0C0C0", c3: "#CD7F32",
+            nameX: 0, nameY: 0, scoreX: 0, scoreY: 0, avatarSize: 1, barHeightMultiplier: 1,
             customPresets: [],
             participants: [
                 { id: 1, name: "Обалена", score: 16, note: "", avatar: "obalena.jpg" }, { id: 2, name: "Ритикс", score: 14, note: "", avatar: "ritix.jpg" },
@@ -403,7 +467,6 @@
         function hexToRgba(hex, alpha) { let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
         function rgbToHex(r, g, b) { return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase(); }
 
-        // --- Админка ---
         function checkAdminUI() {
             const btn = document.getElementById('btnAdminAuth');
             if(sessionStorage.getItem('isAdmin') === 'true') { btn.innerText = "🛠 DEBUG Админка"; btn.classList.add('logged-in'); } 
@@ -422,59 +485,35 @@
         function adminSavePreset() {
             let name = document.getElementById('newPresetName').value;
             if(!name) return alert("Введите имя пресета!");
-            let newPreset = {
-                id: 'custom_' + Date.now(), name: name, title: state.title, subtitle: state.subtitle, bgType: state.bgType, viewMode: state.viewMode,
-                participants: JSON.parse(JSON.stringify(state.participants))
-            };
-            if(!state.customPresets) state.customPresets = [];
-            state.customPresets.push(newPreset);
-            document.getElementById('newPresetName').value = '';
+            let newPreset = { id: 'custom_' + Date.now(), name: name, title: state.title, subtitle: state.subtitle, bgType: state.bgType, viewMode: state.viewMode, participants: JSON.parse(JSON.stringify(state.participants)) };
+            if(!state.customPresets) state.customPresets = []; state.customPresets.push(newPreset); document.getElementById('newPresetName').value = '';
             alert("Пресет сохранен!"); updatePresetLists(); saveState();
         }
         function adminDeletePreset() {
-            let id = document.getElementById('delPresetSelect').value;
-            if(!id) return;
+            let id = document.getElementById('delPresetSelect').value; if(!id) return;
             state.customPresets = state.customPresets.filter(p => p.id !== id);
             alert("Пресет удален!"); updatePresetLists(); saveState();
         }
         function adminAutoResults() {
             if(!confirm("Заменить текущие баллы на случайные?")) return;
-            state.participants.forEach(p => { p.score = Math.floor(Math.random() * 20) + 1; });
+            state.participants.forEach(p => { p.score = Math.floor(Math.random() * 24) + 1; });
             state.participants.sort((a,b) => b.score - a.score);
-            state.viewMode = 'results';
-            closeAdminModal(); syncUI(); renderEditor(); updatePreview();
+            state.viewMode = 'results'; closeAdminModal(); syncUI(); renderEditor(); updatePreview();
         }
 
-        // --- Пресеты ---
         function updatePresetLists() {
             let all = [...DEFAULT_PRESETS, ...(state.customPresets || [])];
-            let mainSel = document.getElementById('inPreset');
-            let delSel = document.getElementById('delPresetSelect');
-            
-            let html = '<option value="">-- Выберите для загрузки --</option>';
-            all.forEach(p => html += `<option value="${p.id}">${p.name}</option>`);
+            let mainSel = document.getElementById('inPreset'); let delSel = document.getElementById('delPresetSelect');
+            let html = '<option value="">-- Выберите для загрузки --</option>'; all.forEach(p => html += `<option value="${p.id}">${p.name}</option>`);
             mainSel.innerHTML = html; mainSel.value = "";
-
-            let delHtml = '<option value="">-- Выберите кастомный пресет --</option>';
-            (state.customPresets || []).forEach(p => delHtml += `<option value="${p.id}">${p.name}</option>`);
+            let delHtml = '<option value="">-- Выберите кастомный пресет --</option>'; (state.customPresets || []).forEach(p => delHtml += `<option value="${p.id}">${p.name}</option>`);
             if(delSel) { delSel.innerHTML = delHtml; delSel.value = ""; }
         }
 
         function loadPreset(id) {
-            if(!id) return;
-            let all = [...DEFAULT_PRESETS, ...(state.customPresets || [])];
-            let p = all.find(x => x.id === id);
-            if(!p) return;
-
-            state.title = p.title; state.subtitle = p.subtitle; state.bgType = p.bgType; state.viewMode = p.viewMode;
-            state.participants = JSON.parse(JSON.stringify(p.participants));
-            
-            if(id === 'sv7') {
-                for (let i = state.participants.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [state.participants[i], state.participants[j]] = [state.participants[j], state.participants[i]];
-                }
-            }
+            if(!id) return; let all = [...DEFAULT_PRESETS, ...(state.customPresets || [])]; let p = all.find(x => x.id === id); if(!p) return;
+            state.title = p.title; state.subtitle = p.subtitle; state.bgType = p.bgType; state.viewMode = p.viewMode; state.participants = JSON.parse(JSON.stringify(p.participants));
+            if(id === 'sv7') { for (let i = state.participants.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [state.participants[i], state.participants[j]] = [state.participants[j], state.participants[i]]; } }
             syncUI(); renderEditor(); updatePreview();
         }
 
@@ -482,27 +521,27 @@
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) { try { state = { ...DEFAULT_STATE, ...JSON.parse(saved) }; } catch(e) {} }
             if(!state.customPresets) state.customPresets = [];
-            // Поддержка старых сохранений
-            if(state.font === undefined) state.font = "Montserrat";
-            if(state.textScale === undefined) state.textScale = 1;
-            if(state.barScale === undefined) state.barScale = 1;
-            if(state.showPositions === undefined) state.showPositions = true;
-            if(state.showAvatars === undefined) state.showAvatars = true;
+            // Поддержка старых сохранений для новых переменных
+            if(state.fontTitle === undefined) state.fontTitle = "Playfair Display"; if(state.fontBoard === undefined) state.fontBoard = "Montserrat";
+            if(state.textUppercase === undefined) state.textUppercase = true;
+            if(state.showScores === undefined) state.showScores = true; if(state.showScoreBars === undefined) state.showScoreBars = true;
+            if(state.nameX === undefined) state.nameX = 0; if(state.nameY === undefined) state.nameY = 0;
+            if(state.scoreX === undefined) state.scoreX = 0; if(state.scoreY === undefined) state.scoreY = 0;
+            if(state.avatarSize === undefined) state.avatarSize = 1; if(state.barHeightMultiplier === undefined) state.barHeightMultiplier = 1;
         }
         function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
         
         function resetState() {
-            if(confirm("Сбросить все настройки на по умолчанию? (Ваши кастомные пресеты останутся)")) {
-                let savedCustom = state.customPresets;
-                state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-                state.customPresets = savedCustom;
+            if(confirm("Сбросить все настройки на по умолчанию?")) {
+                let savedCustom = state.customPresets; state = JSON.parse(JSON.stringify(DEFAULT_STATE)); state.customPresets = savedCustom;
                 syncUI(); renderEditor(); updatePreview();
             }
         }
 
         function syncUI() {
             document.getElementById('inTitle').value = state.title; document.getElementById('inSubtitle').value = state.subtitle;
-            document.getElementById('inFont').value = state.font;
+            document.getElementById('inFontTitle').value = state.fontTitle; document.getElementById('inFontBoard').value = state.fontBoard;
+            document.getElementById('inUppercase').checked = state.textUppercase;
             document.getElementById('inRatio').value = state.aspectRatio; document.getElementById('inCols').value = state.columns;
             document.getElementById('inW').value = state.customW; document.getElementById('inH').value = state.customH;
             document.getElementById('inStyle').value = state.style; document.getElementById('inAvatar').value = state.avatarShape;
@@ -510,13 +549,14 @@
             document.getElementById('inBarAlpha').value = state.barAlpha; document.getElementById('inTop3').checked = state.highlightTop3;
             document.getElementById('inC1').value = state.c1; document.getElementById('inC2').value = state.c2; document.getElementById('inC3').value = state.c3;
             document.getElementById('inPadX').value = state.padX; document.getElementById('inPadY').value = state.padY;
-            document.getElementById('inScale').value = state.scale; 
-            document.getElementById('inTextScale').value = state.textScale; document.getElementById('inBarScale').value = state.barScale;
-            document.getElementById('inBgType').value = state.bgType;
-            document.getElementById('inMode').value = state.viewMode; 
-            document.getElementById('inShowNotes').checked = state.showNotes;
-            document.getElementById('inShowPos').checked = state.showPositions;
-            document.getElementById('inShowAva').checked = state.showAvatars;
+            document.getElementById('inScale').value = state.scale; document.getElementById('inTextScale').value = state.textScale; document.getElementById('inBarScale').value = state.barScale;
+            document.getElementById('inNameX').value = state.nameX; document.getElementById('inNameY').value = state.nameY;
+            document.getElementById('inScoreX').value = state.scoreX; document.getElementById('inScoreY').value = state.scoreY;
+            document.getElementById('inAvaSize').value = state.avatarSize; document.getElementById('inBarHeight').value = state.barHeightMultiplier;
+            document.getElementById('inBgType').value = state.bgType; document.getElementById('inMode').value = state.viewMode; 
+            document.getElementById('inShowNotes').checked = state.showNotes; document.getElementById('inShowPos').checked = state.showPositions;
+            document.getElementById('inShowAva').checked = state.showAvatars; document.getElementById('inShowScores').checked = state.showScores;
+            document.getElementById('inShowBars').checked = state.showScoreBars;
 
             document.getElementById('customResBlock').style.display = state.aspectRatio === 'custom' ? 'block' : 'none';
             document.getElementById('top3Colors').style.opacity = state.highlightTop3 ? '1' : '0.3';
@@ -530,19 +570,13 @@
             if(tabName === 'preview') setTimeout(adjustMobileScale, 50);
         }
 
-        function init() { 
-            loadState(); checkAdminUI(); syncUI(); renderEditor(); updatePreview(); 
-            window.addEventListener('resize', adjustMobileScale);
-        }
+        function init() { loadState(); checkAdminUI(); syncUI(); renderEditor(); updatePreview(); window.addEventListener('resize', adjustMobileScale); }
 
         function updateState(key, value) {
             state[key] = value;
             if(key === 'aspectRatio') document.getElementById('customResBlock').style.display = value === 'custom' ? 'block' : 'none';
             if(key === 'highlightTop3') document.getElementById('top3Colors').style.opacity = value ? '1' : '0.3';
-            if(key === 'bgType') {
-                const fileIn = document.getElementById('inBgCustom');
-                if (value === 'custom') { fileIn.style.display = 'block'; fileIn.click(); } else { fileIn.style.display = 'none'; }
-            }
+            if(key === 'bgType') { const fileIn = document.getElementById('inBgCustom'); if (value === 'custom') { fileIn.style.display = 'block'; fileIn.click(); } else { fileIn.style.display = 'none'; } }
             updatePreview();
         }
 
@@ -556,8 +590,7 @@
         }
 
         function extractColorFromBg() {
-            let bgUrl = "";
-            if (state.bgType === 'custom' && state.bgCustomData) bgUrl = state.bgCustomData; else if (state.bgType !== 'none') bgUrl = state.bgType;
+            let bgUrl = ""; if (state.bgType === 'custom' && state.bgCustomData) bgUrl = state.bgCustomData; else if (state.bgType !== 'none') bgUrl = state.bgType;
             if (!bgUrl) { alert("Сначала выберите фон!"); return; }
             const img = new Image(); img.crossOrigin = "Anonymous";
             img.onload = function() {
@@ -565,13 +598,9 @@
                 canvas.width = img.width; canvas.height = img.height; ctx.drawImage(img, 0, 0, img.width, img.height);
                 try {
                     const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data; let rS=0, gS=0, bS=0, wS=0;
-                    for (let i=0; i<data.length; i+=16) { 
-                        let r=data[i], g=data[i+1], b=data[i+2]; let max=Math.max(r,g,b), min=Math.min(r,g,b); let w=(max-min)+5; 
-                        rS+=r*w; gS+=g*w; bS+=b*w; wS+=w;
-                    }
+                    for (let i=0; i<data.length; i+=16) { let r=data[i], g=data[i+1], b=data[i+2]; let max=Math.max(r,g,b), min=Math.min(r,g,b); let w=(max-min)+5; rS+=r*w; gS+=g*w; bS+=b*w; wS+=w; }
                     let rA=Math.floor(rS/wS), gA=Math.floor(gS/wS), bA=Math.floor(bS/wS);
-                    let lum = 0.299*rA + 0.587*gA + 0.114*bA;
-                    if (lum>70) { let f=70/lum; rA=Math.floor(rA*f); gA=Math.floor(gA*f); bA=Math.floor(bA*f); }
+                    let lum = 0.299*rA + 0.587*gA + 0.114*bA; if (lum>70) { let f=70/lum; rA=Math.floor(rA*f); gA=Math.floor(gA*f); bA=Math.floor(bA*f); }
                     const hex1 = rgbToHex(rA, gA, bA); const hex2 = rgbToHex(Math.floor(rA*0.4), Math.floor(gA*0.4), Math.floor(bA*0.4));
                     document.getElementById('inBarColor1').value=hex1; document.getElementById('inBarColor2').value=hex2;
                     state.barColor1=hex1; state.barColor2=hex2; updatePreview();
@@ -628,9 +657,12 @@
             
             capture.style.setProperty('--bar-c1', hexToRgba(state.barColor1, state.barAlpha)); capture.style.setProperty('--bar-c2', hexToRgba(state.barColor2, state.barAlpha * 0.7));
             capture.style.setProperty('--avatar-radius', state.avatarShape);
-            capture.style.setProperty('--custom-font', `"${state.font}", sans-serif`);
-            capture.style.setProperty('--text-scale', state.textScale);
-            capture.style.setProperty('--bar-scale', state.barScale);
+            capture.style.setProperty('--font-title', `"${state.fontTitle}"`); capture.style.setProperty('--font-board', `"${state.fontBoard}"`);
+            capture.style.setProperty('--text-case', state.textUppercase ? 'uppercase' : 'none');
+            capture.style.setProperty('--text-scale', state.textScale); capture.style.setProperty('--bar-scale', state.barScale);
+            capture.style.setProperty('--name-x', state.nameX + 'px'); capture.style.setProperty('--name-y', state.nameY + 'px');
+            capture.style.setProperty('--score-x', state.scoreX + 'px'); capture.style.setProperty('--score-y', state.scoreY + 'px');
+            capture.style.setProperty('--avatar-size', state.avatarSize); capture.style.setProperty('--bar-h-mult', state.barHeightMultiplier);
             
             capture.style.setProperty('--top1', state.c1); capture.style.setProperty('--top1-bg', hexToRgba(state.c1, state.barAlpha * 0.5));
             capture.style.setProperty('--top2', state.c2); capture.style.setProperty('--top2-bg', hexToRgba(state.c2, state.barAlpha * 0.3));
@@ -658,9 +690,16 @@
                 let pos = index + 1; let rC = "result-row";
                 if (state.viewMode === 'results' && pos <= 3) rC += ` place-${pos}`;
                 let fill = Math.max((p.score / maxScore) * 100, 0.1); 
-                let sb = '';
-                if (state.viewMode === 'results') {
-                    sb = `<div class="score"><div class="score-number">${p.score}</div><div class="score-label">Баллов</div><div class="score-bar"><div class="score-bar-fill" style="${fill>0?`width:${fill}%; min-width:2px;`:'display:none;'}"></div></div></div>`;
+                
+                let scoreBlock = '';
+                if (state.viewMode === 'results' && state.showScores) {
+                    let barHtml = state.showScoreBars ? `<div class="score-bar"><div class="score-bar-fill" style="${fill>0?`width:${fill}%; min-width:2px;`:'display:none;'}"></div></div>` : '';
+                    scoreBlock = `
+                        <div class="score">
+                            <div class="score-number">${p.score}</div>
+                            <div class="score-label">Баллов</div>
+                            ${barHtml}
+                        </div>`;
                 }
 
                 let posHTML = state.showPositions ? `<div class="position">${pos}</div>` : '';
@@ -671,7 +710,7 @@
                         ${posHTML}
                         ${avaHTML}
                         <div class="participant-info"><div class="participant-name">${p.name}</div>${state.showNotes && p.note ? `<div class="participant-note">${p.note}</div>` : ''}</div>
-                        ${sb}
+                        ${scoreBlock}
                     </div>`;
             });
             setTimeout(adjustMobileScale, 10);
