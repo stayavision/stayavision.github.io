@@ -706,4 +706,98 @@
             capture.className = `style-${state.style}`;
             if (state.highlightTop3) capture.classList.add('highlight-top3'); else capture.classList.remove('highlight-top3');
             
-            capture.style.setProperty
+            capture.style.setProperty('--bar-c1', hexToRgba(state.barColor1, state.barAlpha)); capture.style.setProperty('--bar-c2', hexToRgba(state.barColor2, state.barAlpha * 0.7));
+            capture.style.setProperty('--avatar-radius', state.avatarShape);
+            capture.style.setProperty('--font-title', `"${state.fontTitle}"`); capture.style.setProperty('--font-board', `"${state.fontBoard}"`);
+            capture.style.setProperty('--text-case', state.textUppercase ? 'uppercase' : 'none');
+            capture.style.setProperty('--text-scale', state.textScale); capture.style.setProperty('--bar-scale', state.barScale);
+            
+            // X/Y Offsets
+            capture.style.setProperty('--name-x', state.nameX + 'px'); capture.style.setProperty('--name-y', state.nameY + 'px');
+            capture.style.setProperty('--score-x', state.scoreX + 'px'); capture.style.setProperty('--score-y', state.scoreY + 'px');
+            capture.style.setProperty('--pos-x', state.posX + 'px'); capture.style.setProperty('--pos-y', state.posY + 'px');
+            capture.style.setProperty('--ava-x', state.avaX + 'px'); capture.style.setProperty('--ava-y', state.avaY + 'px');
+            capture.style.setProperty('--text-align', state.align); 
+            
+            let flexAlign = 'flex-start'; if(state.align === 'center') flexAlign = 'center'; if(state.align === 'right') flexAlign = 'flex-end';
+            capture.style.setProperty('--align-flex', flexAlign);
+            
+            capture.style.setProperty('--avatar-size', state.avatarSize); capture.style.setProperty('--bar-h-mult', state.barHeightMultiplier);
+            
+            capture.style.setProperty('--top1', state.c1); capture.style.setProperty('--top1-bg', hexToRgba(state.c1, state.barAlpha * 0.5));
+            capture.style.setProperty('--top2', state.c2); capture.style.setProperty('--top2-bg', hexToRgba(state.c2, state.barAlpha * 0.3));
+            capture.style.setProperty('--top3', state.c3); capture.style.setProperty('--top3-bg', hexToRgba(state.c3, state.barAlpha * 0.3));
+
+            inner.style.setProperty('--pad-x', state.padX + 'px'); inner.style.setProperty('--pad-y', state.padY + 'px');
+            inner.style.transform = `scale(${state.scale})`;
+
+            let bgUrl = (state.bgType === 'custom') ? state.bgCustomData : (state.bgType !== 'none' ? state.bgType : "");
+            document.getElementById('bgBlur').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
+            document.getElementById('bgClear').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
+
+            const board = document.getElementById('renderBoard'); board.innerHTML = '';
+            
+            let list = [...state.participants];
+            if (state.viewMode === 'results') list.sort((a,b) => b.score - a.score);
+            let maxScore = Math.max(...list.map(p => p.score), 1);
+
+            let rowsCount = Math.ceil(list.length / state.columns);
+            board.style.gridTemplateColumns = `repeat(${state.columns}, 1fr)`;
+            board.style.gridTemplateRows = `repeat(${rowsCount}, auto)`;
+            board.style.gridAutoFlow = 'column';
+
+            list.forEach((p, index) => {
+                let pos = index + 1; let rC = "result-row";
+                if (state.viewMode === 'results' && pos <= 3) rC += ` place-${pos}`;
+                let fill = Math.max((p.score / maxScore) * 100, 0.1); 
+                
+                let scoreBlock = '';
+                if (state.viewMode === 'results' && state.showScores) {
+                    let barHtml = state.showScoreBars ? `<div class="score-bar"><div class="score-bar-fill" style="${fill>0?`width:${fill}%; min-width:2px;`:'display:none;'}"></div></div>` : '';
+                    scoreBlock = `
+                        <div class="score">
+                            <div class="score-number">${p.score}</div>
+                            <div class="score-label">Баллов</div>
+                            ${barHtml}
+                        </div>`;
+                }
+
+                let posHTML = state.showPositions ? `<div class="position">${pos}</div>` : '';
+                let avaHTML = state.showAvatars ? `<img src="${p.avatar}" class="participant-avatar" alt="av">` : '';
+
+                board.innerHTML += `
+                    <div class="${rC}">
+                        ${posHTML}
+                        ${avaHTML}
+                        <div class="participant-info"><div class="participant-name">${p.name}</div>${state.showNotes && p.note ? `<div class="participant-note">${p.note}</div>` : ''}</div>
+                        ${scoreBlock}
+                    </div>`;
+            });
+            setTimeout(adjustMobileScale, 10);
+        }
+
+        function adjustMobileScale() {
+            const capture = document.getElementById('scoreboard-capture'); const wrapper = document.getElementById('previewWrapper');
+            if(!capture || !wrapper || capture.offsetWidth === 0) return;
+            let scale = Math.min(wrapper.clientWidth / capture.offsetWidth, 1);
+            capture.style.transform = `scale(${scale})`; wrapper.style.height = (capture.offsetHeight * scale) + 'px';
+        }
+
+        function downloadImage() {
+            const target = document.getElementById('scoreboard-capture'); const btn = document.querySelector('.btn-download');
+            btn.innerText = "Генерация..."; btn.style.opacity = '0.7';
+            const oldTrans = target.style.transform; target.style.transform = 'none';
+            let sc = (state.aspectRatio === 'custom' && (state.customW > 2000 || state.customH > 2000)) ? 1 : 2;
+
+            html2canvas(target, { scale: sc, backgroundColor: null, useCORS: true, logging: false }).then(canvas => {
+                target.style.transform = oldTrans; 
+                const link = document.createElement('a'); link.download = `${state.title}_${state.viewMode}.png`;
+                link.href = canvas.toDataURL('image/png'); link.click();
+                btn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Сохранить картинку`; btn.style.opacity = '1';
+            }).catch(err => { target.style.transform = oldTrans; alert("Ошибка!"); btn.innerHTML = `Сохранить картинку`; btn.style.opacity = '1'; });
+        }
+
+        init();
+    </script>
+</body>
+</html>
