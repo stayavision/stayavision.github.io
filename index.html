@@ -24,6 +24,7 @@
             --accent3: #00D4FF;
             --text-primary: #ffffff;
             --text-secondary: #b0b0cc;
+            --danger: #ff4d4d;
         }
 
         body {
@@ -34,22 +35,22 @@
             transition: all 0.3s ease;
         }
 
-        /* Динамический фон для конкурсов */
+        /* Динамический фон для конкурсов - ТЕПЕРЬ ВИДНЕЕ */
         .dynamic-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
             z-index: -2;
-            opacity: 0.3;
-            filter: blur(8px);
-            transition: opacity 0.4s ease-in-out;
+            opacity: 0.6; /* Увеличена яркость фона */
+            filter: blur(4px); /* Уменьшено размытие */
+            transition: opacity 0.4s ease-in-out, background-image 0.4s ease-in-out;
         }
         
         .bg-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 26, 0.75); /* Затемнение, чтобы текст читался */
+            background: rgba(10, 10, 26, 0.55); /* Уменьшено затемнение */
             z-index: -1;
             pointer-events: none;
         }
@@ -61,7 +62,7 @@
             z-index: 0; overflow: hidden; pointer-events: none;
         }
 
-        .bg-animation .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.2; animation: floatOrb 20s infinite ease-in-out; }
+        .bg-animation .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; animation: floatOrb 20s infinite ease-in-out; }
         .bg-animation .orb:nth-child(1) { width: 600px; height: 600px; background: var(--accent1); top: -200px; left: -200px; animation-delay: 0s; }
         .bg-animation .orb:nth-child(2) { width: 500px; height: 500px; background: var(--accent2); top: 50%; right: -200px; animation-delay: -7s; }
         .bg-animation .orb:nth-child(3) { width: 400px; height: 400px; background: var(--accent3); bottom: -150px; left: 30%; animation-delay: -14s; }
@@ -161,7 +162,9 @@
         
         .result-row { display: flex; align-items: center; padding: 20px 30px; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05); position: relative; }
         .result-row:hover { background: rgba(255, 255, 255, 0.05); }
-        .result-row.place-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent); }
+        
+        /* Исправлен дизайн первого места для опрятного вида */
+        .result-row.place-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent); border-left: 4px solid var(--gold); }
         .result-row.place-2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), transparent); }
         .result-row.place-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), transparent); }
         .result-row.eliminated { opacity: 0.7; background: rgba(255,0,0,0.05); border-left: 3px solid #ff4d4d; }
@@ -172,7 +175,7 @@
         .position-3 { background: linear-gradient(135deg, #CD7F32, #8B5A2B); color: white; box-shadow: 0 0 15px rgba(205, 127, 50, 0.3); }
         .position-other { background: rgba(255, 255, 255, 0.1); color: var(--text-secondary); }
 
-        @keyframes winnerGlow { 0%, 100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); } 50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.7); } }
+        @keyframes winnerGlow { 0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); } 50% { box-shadow: 0 0 35px rgba(255, 215, 0, 0.6); } }
 
         .participant-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 20px; border: 2px solid rgba(255, 255, 255, 0.1); flex-shrink: 0; background: #2a2a4a; }
         .place-1 .participant-avatar { border-color: var(--gold); box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
@@ -287,8 +290,10 @@
         </div>
     </header>
 
+    <!-- Навигация -->
     <nav><div class="nav-inner" id="navContainer"></div></nav>
 
+    <!-- Главный контейнер куда JS отрисует весь контент -->
     <main id="appContainer"></main>
 
     <footer>
@@ -311,7 +316,7 @@
                     started: true, isLost: false, winner: { name: "Гира", avatar: "gira.jpg" },
                     links: {},
                     final: [
-                        { name: "Гира", avatar: "gira.jpg", score: 6, note: "" },
+                        { name: "Гира", avatar: "gira.jpg", score: 6, note: "🏆 Победитель" },
                         { name: "Обалена", avatar: "obalena.jpg", score: 3, note: "" },
                         { name: "Егорь", avatar: "egor.jpg", score: 3, note: "" }
                     ]
@@ -321,7 +326,7 @@
                     started: true, isLost: false, winner: { name: "Ритикс", avatar: "ritix.jpg" },
                     links: {},
                     final: [
-                        { name: "Ритикс", avatar: "ritix.jpg", score: 8, note: "" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 8, note: "🏆 Победитель" },
                         { name: "Обалена", avatar: "obalena.jpg", score: 6, note: "" },
                         { name: "Егорь", avatar: "egor.jpg", score: 3, note: "" },
                         { name: "Гира", avatar: "gira.jpg", score: 2, note: "" }
@@ -332,7 +337,7 @@
                     started: true, isLost: false, winner: { name: "Егорь", avatar: "egor.jpg" },
                     links: {},
                     final: [
-                        { name: "Егорь", avatar: "egor.jpg", score: 9, note: "" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 9, note: "🏆 Победитель" },
                         { name: "Ритикс", avatar: "ritix.jpg", score: 6, note: "" },
                         { name: "Обалена", avatar: "obalena.jpg", score: 3, note: "" }
                     ]
@@ -350,7 +355,7 @@
                     started: true, isLost: false, winner: { name: "Егорь", avatar: "egor.jpg" },
                     links: {},
                     final: [
-                        { name: "Егорь", avatar: "egor.jpg", score: 7, note: "" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 7, note: "🏆 Победитель" },
                         { name: "Обалена", avatar: "obalena.jpg", score: 5, note: "" },
                         { name: "Ритикс", avatar: "ritix.jpg", score: 4, note: "" }
                     ]
@@ -358,10 +363,7 @@
                 {
                     id: "edition6", shortName: "SV 6", name: "Стаявидение 6", location: "Дюшесово",
                     started: true, isLost: false, winner: { name: "Обалена", avatar: "obalena.jpg" },
-                    links: { 
-                        semifinal: "https://youtube.com/полуфинал_ссылка", 
-                        final: "https://youtube.com/финал_ссылка" 
-                    },
+                    links: { semifinal: "https://youtube.com/полуфинал_ссылка", final: "https://youtube.com/финал_ссылка" },
                     final: [
                         { name: "Обалена", avatar: "obalena.jpg", score: 16, note: "🏆 Победитель Финала" },
                         { name: "Ритикс", avatar: "ritix.jpg", score: 14, note: "★ Финалист" },
@@ -369,36 +371,45 @@
                         { name: "Егорь", avatar: "egor.jpg", score: 8, note: "★ Финалист" }
                     ],
                     semifinal: [
-                        { name: "Обалена", avatar: "obalena.jpg", score: 20, note: "Прошел в финал" },
-                        { name: "Ритикс", avatar: "ritix.jpg", score: 18, note: "Прошел в финал" },
-                        { name: "Гира", avatar: "gira.jpg", score: 15, note: "Прошел в финал" },
-                        { name: "Егорь", avatar: "egor.jpg", score: 10, note: "Прошел в финал" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 16, note: "Прошел в финал" },
+                        { name: "Обалена", avatar: "obalena.jpg", score: 14, note: "Прошел в финал" },
+                        { name: "Гира", avatar: "gira.jpg", score: 12, note: "Прошел в финал" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 7, note: "Прошел в финал" },
                         { name: "Енька", avatar: "enka.jpg", score: 4, note: "✗ Выбыл в полуфинале", eliminated: true },
                         { name: "И. Потужность", avatar: "potuzhnost.jpg", score: 4, note: "✗ Выбыл в полуфинале", eliminated: true }
                     ]
                 },
                 {
-                    // ВОССТАНОВЛЕНО
-                    id: "edition7", shortName: "SV 7", name: "Стаявидение 7", location: "Ожидается",
+                    // ОБНОВЛЕНО: Стаявидение 7
+                    id: "edition7", shortName: "SV 7", name: "Стаявидение 7", location: "Дюшесово",
+                    started: true, isLost: false, winner: { name: "Егорь", avatar: "egor.jpg" },
+                    links: {},
+                    final: [
+                        { name: "Егорь", avatar: "egor.jpg", score: 30, note: "🏆 Победитель" },
+                        { name: "Обалена", avatar: "obalena.jpg", score: 28, note: "" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 22, note: "" },
+                        { name: "Енька", avatar: "enka.jpg", score: 16, note: "" },
+                        { name: "Машонка", avatar: "mashonka.jpg", score: 15, note: "" },
+                        { name: "Balepa", avatar: "balepa.jpg", score: 15, note: "" },
+                        { name: "И. Потужность", avatar: "potuzhnost.jpg", score: 9, note: "" }
+                    ]
+                },
+                {
+                    // НОВОЕ: Стаявидение 8
+                    id: "edition8", shortName: "SV 8", name: "Стаявидение 8", location: "Ожидается",
                     started: false, isLost: false, winner: null,
                     links: {},
                     participants: [
-                        { name: "Енька", avatar: "enka.jpg", note: "Заявка принята" },
-                        { name: "Обалена", avatar: "obalena.jpg", note: "Заявка принята" },
-                        { name: "Егорь", avatar: "egor.jpg", note: "Хост" },
-                        { name: "Машонка", avatar: "mashonka.jpg", note: "Новый участник! Маша" }
-                        { name: "Балепа", avatar: "balepa.jpg", note: "Новый участник! Варя" }
-                        { name: "И. Потужность", avatar: "potuzhnost.jpg", note: "Заявка принята" }
-                        { name: "Балепа", avatar: "balepa.jpg", note: "Новый участник! Варя" }
-                        { name: "Ритикс", avatar: "ritix.jpg", note: "Заявка принята" }
+                        { name: "Егорь", avatar: "egor.jpg", note: "Участие подтверждено" },
+                        { name: "Машонка", avatar: "mashonka.jpg", note: "Участие подтверждено" }
                     ]
                 }
             ],
             hallOfFame: [
+                { name: "Егорь", avatar: "egor.jpg", wins: "3 победы (SV3, SV5, SV7)" },
                 { name: "Гира", avatar: "gira.jpg", wins: "2 победы (SV1, SV4)" },
-                { name: "Ритикс", avatar: "ritix.jpg", wins: "1 победа (SV2)" },
-                { name: "Егорь", avatar: "egor.jpg", wins: "2 победы (SV3, SV5)" },
-                { name: "Обалена", avatar: "obalena.jpg", wins: "1 победа (SV6)" }
+                { name: "Обалена", avatar: "obalena.jpg", wins: "1 победа (SV6)" },
+                { name: "Ритикс", avatar: "ritix.jpg", wins: "1 победа (SV2)" }
             ]
         };
 
@@ -632,9 +643,10 @@
                 let bgUrl = 'wolfs.jpg';
                 if (sectionId === 'edition6') bgUrl = 'sv6.webp';
                 if (sectionId === 'edition7') bgUrl = 'sv7.webp';
+                if (sectionId === 'edition8') bgUrl = 'sv8.webp';
                 
                 bgEl.style.backgroundImage = `url('${bgUrl}')`;
-                bgEl.style.opacity = '0.4'; // Плавно зажигаем новый
+                bgEl.style.opacity = '0.6'; // Плавно зажигаем новый
             }, 300);
 
             window.scrollTo({ top: document.querySelector('nav').offsetTop - 20, behavior: 'smooth' });
