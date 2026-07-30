@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lyria 3 Studio — Стаявидение</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
+            --bg-dark: #0a0a1a; --bg-card: #12122a;
+            --accent1: #7B2FBE; --accent2: #E91E8C; --accent3: #00D4FF;
+            --text-primary: #ffffff; --text-secondary: #b0b0cc;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-dark); color: var(--text-primary);
+            height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* Animated background */
+        .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; }
+        .bg-animation .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.2; animation: floatOrb 20s infinite ease-in-out; }
+        .bg-animation .orb:nth-child(1) { width: 400px; height: 400px; background: var(--accent1); top: -100px; left: -100px; animation-delay: 0s; }
+        .bg-animation .orb:nth-child(2) { width: 300px; height: 300px; background: var(--accent2); top: 40%; right: -150px; animation-delay: -5s; }
+        .bg-animation .orb:nth-child(3) { width: 350px; height: 350px; background: var(--accent3); bottom: -100px; left: 20%; animation-delay: -10s; }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .particle { position: absolute; background: rgba(255, 255, 255, 0.4); border-radius: 50%; animation: sparkle linear infinite; }
+        @keyframes sparkle { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-10vh) scale(1); opacity: 0; } }
+
+        /* HEADER */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; background: rgba(10, 10, 26, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; z-index: 10;
+        }
+        .header-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; background: linear-gradient(135deg, var(--gold), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
+        .header-subtitle { font-size: 0.7rem; color: var(--accent3); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-top: 2px;}
+        
+        .limits { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .limits span { color: var(--gold); }
+
+        /* CHAT AREA */
+        .chat-container {
+            flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px;
+            scroll-behavior: smooth;
+        }
+        .chat-container::-webkit-scrollbar { width: 6px; }
+        .chat-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+
+        .message { max-width: 85%; display: flex; flex-direction: column; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* User Message */
+        .message.user { align-self: flex-end; align-items: flex-end; }
+        .message.user .bubble { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; border-radius: 18px 18px 0 18px; padding: 12px 18px; box-shadow: 0 5px 15px rgba(233, 30, 140, 0.3); font-size: 0.95rem; line-height: 1.4; }
+        
+        /* Bot Message */
+        .message.bot { align-self: flex-start; align-items: flex-start; width: 100%; max-width: 450px; }
+        .message.bot .bubble { background: rgba(18, 18, 42, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-left: 3px solid var(--accent3); border-radius: 18px 18px 18px 0; padding: 15px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+        .bot-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .bot-icon { font-size: 1.2rem; }
+        .bot-name { font-weight: 700; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Audio Player Styling */
+        .track-card { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 12px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .track-cover { width: 60px; height: 60px; border-radius: 8px; background: linear-gradient(135deg, var(--accent3), var(--accent1)); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .track-info { flex: 1; overflow: hidden; }
+        .track-title { font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px; }
+        .track-tags { font-size: 0.7rem; color: var(--accent3); background: rgba(0, 212, 255, 0.1); padding: 2px 6px; border-radius: 4px; display: inline-block; }
+        audio { width: 100%; height: 35px; outline: none; margin-top: 10px; border-radius: 8px; }
+        audio::-webkit-media-controls-panel { background: rgba(255,255,255,0.9); }
+
+        /* Loading Animation */
+        .loading-dots { display: flex; gap: 5px; padding: 10px 5px; }
+        .dot { width: 8px; height: 8px; background: var(--accent3); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+        /* File Attachment Preview in Chat */
+        .chat-attachment { max-width: 200px; max-height: 150px; border-radius: 8px; margin-bottom: 8px; border: 2px solid rgba(255,255,255,0.2); }
+        .chat-audio-att { background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.2); }
+
+        /* INPUT AREA */
+        .input-container { background: rgba(10, 10, 26, 0.9); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; flex-shrink: 0; z-index: 10; padding-bottom: calc(15px + env(safe-area-inset-bottom)); }
+        
+        .mode-selector { display: flex; gap: 10px; margin-bottom: 12px; }
+        .mode-btn { flex: 1; padding: 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: var(--text-secondary); font-family: Montserrat; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .mode-btn.active { background: rgba(0, 212, 255, 0.15); border-color: var(--accent3); color: var(--accent3); }
+
+        /* Предпросмотр перед отправкой */
+        .preview-area { display: none; padding-bottom: 10px; }
+        .preview-box { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px 5px 5px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
+        .preview-box img { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; }
+        .preview-box .file-name { font-size: 0.8rem; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .preview-box .remove-btn { background: #ff4d4d; color: white; border: none; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; font-weight: bold; line-height: 1; }
+
+        .input-row { display: flex; gap: 10px; align-items: flex-end; }
+        
+        .attach-btn { width: 45px; height: 45px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.3s; }
+        .attach-btn:hover { background: rgba(255,255,255,0.15); }
+
+        .text-input { flex: 1; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px 15px; color: white; font-family: Montserrat; font-size: 0.95rem; resize: none; outline: none; min-height: 45px; max-height: 120px; overflow-y: auto; }
+        .text-input::placeholder { color: rgba(255,255,255,0.3); }
+        .text-input:focus { border-color: var(--accent1); }
+
+        .send-btn { width: 45px; height: 45px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--accent1), var(--accent3)); color: white; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.3s; box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3); }
+        .send-btn:hover { transform: scale(1.05); }
+        .send-btn:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; transform: none; }
+
+        @media (max-width: 600px) {
+            .message { max-width: 90%; }
+            .limits { font-size: 0.7rem; padding: 4px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background -->
+    <div class="bg-animation">
+        <div class="orb"></div><div class="orb"></div><div class="orb"></div>
+    </div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Header -->
+    <header>
+        <div>
+            <h1 class="header-title">Lyria 3</h1>
+            <div class="header-subtitle">Music Studio</div>
+        </div>
+        <div class="limits">Генераций: <span id="limitCount">50</span></div>
+    </header>
+
+    <!-- Chat Area -->
+    <main class="chat-container" id="chatContainer">
+        <!-- Стартовое сообщение -->
+        <div class="message bot">
+            <div class="bubble">
+                <div class="bot-header">
+                    <span class="bot-icon">🎵</span>
+                    <span class="bot-name">Lyria 3 Pro</span>
+                </div>
+                <div style="font-size: 0.9rem; line-height: 1.5; color: #ddd;">
+                    Привет! Я нейросеть <b>Lyria 3 Pro</b>. Опиши песню, которую хочешь создать, и выбери режим. Ты также можешь прикрепить аудио для ремикса или картинку для обложки.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Input Area -->
+    <div class="input-container">
+        <!-- Mode Switcher -->
+        <div class="mode-selector">
+            <button class="mode-btn active" id="btnPro" onclick="setMode('pro')">Pro (1+ мин)</button>
+            <button class="mode-btn" id="btnFast" onclick="setMode('fast')">Fast (30 сек)</button>
+        </div>
+
+        <!-- Attachment Preview -->
+        <div class="preview-area" id="previewArea">
+            <div class="preview-box">
+                <img id="previewImg" src="" alt="preview" style="display:none;">
+                <div id="previewAudio" style="display:none; font-size:1.5rem; padding: 0 5px;">🎵</div>
+                <span class="file-name" id="previewName">файл.jpg</span>
+                <button class="remove-btn" onclick="clearAttachment()">×</button>
+            </div>
+        </div>
+
+        <!-- Input Form -->
+        <div class="input-row">
+            <input type="file" id="fileInput" style="display: none;" accept="image/*,audio/*" onchange="handleFileSelect(event)">
+            <button class="attach-btn" onclick="document.getElementById('fileInput').click()">📎</button>
+            <textarea class="text-input" id="promptInput" rows="1" placeholder="Напиши промпт (жанр, тема, настроение)..." oninput="autoResize(this)" onkeydown="checkEnter(event)"></textarea>
+            <button class="send-btn" id="sendBtn" onclick="generateMusic()">➤</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Настройки и Глобальные переменные ---
+        let currentMode = 'pro';
+        let limit = 50;
+        let selectedFile = null;
+        let selectedFileDataURL = null;
+
+        // Частицы на фоне
+        const pContainer = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.width = (Math.random() * 3 + 1) + 'px';
+            p.style.height = p.style.width;
+            p.style.animationDuration = (Math.random() * 10 + 5) + 's';
+            p.style.animationDelay = (Math.random() * 5) + 's';
+            pContainer.appendChild(p);
+        }
+
+        // Переключение режимов Pro/Fast
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('btnPro').classList.toggle('active', mode === 'pro');
+            document.getElementById('btnFast').classList.toggle('active', mode === 'fast');
+        }
+
+        // Авто-расширение поля ввода
+        function autoResize(textarea) {
+            textarea.style.height = '45px';
+            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+        }
+
+        function checkEnter(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                generateMusic();
+            }
+        }
+
+        // Обработка загрузки файла (Превью)
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            selectedFile = file;
+
+            const isImage = file.type.startsWith('image/');
+            const previewArea = document.getElementById('previewArea');
+            const previewImg = document.getElementById('previewImg');
+            const previewAudio = document.getElementById('previewAudio');
+            document.getElementById('previewName').innerText = file.name;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                selectedFileDataURL = event.target.result;
+                if (isImage) {
+                    previewImg.src = selectedFileDataURL;
+                    previewImg.style.display = 'block';
+                    previewAudio.style.display = 'none';
+                } else {
+                    previewImg.style.display = 'none';
+                    previewAudio.style.display = 'block';
+                }
+                previewArea.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearAttachment() {
+            selectedFile = null;
+            selectedFileDataURL = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('previewArea').style.display = 'none';
+        }
+
+        // Скролл вниз
+        function scrollToBottom() {
+            const chat = document.getElementById('chatContainer');
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // --- ГЛАВНАЯ ФУНКЦИЯ ГЕНЕРАЦИИ (Сюда вставлять API) ---
+        async function generateMusic() {
+            const input = document.getElementById('promptInput');
+            const promptText = input.value.trim();
+            const sendBtn = document.getElementById('sendBtn');
+            const chat = document.getElementById('chatContainer');
+
+            if (!promptText && !selectedFile) return;
+            if (limit <= 0) { alert("Лимиты исчерпаны!"); return; }
+
+            // 1. Отрисовка сообщения пользователя
+            let userHtml = `<div class="message user"><div class="bubble">`;
+            if (selectedFile) {
+                if (selectedFile.type.startsWith('image/')) {
+                    userHtml += `<img src="${selectedFileDataURL}" class="chat-attachment">`;
+                } else {
+                    userHtml += `<div class="chat-audio-att">📎 ${selectedFile.name}</div>`;
+                }
+            }
+            if (promptText) userHtml += `<div>${promptText}</div>`;
+            userHtml += `</div></div>`;
+            
+            chat.insertAdjacentHTML('beforeend', userHtml);
+            
+            // Очистка ввода
+            input.value = '';
+            input.style.height = '45px';
+            const savedPrompt = promptText; // Сохраняем промпт для карточки трека
+            const savedFileUrl = selectedFileDataURL;
+            clearAttachment();
+            scrollToBottom();
+
+            // 2. Отрисовка "Загрузки" бота
+            const loadingId = 'loading-' + Date.now();
+            let botLoadingHtml = `
+                <div class="message bot" id="${loadingId}">
+                    <div class="bubble">
+                        <div class="bot-header">
+                            <span class="bot-icon">✨</span>
+                            <span class="bot-name">Lyria 3 ${currentMode.toUpperCase()}</span>
+                        </div>
+                        <div style="font-size: 0.85rem; margin-bottom: 5px; color: var(--accent3);">Генерирую музыку...</div>
+                        <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    </div>
+                </div>`;
+            chat.insertAdjacentHTML('beforeend', botLoadingHtml);
+            scrollToBottom();
+            
+            sendBtn.disabled = true;
+
+            // =========================================================
+            // 🚀 МЕСТО ДЛЯ ТВОЕГО API 🚀
+            // =========================================================
+            /* 
+               Пример использования fetch:
+               
+               try {
+                   const response = await fetch('AQ.Ab8RN6JhIUxyDsJ3NZmYkMcNvmp0F18vRh86hmZ47ZI2Aw8YMQ', {
+                       method: 'POST',
+                       headers: { 'Content-Type': 'application/json' },
+                       body: JSON.stringify({ 
+                           prompt: savedPrompt, 
+                           mode: currentMode,
+                           image: savedFileUrl // Если API поддерживает base64
+                       })
+                   });
+                   const data = await response.json();
+                   const audioUrl = data.audio_url; // Получаешь ссылку
+               } catch (error) { ... }
+            */
+
+            // СИМУЛЯЦИЯ ЗАДЕРЖКИ API (3 секунды)
+            setTimeout(() => {
+                
+                // 3. Результат от API (Заглушка)
+                const mockAudioUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"; // Тестовый MP3
+                const coverArt = savedFileUrl && savedFileUrl.startsWith('data:image') ? savedFileUrl : ''; 
+                const coverHtml = coverArt ? `<img src="${coverArt}" class="track-cover" style="object-fit:cover;">` : `<div class="track-cover">🎵</div>`;
+                const tag = currentMode === 'pro' ? 'PRO MODEL' : 'FAST MODEL';
+
+                // Удаляем индикатор загрузки
+                document.getElementById(loadingId).remove();
+
+                // Отрисовываем готовый трек
+                let resultHtml = `
+                    <div class="message bot">
+                        <div class="bubble">
+                            <div class="bot-header">
+                                <span class="bot-icon">🎧</span>
+                                <span class="bot-name">Готово!</span>
+                            </div>
+                            <div class="track-card">
+                                ${coverHtml}
+                                <div class="track-info">
+                                    <div class="track-title">${savedPrompt || "Сгенерированный трек"}</div>
+                                    <div class="track-tags">${tag}</div>
+                                </div>
+                            </div>
+                            <audio controls src="${mockAudioUrl}"></audio>
+                        </div>
+                    </div>`;
+                
+                chat.insertAdjacentHTML('beforeend', resultHtml);
+                scrollToBottom();
+
+                // Обновляем лимит
+                limit--;
+                document.getElementById('limitCount').innerText = limit;
+                sendBtn.disabled = false;
+
+            }, 3000); // Конец симуляции
+        }
+
+    </script>
+</body>
+</html>
