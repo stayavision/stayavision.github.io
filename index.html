@@ -235,7 +235,7 @@
         .hall-card-name { font-size: 1.3rem; font-weight: 900; color: var(--gold); margin-bottom: 5px; }
         .hall-card-wins { font-size: 0.8rem; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; font-weight: 600;}
 
-        /* НОВОЕ: ИСТОРИЯ УЧАСТНИКОВ (ЛЕНТА) */
+        /* Участники - История */
         .part-track-list { display: flex; flex-direction: column; gap: 15px; }
         .participant-track-card { background: rgba(18, 18, 42, 0.7); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; display: flex; gap: 20px; align-items: stretch; backdrop-filter: blur(10px); transition: 0.3s; }
         .participant-track-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.15); }
@@ -340,7 +340,7 @@
     <main id="appContainer"></main>
 
     <footer>
-        <p>Создано с любовью для стаи ❤️</p>
+        <p>Создано с любовью для друзей ❤️</p>
         <p style="margin-top: 8px; font-size: 0.75rem;">Официальный архив | <a href="generator.html">Генератор Скорборда</a></p>
     </footer>
 
@@ -404,20 +404,14 @@
                 {
                     id: "edition6", shortName: "6", name: "Стаявидение 6", location: "Дюшесово",
                     started: true, isLost: false, winner: { name: "Обалена", avatar: "obalena.jpg" },
-                    links: { semifinal: "https://youtube.com/полуфинал_ссылка", final: "https://youtube.com/финал_ссылка" },
+                    links: { final: "https://youtube.com/финал_ссылка" },
                     final: [
-                        { name: "Обалена", avatar: "obalena.jpg", score: 16, note: "🏆 Победитель Финала" },
-                        { name: "Ритикс", avatar: "ritix.jpg", score: 14, note: "★ Финалист" },
-                        { name: "Гира", avatar: "gira.jpg", score: 12, note: "★ Финалист" },
-                        { name: "Егорь", avatar: "egor.jpg", score: 8, note: "★ Финалист" }
-                    ],
-                    semifinal: [
-                        { name: "Ритикс", avatar: "ritix.jpg", score: 16, note: "Прошел в финал" },
-                        { name: "Обалена", avatar: "obalena.jpg", score: 14, note: "Прошел в финал" },
-                        { name: "Гира", avatar: "gira.jpg", score: 12, note: "Прошел в финал" },
-                        { name: "Егорь", avatar: "egor.jpg", score: 7, note: "Прошел в финал" },
-                        { name: "Енька", avatar: "enka.jpg", score: 4, note: "✗ Выбыл в полуфинале", eliminated: true },
-                        { name: "И. Потужность", avatar: "potuzhnost.jpg", score: 4, note: "✗ Выбыл в полуфинале", eliminated: true }
+                        { name: "Обалена", avatar: "obalena.jpg", score: 16, note: "🏆 Победитель" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 14, note: "" },
+                        { name: "Гира", avatar: "gira.jpg", score: 12, note: "" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 8, note: "" },
+                        { name: "Енька", avatar: "enka.jpg", score: 4, note: "" },
+                        { name: "И. Потужность", avatar: "potuzhnost.jpg", score: 3, note: "" }
                     ]
                 },
                 {
@@ -435,7 +429,7 @@
                     ]
                 },
                 {
-                    id: "edition8", shortName: "8", name: "Стаявидение 8", location: "Ожидается",
+                    id: "edition8", shortName: "8", name: "Стаявидение 8", location: "Дюшесово",
                     started: false, isLost: false, winner: null,
                     links: {},
                     participants: [
