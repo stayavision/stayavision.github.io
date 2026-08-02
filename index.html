@@ -35,22 +35,22 @@
             transition: all 0.3s ease;
         }
 
-        /* Динамический фон для конкурсов - ТЕПЕРЬ ВИДНЕЕ */
+        /* Динамический фон для конкурсов */
         .dynamic-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
             z-index: -2;
-            opacity: 0.6; /* Увеличена яркость фона */
-            filter: blur(4px); /* Уменьшено размытие */
+            opacity: 0.6;
+            filter: blur(4px);
             transition: opacity 0.4s ease-in-out, background-image 0.4s ease-in-out;
         }
         
         .bg-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 26, 0.55); /* Уменьшено затемнение */
+            background: rgba(10, 10, 26, 0.55);
             z-index: -1;
             pointer-events: none;
         }
@@ -163,7 +163,6 @@
         .result-row { display: flex; align-items: center; padding: 20px 30px; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05); position: relative; }
         .result-row:hover { background: rgba(255, 255, 255, 0.05); }
         
-        /* Исправлен дизайн первого места для опрятного вида */
         .result-row.place-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent); border-left: 4px solid var(--gold); }
         .result-row.place-2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), transparent); }
         .result-row.place-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), transparent); }
@@ -253,7 +252,6 @@
     </style>
 </head>
 <body>
-    <!-- Динамический фон + оверлей -->
     <div class="dynamic-bg" id="dynamicBg"></div>
     <div class="bg-overlay"></div>
 
@@ -290,10 +288,8 @@
         </div>
     </header>
 
-    <!-- Навигация -->
     <nav><div class="nav-inner" id="navContainer"></div></nav>
 
-    <!-- Главный контейнер куда JS отрисует весь контент -->
     <main id="appContainer"></main>
 
     <footer>
@@ -343,11 +339,15 @@
                     ]
                 },
                 {
+                    // НАЙДЕНО!
                     id: "edition4", shortName: "SV 4", name: "Стаявидение 4", location: "Дюшесово",
-                    started: true, isLost: true, winner: { name: "Гира", avatar: "gira.jpg" },
+                    started: true, isLost: false, winner: { name: "Гира", avatar: "gira.jpg" },
                     links: {},
                     final: [
-                        { name: "Гира", avatar: "gira.jpg", score: null, note: "Единственные известные данные (Видео утеряно)" }
+                        { name: "Гира", avatar: "gira.jpg", score: 16, note: "🏆 Победитель" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 9, note: "" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 7, note: "" },
+                        { name: "Обалена", avatar: "obalena.jpg", score: 3, note: "" }
                     ]
                 },
                 {
@@ -380,7 +380,6 @@
                     ]
                 },
                 {
-                    // ОБНОВЛЕНО: Стаявидение 7
                     id: "edition7", shortName: "SV 7", name: "Стаявидение 7", location: "Дюшесово",
                     started: true, isLost: false, winner: { name: "Егорь", avatar: "egor.jpg" },
                     links: {},
@@ -395,13 +394,15 @@
                     ]
                 },
                 {
-                    // НОВОЕ: Стаявидение 8
                     id: "edition8", shortName: "SV 8", name: "Стаявидение 8", location: "Ожидается",
                     started: false, isLost: false, winner: null,
                     links: {},
                     participants: [
                         { name: "Егорь", avatar: "egor.jpg", note: "Участие подтверждено" },
-                        { name: "Машонка", avatar: "mashonka.jpg", note: "Участие подтверждено" }
+                        { name: "Машонка", avatar: "mashonka.jpg", note: "Участие подтверждено" },
+                        { name: "Обалена", avatar: "obalena.jpg", note: "Участие подтверждено" },
+                        { name: "Енька", avatar: "enka.jpg", note: "Участие подтверждено" },
+                        { name: "Balepa", avatar: "balepa.jpg", note: "Участие подтверждено" }
                     ]
                 }
             ],
