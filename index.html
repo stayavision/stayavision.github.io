@@ -235,13 +235,35 @@
         .hall-card-name { font-size: 1.3rem; font-weight: 900; color: var(--gold); margin-bottom: 5px; }
         .hall-card-wins { font-size: 0.8rem; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; font-weight: 600;}
 
-        /* Участники - История */
-        .part-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
-        .part-card { background: rgba(18, 18, 42, 0.6); border-radius: 12px; padding: 20px 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; backdrop-filter: blur(10px); }
-        .part-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); border-color: rgba(0, 212, 255, 0.3); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .part-avatar { width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 10px; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); }
-        .part-name { font-weight: 800; font-size: 1rem; color: white; margin-bottom: 5px;}
-        .part-count { font-size: 0.75rem; color: var(--accent3); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;}
+        /* НОВОЕ: ИСТОРИЯ УЧАСТНИКОВ (ЛЕНТА) */
+        .part-track-list { display: flex; flex-direction: column; gap: 15px; }
+        .participant-track-card { background: rgba(18, 18, 42, 0.7); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; display: flex; gap: 20px; align-items: stretch; backdrop-filter: blur(10px); transition: 0.3s; }
+        .participant-track-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.15); }
+        .ptc-profile { width: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 20px; text-align: center; }
+        .ptc-avatar { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); margin-bottom: 10px; background: #2a2a4a; }
+        .ptc-name { font-weight: 800; font-size: 1.1rem; color: white; margin-bottom: 5px; }
+        .ptc-total { font-size: 0.7rem; color: var(--accent3); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        .ptc-history { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; flex: 1; align-content: center; }
+        .ptc-ed { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 10px 5px; text-align: center; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; justify-content: center; min-height: 60px; }
+        .ptc-ed-name { font-size: 0.65rem; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        .ptc-ed-res { font-size: 0.8rem; font-weight: 800; }
+
+        /* Цвета статусов в истории */
+        .history-gold { border-color: rgba(255, 215, 0, 0.4); background: linear-gradient(135deg, rgba(255,215,0,0.1), transparent); }
+        .history-gold .ptc-ed-res { color: var(--gold); }
+        .history-silver { border-color: rgba(192, 192, 192, 0.3); background: linear-gradient(135deg, rgba(192,192,192,0.05), transparent); }
+        .history-silver .ptc-ed-res { color: var(--silver); }
+        .history-bronze { border-color: rgba(205, 127, 50, 0.3); background: linear-gradient(135deg, rgba(205,127,50,0.05), transparent); }
+        .history-bronze .ptc-ed-res { color: var(--bronze); }
+        .history-base { border-color: rgba(255,255,255,0.1); }
+        .history-base .ptc-ed-res { color: white; }
+        .history-eliminated { border-color: rgba(255, 77, 77, 0.2); }
+        .history-eliminated .ptc-ed-res { color: var(--danger); }
+        .history-none { opacity: 0.4; }
+        .history-none .ptc-ed-res { color: var(--text-secondary); font-weight: 600; font-size: 0.7rem; }
+        .history-pending { border-color: rgba(0, 212, 255, 0.3); border-style: dashed; }
+        .history-pending .ptc-ed-res { color: var(--accent3); font-size: 0.7rem; }
 
         .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; overflow: hidden; }
         .confetti-piece { position: absolute; width: 10px; height: 10px; top: -10px; animation: confettiFall linear forwards; }
@@ -254,9 +276,15 @@
         body.mobile-mode .participant-info { min-width: 150px; margin-bottom: 10px; }
         body.mobile-mode .score { margin-left: 0; text-align: left; flex-basis: 100%; display: flex; align-items: center; gap: 15px; justify-content: flex-end; }
         body.mobile-mode .nav-btn { padding: 8px 12px; font-size: 0.8rem; min-width: 45px; }
-        body.mobile-mode .stat-card { padding: 15px 10px; }
-        body.mobile-mode .stage-tabs { width: 100%; flex-wrap: wrap; border-radius: 15px; }
-        body.mobile-mode .stage-tab { flex: 1; text-align: center; padding: 10px; }
+        
+        body.mobile-mode .participant-track-card { flex-direction: column; padding: 15px; }
+        body.mobile-mode .ptc-profile { width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding-right: 0; padding-bottom: 15px; margin-bottom: 10px; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; text-align: left; gap: 15px; }
+        body.mobile-mode .ptc-avatar { margin-bottom: 0; width: 55px; height: 55px; }
+        body.mobile-mode .ptc-history { grid-template-columns: repeat(4, 1fr); }
+
+        @media (max-width: 480px) {
+            body.mobile-mode .ptc-history { grid-template-columns: repeat(2, 1fr); }
+        }
 
         footer { text-align: center; padding: 40px 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-secondary); font-size: 0.85rem; z-index: 10; position: relative; font-weight: 600;}
         footer span { background: linear-gradient(135deg, var(--accent1), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
@@ -312,18 +340,13 @@
     <main id="appContainer"></main>
 
     <footer>
-        <p>Создано с любовью для друзей ❤️</p>
+        <p>Создано с любовью для стаи ❤️</p>
         <p style="margin-top: 8px; font-size: 0.75rem;">Официальный архив | <a href="generator.html">Генератор Скорборда</a></p>
     </footer>
 
     <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
 
     <script>
-        /**
-         * ==========================================
-         * 🛠️ БАЗА ДАННЫХ КОНКУРСА
-         * ==========================================
-         */
         const DATA = {
             editions: [
                 {
@@ -493,42 +516,108 @@
             prehistoric.forEach(ed => { html += generateMiniCard(ed); });
             html += `</div>`;
 
-            // 3. ИСТОРИЯ УЧАСТНИКОВ (САЙТ ЕВРОВИДЕНИЯ)
-            let partsData = {};
-            DATA.editions.forEach(ed => {
-                let list = [];
-                if(ed.final) list.push(...ed.final);
-                if(ed.semifinal) {
-                    let fNames = ed.final ? ed.final.map(x=>x.name) : [];
-                    list.push(...ed.semifinal.filter(x => !fNames.includes(x.name)));
-                }
-                if(!ed.final && ed.participants) list.push(...ed.participants); // Для неначавшихся
+            // 3. ИСТОРИЯ УЧАСТНИКОВ (ЛЕНТА)
+            let allParticipants = {};
 
-                list.forEach(p => {
-                    if(!partsData[p.name]) partsData[p.name] = { count: 0, avatar: p.avatar };
-                    partsData[p.name].count++;
+            DATA.editions.forEach(ed => {
+                let pool = [];
+                if (ed.final) pool.push(...ed.final);
+                if (ed.semifinal) pool.push(...ed.semifinal);
+                if (ed.participants) pool.push(...ed.participants);
+
+                pool.forEach(p => {
+                    if (!allParticipants[p.name]) {
+                        allParticipants[p.name] = { name: p.name, avatar: p.avatar, participations: 0, history: [] };
+                    }
                 });
             });
 
-            let sortedParts = Object.keys(partsData).map(k => ({name: k, ...partsData[k]})).sort((a,b) => b.count - a.count);
+            for (const pName in allParticipants) {
+                let pData = allParticipants[pName];
+
+                DATA.editions.forEach((ed, index) => {
+                    let historyEntry = {
+                        edName: "SV " + ed.shortName,
+                        statusClass: "history-none",
+                        resultText: "Нет участия"
+                    };
+
+                    if (!ed.started) {
+                        let isParticipating = ed.participants && ed.participants.find(x => x.name === pName);
+                        if (isParticipating) {
+                            historyEntry.statusClass = "history-pending";
+                            historyEntry.resultText = "В планах ⏳";
+                        } else {
+                            historyEntry.statusClass = "history-none";
+                            historyEntry.resultText = "Не заявлен";
+                        }
+                    } else {
+                        let finalPos = -1;
+                        let isEliminated = false;
+
+                        if (ed.final) {
+                            let sortedFinal = [...ed.final].sort((a,b) => (b.score || 0) - (a.score || 0));
+                            finalPos = sortedFinal.findIndex(x => x.name === pName);
+                        }
+
+                        if (ed.semifinal) {
+                            let sEntry = ed.semifinal.find(x => x.name === pName);
+                            if (sEntry && sEntry.eliminated) isEliminated = true;
+                        }
+
+                        if (finalPos !== -1) {
+                            pData.participations++;
+                            let place = finalPos + 1;
+                            if (place === 1) { historyEntry.statusClass = "history-gold"; historyEntry.resultText = "1 Место 🏆"; } 
+                            else if (place === 2) { historyEntry.statusClass = "history-silver"; historyEntry.resultText = "2 Место 🥈"; } 
+                            else if (place === 3) { historyEntry.statusClass = "history-bronze"; historyEntry.resultText = "3 Место 🥉"; } 
+                            else { historyEntry.statusClass = "history-base"; historyEntry.resultText = place + " Место"; }
+                        } else if (isEliminated) {
+                            pData.participations++;
+                            historyEntry.statusClass = "history-eliminated";
+                            historyEntry.resultText = "Выбыл в ПФ";
+                        }
+                    }
+                    pData.history.push(historyEntry);
+                });
+            }
+
+            let sortedParts = Object.values(allParticipants).sort((a,b) => b.participations - a.participations);
 
             html += `
                 <div style="margin-top: 70px;">
-                    <h2 class="era-title" style="color: var(--accent3);">Все участники</h2>
-                    <div class="part-grid">
+                    <h2 class="era-title" style="color: var(--accent3);">История Участников</h2>
+                    <div class="part-track-list">
             `;
+            
             sortedParts.forEach(p => {
-                let ending = (p.count === 1) ? 'участие' : ((p.count >= 2 && p.count <= 4) ? 'участия' : 'участий');
+                let ending = (p.participations === 1) ? 'конкурс' : ((p.participations >= 2 && p.participations <= 4) ? 'конкурса' : 'конкурсов');
+                
                 html += `
-                    <div class="part-card">
-                        <img src="${p.avatar}" alt="${p.name}" class="part-avatar">
-                        <div class="part-name">${p.name}</div>
-                        <div class="part-count">${p.count} ${ending}</div>
-                    </div>
+                    <div class="participant-track-card">
+                        <div class="ptc-profile">
+                            <img src="${p.avatar}" alt="${p.name}" class="ptc-avatar">
+                            <div>
+                                <div class="ptc-name">${p.name}</div>
+                                <div class="ptc-total">${p.participations} ${ending}</div>
+                            </div>
+                        </div>
+                        <div class="ptc-history">
                 `;
+                
+                p.history.forEach(h => {
+                    html += `
+                        <div class="ptc-ed ${h.statusClass}">
+                            <span class="ptc-ed-name">${h.edName}</span>
+                            <span class="ptc-ed-res">${h.resultText}</span>
+                        </div>
+                    `;
+                });
+                
+                html += `</div></div>`;
             });
+            
             html += `</div></div></section>`;
-
             return html;
         }
 
@@ -684,9 +773,8 @@
                 if(b.getAttribute('onclick').includes(sectionId)) { b.classList.add('active'); break; }
             }
 
-            // ДИНАМИЧЕСКИЙ ФОН
             const bgEl = document.getElementById('dynamicBg');
-            bgEl.style.opacity = '0'; // Плавно гасим текущий
+            bgEl.style.opacity = '0'; 
             
             setTimeout(() => {
                 let bgUrl = 'wolfs.jpg';
@@ -695,7 +783,7 @@
                 if (sectionId === 'edition8') bgUrl = 'sv8.webp';
                 
                 bgEl.style.backgroundImage = `url('${bgUrl}')`;
-                bgEl.style.opacity = '0.6'; // Плавно зажигаем новый
+                bgEl.style.opacity = '0.6'; 
             }, 300);
 
             window.scrollTo({ top: document.querySelector('nav').offsetTop - 20, behavior: 'smooth' });
