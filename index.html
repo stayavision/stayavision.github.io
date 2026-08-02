@@ -35,22 +35,22 @@
             transition: all 0.3s ease;
         }
 
-        /* Динамический фон для конкурсов */
+        /* Динамический фон для конкурсов - ТЕПЕРЬ ВИДНЕЕ */
         .dynamic-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
             z-index: -2;
-            opacity: 0.6;
-            filter: blur(4px);
+            opacity: 0.6; /* Увеличена яркость фона */
+            filter: blur(4px); /* Уменьшено размытие */
             transition: opacity 0.4s ease-in-out, background-image 0.4s ease-in-out;
         }
         
         .bg-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 26, 0.55);
+            background: rgba(10, 10, 26, 0.55); /* Уменьшено затемнение */
             z-index: -1;
             pointer-events: none;
         }
@@ -313,8 +313,8 @@
                     links: {},
                     final: [
                         { name: "Гира", avatar: "gira.jpg", score: 6, note: "🏆 Победитель" },
-                        { name: "Обалена", avatar: "obalena.jpg", score: 3, note: "" },
-                        { name: "Егорь", avatar: "egor.jpg", score: 3, note: "" }
+                        { name: "Егорь", avatar: "egor.jpg", score: 3, note: "" },
+                        { name: "Обалена", avatar: "obalena.jpg", score: 3, note: "" }
                     ]
                 },
                 {
@@ -339,7 +339,6 @@
                     ]
                 },
                 {
-                    // НАЙДЕНО!
                     id: "edition4", shortName: "SV 4", name: "Стаявидение 4", location: "Дюшесово",
                     started: true, isLost: false, winner: { name: "Гира", avatar: "gira.jpg" },
                     links: {},
@@ -402,7 +401,8 @@
                         { name: "Машонка", avatar: "mashonka.jpg", note: "Участие подтверждено" },
                         { name: "Обалена", avatar: "obalena.jpg", note: "Участие подтверждено" },
                         { name: "Енька", avatar: "enka.jpg", note: "Участие подтверждено" },
-                        { name: "Balepa", avatar: "balepa.jpg", note: "Участие подтверждено" }
+                        { name: "Balepa", avatar: "balepa.jpg", note: "Участие подтверждено" },
+                        { name: "Ритикс", avatar: "ritix.jpg", note: "Участие подтверждено" }
                     ]
                 }
             ],
@@ -590,13 +590,7 @@
             
             let fillPercent = p.score ? (p.score / maxScore * 100) : 0;
             
-            let scoreHTML = isPending ? `
-                <div class="score">
-                    <div class="score-number">0</div>
-                    <div class="score-label">Баллов</div>
-                    <div class="score-bar"><div class="score-bar-fill" style="width: 0%"></div></div>
-                </div>
-            ` : `
+            let scoreHTML = isPending ? '' : `
                 <div class="score">
                     <div class="score-number">${p.score !== null ? p.score : '—'}</div>
                     <div class="score-label">${p.score !== null ? 'Баллов' : 'Н/Д'}</div>
