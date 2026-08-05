@@ -108,7 +108,7 @@
         }
         .tg-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(0, 136, 204, 0.6); }
 
-        /* Navigation - Островок */
+        /* Navigation */
         nav { 
             position: sticky; top: 20px; z-index: 100; 
             padding: 0 15px; margin-bottom: 30px;
@@ -142,7 +142,7 @@
         .era-title.silver { color: var(--silver); margin-top: 70px; }
         
         .edition-header { text-align: center; margin-bottom: 40px; }
-        .edition-number { font-size: 1rem; color: var(--accent2); text-transform: uppercase; letter-spacing: 5px; margin-bottom: 10px; font-weight: 700;}
+        .edition-number { font-size: 1rem; color: var(--accent2); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px;}
         .edition-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 10px; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
         
         .badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 10px; }
@@ -219,7 +219,7 @@
         .edition-mini-card { background: rgba(18, 18, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 25px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
         .edition-mini-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3)); }
         .edition-mini-card:hover { transform: translateY(-5px); border-color: rgba(233, 30, 140, 0.5); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); }
-        .mini-card-number { font-size: 0.75rem; color: var(--accent2); letter-spacing: 3px; text-transform: uppercase; font-weight: 700; }
+        .mini-card-number { font-size: 0.75rem; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; font-weight: 700; display: flex; align-items: center; gap: 8px;}
         .mini-card-title { font-size: 1.4rem; font-weight: 900; margin: 8px 0 15px; }
         .mini-card-winner { display: flex; align-items: center; gap: 10px; }
         .mini-card-winner-name { font-weight: 700; color: var(--gold); }
@@ -249,7 +249,6 @@
         .ptc-ed-name { font-size: 0.65rem; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
         .ptc-ed-res { font-size: 0.8rem; font-weight: 800; }
 
-        /* Цвета статусов в истории */
         .history-gold { border-color: rgba(255, 215, 0, 0.4); background: linear-gradient(135deg, rgba(255,215,0,0.1), transparent); }
         .history-gold .ptc-ed-res { color: var(--gold); }
         .history-silver { border-color: rgba(192, 192, 192, 0.3); background: linear-gradient(135deg, rgba(192,192,192,0.05), transparent); }
@@ -347,10 +346,15 @@
     <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
 
     <script>
+        /**
+         * ==========================================
+         * 🛠️ БАЗА ДАННЫХ КОНКУРСА
+         * ==========================================
+         */
         const DATA = {
             editions: [
                 {
-                    id: "edition1", shortName: "1", name: "Стаявидение 1", location: "Дюшесово",
+                    id: "edition1", shortName: "1", name: "Стаявидение 1", location: "Дюшесово", date: "17 Апреля",
                     started: true, isLost: false, winner: { name: "Гира", avatar: "gira.jpg" },
                     links: {},
                     final: [
@@ -360,7 +364,7 @@
                     ]
                 },
                 {
-                    id: "edition2", shortName: "2", name: "Стаявидение 2", location: "Дюшесово",
+                    id: "edition2", shortName: "2", name: "Стаявидение 2", location: "Дюшесово", date: "17 Апреля",
                     started: true, isLost: false, winner: { name: "Ритикс", avatar: "ritix.jpg" },
                     links: {},
                     final: [
@@ -371,7 +375,7 @@
                     ]
                 },
                 {
-                    id: "edition3", shortName: "3", name: "Стаявидение 3", location: "Дюшесово",
+                    id: "edition3", shortName: "3", name: "Стаявидение 3", location: "Дюшесово", date: "19 Апреля",
                     started: true, isLost: false, winner: { name: "Егорь", avatar: "egor.jpg" },
                     links: {},
                     final: [
@@ -381,7 +385,7 @@
                     ]
                 },
                 {
-                    id: "edition4", shortName: "4", name: "Стаявидение 4", location: "Дюшесово",
+                    id: "edition4", shortName: "4", name: "Стаявидение 4", location: "Дюшесово", date: "21 Апреля",
                     started: true, isLost: false, winner: { name: "Гира", avatar: "gira.jpg" },
                     links: {},
                     final: [
@@ -392,7 +396,7 @@
                     ]
                 },
                 {
-                    id: "edition5", shortName: "5", name: "Стаявидение 5", location: "Стаево",
+                    id: "edition5", shortName: "5", name: "Стаявидение 5", location: "Стаево", date: "10 Мая",
                     started: true, isLost: false, winner: { name: "Егорь", avatar: "egor.jpg" },
                     links: {},
                     final: [
@@ -402,20 +406,26 @@
                     ]
                 },
                 {
-                    id: "edition6", shortName: "6", name: "Стаявидение 6", location: "Дюшесово",
+                    id: "edition6", shortName: "6", name: "Стаявидение 6", location: "Дюшесово", date: "28 Июня",
                     started: true, isLost: false, winner: { name: "Обалена", avatar: "obalena.jpg" },
-                    links: { final: "https://youtube.com/финал_ссылка" },
+                    links: { semifinal: "https://youtube.com/полуфинал_ссылка", final: "https://youtube.com/финал_ссылка" },
                     final: [
-                        { name: "Обалена", avatar: "obalena.jpg", score: 16, note: "🏆 Победитель" },
-                        { name: "Ритикс", avatar: "ritix.jpg", score: 14, note: "" },
-                        { name: "Гира", avatar: "gira.jpg", score: 12, note: "" },
-                        { name: "Егорь", avatar: "egor.jpg", score: 8, note: "" },
-                        { name: "Енька", avatar: "enka.jpg", score: 4, note: "" },
-                        { name: "И. Потужность", avatar: "potuzhnost.jpg", score: 3, note: "" }
+                        { name: "Обалена", avatar: "obalena.jpg", score: 16, note: "🏆 Победитель Финала" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 14, note: "★ Финалист" },
+                        { name: "Гира", avatar: "gira.jpg", score: 12, note: "★ Финалист" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 8, note: "★ Финалист" }
+                    ],
+                    semifinal: [
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 16, note: "Прошел в финал" },
+                        { name: "Обалена", avatar: "obalena.jpg", score: 14, note: "Прошел в финал" },
+                        { name: "Гира", avatar: "gira.jpg", score: 12, note: "Прошел в финал" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 7, note: "Прошел в финал" },
+                        { name: "Енька", avatar: "enka.jpg", score: 4, note: "✗ Выбыл в полуфинале", eliminated: true },
+                        { name: "И. Потужность", avatar: "potuzhnost.jpg", score: 4, note: "✗ Выбыл в полуфинале", eliminated: true }
                     ]
                 },
                 {
-                    id: "edition7", shortName: "7", name: "Стаявидение 7", location: "Дюшесово",
+                    id: "edition7", shortName: "7", name: "Стаявидение 7", location: "Дюшесово", date: "29 Июля",
                     started: true, isLost: false, winner: { name: "Егорь", avatar: "egor.jpg" },
                     links: {},
                     final: [
@@ -429,7 +439,7 @@
                     ]
                 },
                 {
-                    id: "edition8", shortName: "8", name: "Стаявидение 8", location: "Дюшесово",
+                    id: "edition8", shortName: "8", name: "Стаявидение 8", location: "Ожидается", date: "26 Августа",
                     started: false, isLost: false, winner: null,
                     links: {},
                     participants: [
@@ -472,11 +482,25 @@
         }
 
         function renderOverviewSection() {
-            let html = `<section class="edition-section active" id="overview">`;
+            let totalEditions = DATA.editions.length;
+            let finishedEditions = DATA.editions.filter(e => e.started).length;
+            let totalWinners = DATA.hallOfFame.length;
+
+            let html = `
+                <section class="edition-section active" id="overview">
+                    <div class="stats-bar">
+                        <div class="stat-card"><div class="stat-number">${totalEditions}</div><div class="stat-label">Конкурсов</div></div>
+                        <div class="stat-card"><div class="stat-number">${finishedEditions}</div><div class="stat-label">Проведено</div></div>
+                        <div class="stat-card"><div class="stat-number">${totalWinners}</div><div class="stat-label">Победителей</div></div>
+                        <div class="stat-card"><div class="stat-number">2026</div><div class="stat-label">Год</div></div>
+                    </div>
+                    <div class="edition-header"><div class="edition-number">Все конкурсы</div><h2 class="edition-title">История Стаявидения</h2></div>
+                    <div class="all-editions-grid">
+            `;
 
             // 1. ЗАЛ СЛАВЫ (САМЫЙ ВЕРХ)
             html += `
-                <div class="hall-of-fame" style="margin-top: 0; margin-bottom: 60px;">
+                <div class="hall-of-fame" style="margin-top: 0; margin-bottom: 60px; grid-column: 1 / -1;">
                     <h2 class="hall-title">Зал Славы</h2>
                     <p class="hall-subtitle">Все победители Стаявидения</p>
                     <div class="hall-grid">
@@ -497,18 +521,18 @@
             let newEra = DATA.editions.slice(5); // 6+
 
             html += `
-                <h2 class="era-title">Новая эра</h2>
-                <div class="all-editions-grid">
+                <div style="grid-column: 1 / -1;">
+                    <h2 class="era-title">Новая эра</h2>
+                </div>
             `;
             newEra.forEach(ed => { html += generateMiniCard(ed); });
-            html += `</div>`;
 
             html += `
-                <h2 class="era-title silver">Доисторическая эра</h2>
-                <div class="all-editions-grid">
+                <div style="grid-column: 1 / -1;">
+                    <h2 class="era-title silver">Доисторическая эра</h2>
+                </div>
             `;
             prehistoric.forEach(ed => { html += generateMiniCard(ed); });
-            html += `</div>`;
 
             // 3. ИСТОРИЯ УЧАСТНИКОВ (ЛЕНТА)
             let allParticipants = {};
@@ -579,7 +603,7 @@
             let sortedParts = Object.values(allParticipants).sort((a,b) => b.participations - a.participations);
 
             html += `
-                <div style="margin-top: 70px;">
+                <div style="grid-column: 1 / -1; margin-top: 70px;">
                     <h2 class="era-title" style="color: var(--accent3);">История Участников</h2>
                     <div class="part-track-list">
             `;
@@ -625,7 +649,7 @@
 
             return `
                 <div class="edition-mini-card" onclick="showSection('${ed.id}')">
-                    <div class="mini-card-number">📍 ${ed.location}</div>
+                    <div class="mini-card-number">📍 ${ed.location} &nbsp;|&nbsp; 🗓️ ${ed.date}</div>
                     <div class="mini-card-title">${ed.name}</div>
                     <div class="mini-card-winner">
                         <span style="font-size: 1.2rem;">${winnerIcon}</span>
@@ -640,7 +664,7 @@
             let html = `
                 <section class="edition-section" id="${ed.id}">
                     <div class="edition-header">
-                        <div class="edition-number">📍 ${ed.location}</div>
+                        <div class="edition-number">📍 ${ed.location} &nbsp;|&nbsp; 🗓️ ${ed.date}</div>
                         <h2 class="edition-title">${ed.name}</h2>
                     </div>
             `;
