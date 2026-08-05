@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Трансляция Скорборда</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700;900&family=Roboto:wght@400;700;900&family=Oswald:wght@400;700&family=Open+Sans:wght@400;700;800&family=Caveat:wght@700&family=Comfortaa:wght@700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
+            --accent1: #7B2FBE; --accent2: #E91E8C; --accent3: #00D4FF;
+            --text-secondary: #b0b0cc;
+        }
+
+        body {
+            background: #000; /* Идеально для OBS захвата */
+            height: 100vh; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .preview-wrapper {
+            width: 100vw; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        #scoreboard-capture {
+            position: absolute; transform-origin: center center;
+            background: #0a0a1a; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden; display: flex; flex-direction: column;
+            font-family: var(--custom-font, 'Montserrat'), sans-serif;
+        }
+
+        .bg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .bg-layer-blur { background-size: cover; background-position: center; filter: blur(30px) brightness(0.6); transform: scale(1.1); }
+        .bg-layer-clear { background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.9; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0, var(--bg-darken, 0.2)); z-index: 0; }
+
+        .capture-inner {
+            position: relative; z-index: 1; width: 100%; height: 100%;
+            padding: var(--pad-y, 40px) var(--pad-x, 40px);
+            display: flex; flex-direction: column; transform-origin: center center;
+        }
+
+        .board-header { text-align: center; margin-bottom: 25px; }
+        .board-title { font-family: var(--font-title, 'Playfair Display'), serif; font-size: calc(clamp(1.5rem, 4vw, 3rem) * var(--text-scale, 1)); font-weight: 900; color: white; line-height: 1.2; text-transform: var(--text-case, uppercase); }
+        .board-subtitle { color: var(--gold); font-family: var(--font-title, 'Playfair Display'), serif; font-size: calc(clamp(0.8rem, 2vw, 1.2rem) * var(--text-scale, 1)); text-transform: var(--text-case, uppercase); letter-spacing: 4px; font-weight: 700; margin-top: 5px; }
+
+        .board-results { display: grid; gap: calc(12px * var(--bar-scale, 1)); align-content: start; flex: 1; position: relative; }
+
+        .result-row { display: flex; align-items: center; transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; font-family: var(--font-board, 'Montserrat'), sans-serif; text-transform: var(--text-case, uppercase); position: relative; }
+        
+        .position { display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; transform: translate(var(--pos-x, 0px), var(--pos-y, 0px)); }
+        .participant-avatar { object-fit: cover; flex-shrink: 0; background: #2a2a4a; border-radius: var(--avatar-radius, 50%); transform: translate(var(--ava-x, 0px), var(--ava-y, 0px)); }
+        
+        .participant-info { flex: 1; display: flex; flex-direction: column; overflow: hidden; white-space: nowrap; margin-right: 10px; transform: translate(var(--name-x, 0px), var(--name-y, 0px)); text-align: var(--text-align, left); align-items: var(--align-flex, flex-start); justify-content: center; }
+        .participant-name { font-weight: 700; text-overflow: ellipsis; overflow: hidden; color: #fff;}
+        .participant-note { color: var(--text-secondary); text-overflow: ellipsis; overflow: hidden; font-size: 0.85em; }
+        
+        .score { text-align: right; flex-shrink: 0; transform: translate(var(--score-x, 0px), var(--score-y, 0px)); position: relative; }
+        .score-number { font-weight: 900; line-height: 1; display: inline-block; color: #fff;}
+        .score-label { font-size: calc(0.65rem * var(--text-scale, 1)); color: var(--text-secondary); text-transform: uppercase; }
+
+        .add-score-float { position: absolute; right: 10px; top: -20px; font-size: 1.5rem; font-weight: 900; color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.8); opacity: 0; transition: opacity 0.3s, transform 1s ease-out; pointer-events: none; z-index: 10; }
+        .add-score-float.animate { opacity: 1; transform: translateY(-30px); }
+
+        @keyframes shimmerGlow { 0% { background-position: 200% center; box-shadow: 0 0 10px var(--gold); } 100% { background-position: -200% center; box-shadow: 0 0 40px var(--gold); } }
+        .glow-shimmer { background: linear-gradient(90deg, var(--bar-c1), var(--accent2), var(--gold), var(--bar-c1)) !important; background-size: 300% 100% !important; animation: shimmerGlow 1.5s ease-in-out infinite alternate !important; border: 2px solid var(--gold) !important; z-index: 5; transform: scale(1.02); }
+
+        /* СТАЯВИДЕНИЕ */
+        .style-stayavision .result-row { padding: calc(12px * var(--bar-h-mult, 1) * var(--bar-scale, 1)) calc(20px * var(--bar-scale, 1)); border-radius: calc(12px * var(--bar-scale, 1)); background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); }
+        .style-stayavision .position { width: calc(45px * var(--bar-scale, 1)); height: calc(45px * var(--bar-scale, 1)); font-size: calc(1.2rem * var(--text-scale, 1)); margin-right: calc(15px * var(--bar-scale, 1)); background: rgba(255,255,255,0.1); color: white; }
+        .style-stayavision .participant-avatar { width: calc(50px * var(--bar-scale, 1) * var(--avatar-size, 1)); height: calc(50px * var(--bar-scale, 1) * var(--avatar-size, 1)); margin-right: calc(15px * var(--bar-scale, 1)); border: 2px solid rgba(255,255,255,0.1); }
+        .style-stayavision .participant-name { font-size: calc(1.3rem * var(--text-scale, 1)); }
+        .style-stayavision .score-number { font-size: calc(1.8rem * var(--text-scale, 1)); }
+        .style-stayavision .score-bar { width: calc(90px * var(--bar-scale, 1)); height: calc(4px * var(--bar-scale, 1)); background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 5px; margin-left: auto; }
+        .style-stayavision .score-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent2)); transition: width 1s ease-out; }
+
+        .highlight-top3.style-stayavision .result-row.place-1 { background: linear-gradient(90deg, var(--top1-bg), var(--bar-c2)); border-color: var(--top1); }
+        .highlight-top3.style-stayavision .result-row.place-2 { background: linear-gradient(90deg, var(--top2-bg), var(--bar-c2)); border-color: rgba(255,255,255,0.1); }
+        .highlight-top3.style-stayavision .result-row.place-3 { background: linear-gradient(90deg, var(--top3-bg), var(--bar-c2)); border-color: rgba(255,255,255,0.1); }
+        .highlight-top3.style-stayavision .place-1 .position { background: var(--top1); color: #000; box-shadow: 0 0 15px var(--top1-bg); }
+        .highlight-top3.style-stayavision .place-2 .position { background: var(--top2); color: #000; }
+        .highlight-top3.style-stayavision .place-3 .position { background: var(--top3); color: #fff; }
+        .highlight-top3.style-stayavision .place-1 .participant-avatar { border-color: var(--top1); }
+        .highlight-top3.style-stayavision .place-1 .participant-name { color: var(--top1); }
+        .highlight-top3.style-stayavision .place-1 .score-number { color: var(--top1); }
+        .highlight-top3.style-stayavision .place-1 .score-bar-fill { background: var(--top1); }
+
+        /* ЕВРОВИДЕНИЕ */
+        .style-eurovision .result-row { padding: calc(6px * var(--bar-h-mult, 1) * var(--bar-scale, 1)) calc(12px * var(--bar-scale, 1)); background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); border-left: calc(4px * var(--bar-scale, 1)) solid var(--accent3); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .style-eurovision .position { width: calc(35px * var(--bar-scale, 1)); height: calc(35px * var(--bar-scale, 1)); font-size: calc(1.1rem * var(--text-scale, 1)); margin-right: calc(12px * var(--bar-scale, 1)); border-right: 1px solid rgba(255,255,255,0.2); padding-right: 10px; justify-content: flex-start; color: #fff; }
+        .style-eurovision .participant-avatar { width: calc(35px * var(--bar-scale, 1) * var(--avatar-size, 1)); height: calc(35px * var(--bar-scale, 1) * var(--avatar-size, 1)); margin-right: calc(12px * var(--bar-scale, 1)); }
+        .style-eurovision .participant-name { font-size: calc(1.1rem * var(--text-scale, 1)); letter-spacing: 1px; }
+        .style-eurovision .score-number { font-size: calc(1.5rem * var(--text-scale, 1)); color: var(--accent3); }
+        .style-eurovision .score-label, .style-eurovision .score-bar { display: none; }
+        
+        .highlight-top3.style-eurovision .result-row.place-1 { border-left-color: var(--top1); background: linear-gradient(90deg, var(--top1-bg), var(--bar-c2)); }
+        .highlight-top3.style-eurovision .result-row.place-2 { border-left-color: var(--top2); background: linear-gradient(90deg, var(--top2-bg), var(--bar-c2)); }
+        .highlight-top3.style-eurovision .result-row.place-3 { border-left-color: var(--top3); background: linear-gradient(90deg, var(--top3-bg), var(--bar-c2)); }
+        .highlight-top3.style-eurovision .place-1 .position { color: var(--top1); border-right-color: var(--top1); }
+        .highlight-top3.style-eurovision .place-1 .score-number { color: var(--top1); }
+
+        /* СПЛИТ-СКРИН */
+        .style-splitscreen .board-results { gap: 20px; }
+        .style-splitscreen .result-row { flex-direction: column; text-align: center; justify-content: center; padding: calc(30px * var(--bar-h-mult, 1) * var(--bar-scale, 1)); border-radius: 20px; background: linear-gradient(180deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .style-splitscreen .participant-avatar { width: calc(150px * var(--bar-scale, 1) * var(--avatar-size, 1)); height: calc(150px * var(--bar-scale, 1) * var(--avatar-size, 1)); margin: 0 auto 15px auto; border: 3px solid rgba(255,255,255,0.1); }
+        .style-splitscreen .participant-info { margin: 0 0 15px 0; align-items: center !important; text-align: center !important; }
+        .style-splitscreen .participant-name { font-size: calc(1.8rem * var(--text-scale, 1)); }
+        .style-splitscreen .score { margin: 0; text-align: center; }
+        .style-splitscreen .score-number { font-size: calc(3rem * var(--text-scale, 1)); }
+        .style-splitscreen .score-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 10px; }
+        .style-splitscreen .score-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent2)); transition: width 1s ease-out;}
+        .style-splitscreen .position { position: absolute; top: 15px; left: 15px; width: calc(40px * var(--bar-scale, 1)); height: calc(40px * var(--bar-scale, 1)); background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin: 0; }
+
+        .highlight-top3.style-splitscreen .result-row.place-1 { background: linear-gradient(180deg, var(--top1-bg), var(--bar-c2)); border-color: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .participant-avatar { border-color: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .participant-name { color: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .score-number { color: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .score-bar-fill { background: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .position { background: var(--top1); color: #000; box-shadow: 0 0 15px var(--top1-bg); }
+    </style>
+</head>
+<body>
+    <div class="preview-wrapper" id="previewWrapper">
+        <div id="scoreboard-capture" class="highlight-top3">
+            <div class="bg-layer bg-layer-blur" id="bgBlur"></div>
+            <div class="bg-layer bg-layer-clear" id="bgClear"></div>
+            <div class="bg-overlay"></div>
+            <div class="capture-inner" id="captureInner">
+                <div class="board-header">
+                    <div class="board-title" id="renderTitle"></div>
+                    <div class="board-subtitle" id="renderSubtitle"></div>
+                </div>
+                <div class="board-results" id="renderBoard" style="position: relative;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'stayavision_generator_state';
+        let state = {};
+        let isAnimating = false;
+
+        // Инициализация при открытии
+        function init() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try { state = JSON.parse(saved); } catch(e) {}
+            }
+            updatePreview(true);
+            window.addEventListener('resize', adjustMobileScale);
+        }
+
+        // Обновление без анимаций (при редактировании в главном окне)
+        function updatePreview(initial = false) {
+            document.getElementById('renderTitle').innerText = state.title; document.getElementById('renderSubtitle').innerText = state.subtitle;
+            const capture = document.getElementById('scoreboard-capture'); const inner = document.getElementById('captureInner');
+            
+            let logicalWidth = 1200;
+            if (state.aspectRatio === 'custom') { logicalWidth = state.customW; capture.style.aspectRatio = `${state.customW}/${state.customH}`; } 
+            else { if(state.aspectRatio === '1/1' || state.aspectRatio === '4/3') logicalWidth = 900; capture.style.aspectRatio = state.aspectRatio; }
+            capture.style.width = logicalWidth + 'px';
+            
+            capture.className = `style-${state.style}`;
+            if (state.highlightTop3) capture.classList.add('highlight-top3'); else capture.classList.remove('highlight-top3');
+            
+            capture.style.setProperty('--bar-c1', state.barColor1); // Упрощено для трансляции
+            capture.style.setProperty('--bar-c2', state.barColor2);
+            capture.style.setProperty('--avatar-radius', state.avatarShape);
+            capture.style.setProperty('--font-title', `"${state.fontTitle}"`); capture.style.setProperty('--font-board', `"${state.fontBoard}"`);
+            capture.style.setProperty('--text-case', state.textUppercase ? 'uppercase' : 'none');
+            capture.style.setProperty('--text-scale', state.textScale); capture.style.setProperty('--bar-scale', state.barScale);
+            
+            capture.style.setProperty('--name-x', state.nameX + 'px'); capture.style.setProperty('--name-y', state.nameY + 'px');
+            capture.style.setProperty('--score-x', state.scoreX + 'px'); capture.style.setProperty('--score-y', state.scoreY + 'px');
+            capture.style.setProperty('--pos-x', state.posX + 'px'); capture.style.setProperty('--pos-y', state.posY + 'px');
+            capture.style.setProperty('--ava-x', state.avaX + 'px'); capture.style.setProperty('--ava-y', state.avaY + 'px');
+            
+            let flexAlign = 'flex-start'; if(state.align === 'center') flexAlign = 'center'; if(state.align === 'right') flexAlign = 'flex-end';
+            capture.style.setProperty('--align-flex', flexAlign); capture.style.setProperty('--text-align', state.align); 
+            
+            capture.style.setProperty('--avatar-size', state.avatarSize); capture.style.setProperty('--bar-h-mult', state.barHeightMultiplier);
+            
+            capture.style.setProperty('--top1', state.c1); capture.style.setProperty('--top2', state.c2); capture.style.setProperty('--top3', state.c3); 
+
+            inner.style.setProperty('--pad-x', state.padX + 'px'); inner.style.setProperty('--pad-y', state.padY + 'px');
+            inner.style.transform = `scale(${state.scale})`;
+
+            let bgUrl = (state.bgType === 'custom') ? state.bgCustomData : (state.bgType !== 'none' ? state.bgType : "");
+            document.getElementById('bgBlur').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
+            document.getElementById('bgClear').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
+
+            const board = document.getElementById('renderBoard'); board.innerHTML = '';
+            
+            let list = [...state.participants];
+            if (state.viewMode === 'results') list.sort((a,b) => b.score - a.score);
+            let maxScore = Math.max(...list.map(p => p.score + (p.addScore || 0)), 1);
+
+            let rowsCount = Math.ceil(list.length / state.columns);
+            board.style.gridTemplateColumns = `repeat(${state.columns}, 1fr)`;
+            board.style.gridTemplateRows = `repeat(${rowsCount}, auto)`;
+            board.style.gridAutoFlow = 'column';
+
+            list.forEach((p, index) => {
+                let position = index + 1;
+                let rowClass = "result-row";
+                if (state.viewMode === 'results' && position <= 3) rowClass += ` place-${position}`;
+
+                let fillPercent = Math.max((p.score / maxScore) * 100, 0.1); 
+                
+                let scoreBlock = '';
+                if (state.viewMode === 'results' && state.showScores) {
+                    let barHtml = state.showScoreBars ? `<div class="score-bar"><div class="score-bar-fill" id="scoreBar-${p.id}" style="${fillPercent>0.1?`width:${fillPercent}%; min-width:2px;`:'display:none;'}"></div></div>` : '';
+                    scoreBlock = `
+                        <div class="score">
+                            <div class="add-score-float" id="float-${p.id}"></div>
+                            <div class="score-number" id="scoreNum-${p.id}">${p.score}</div>
+                            <div class="score-label">Баллов</div>
+                            ${barHtml}
+                        </div>`;
+                }
+
+                let posHTML = state.showPositions ? `<div class="position">${position}</div>` : '';
+                let avaHTML = state.showAvatars ? `<img src="${p.avatar}" class="participant-avatar" alt="av">` : '';
+
+                board.innerHTML += `
+                    <div class="${rowClass}" id="row-${p.id}" data-pid="${p.id}">
+                        ${posHTML}
+                        ${avaHTML}
+                        <div class="participant-info"><div class="participant-name">${p.name}</div>${state.showNotes && p.note ? `<div class="participant-note">${p.note}</div>` : ''}</div>
+                        ${scoreBlock}
+                    </div>`;
+            });
+            setTimeout(adjustMobileScale, 10);
+        }
+
+        function adjustMobileScale() {
+            const capture = document.getElementById('scoreboard-capture'); const wrapper = document.getElementById('previewWrapper');
+            if(!capture || !wrapper || capture.offsetWidth === 0) return;
+            let scale = Math.min(wrapper.clientWidth / capture.offsetWidth, wrapper.clientHeight / capture.offsetHeight, 1);
+            capture.style.transform = `scale(${scale})`; 
+        }
+
+        // Анимация трансляции
+        function playAddPointsAnimation() {
+            isAnimating = true;
+
+            state.participants.forEach(p => {
+                if(p.addScore > 0) {
+                    const el = document.getElementById(`float-${p.id}`);
+                    if(el) { el.innerText = `+${p.addScore}`; el.classList.add('animate'); }
+                }
+            });
+
+            const duration = 2000;
+            const startTime = performance.now();
+            const startScores = state.participants.map(p => p.score);
+            let maxPotential = Math.max(...state.participants.map(p => p.score + p.addScore), 1);
+
+            function step(time) {
+                let progress = Math.min((time - startTime) / duration, 1);
+                
+                state.participants.forEach((p, idx) => {
+                    if(p.addScore > 0) {
+                        let currentVal = Math.floor(startScores[idx] + (p.addScore * progress));
+                        let numEl = document.getElementById(`scoreNum-${p.id}`);
+                        let barEl = document.getElementById(`scoreBar-${p.id}`);
+                        let rowEl = document.getElementById(`row-${p.id}`);
+                        
+                        if(numEl) numEl.innerText = currentVal;
+                        if(barEl) {
+                            let fill = Math.max((currentVal / maxPotential) * 100, 0.1);
+                            barEl.style.width = fill + '%'; barEl.style.display = 'block';
+                        }
+                        if(progress > 0.5 && p.addScore >= 7 && rowEl) { rowEl.classList.add('glow-shimmer'); }
+                    }
+                });
+
+                if (progress < 1) { requestAnimationFrame(step); } 
+                else {
+                    state.participants.forEach(p => {
+                        if(p.addScore > 0) { 
+                            p.score += p.addScore; p.addScore = 0; 
+                            const el = document.getElementById(`float-${p.id}`);
+                            if(el) el.classList.remove('animate'); 
+                        }
+                    });
+                    
+                    setTimeout(() => { updatePreviewWithFLIP(); setTimeout(() => { isAnimating = false; }, 1200); }, 1000);
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        function updatePreviewWithFLIP() {
+            const oldPositions = {};
+            document.querySelectorAll('.result-row').forEach(row => { oldPositions[row.dataset.pid] = row.getBoundingClientRect(); });
+
+            updatePreview(true);
+
+            document.querySelectorAll('.result-row').forEach(row => {
+                const newPos = row.getBoundingClientRect();
+                const oldPos = oldPositions[row.dataset.pid];
+                
+                if(oldPos) {
+                    const deltaX = oldPos.left - newPos.left;
+                    const deltaY = oldPos.top - newPos.top;
+                    
+                    row.style.transition = 'none';
+                    row.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+                    row.getBoundingClientRect(); 
+
+                    requestAnimationFrame(() => {
+                        row.style.transition = 'transform 1s cubic-bezier(0.25, 1, 0.5, 1), background 0.5s ease';
+                        row.style.transform = '';
+                        row.classList.remove('glow-shimmer'); 
+                    });
+                }
+            });
+        }
+
+        // Связь с основным окном
+        const channel = new BroadcastChannel('stayavision_channel');
+        channel.onmessage = (event) => {
+            if (event.data.type === 'STATE_UPDATE' && !isAnimating) {
+                state = event.data.state;
+                updatePreview(true);
+            }
+            if (event.data.type === 'ANIMATE' && !isAnimating) {
+                playAddPointsAnimation();
+            }
+        };
+
+        init();
+    </script>
+</body>
+</html>
