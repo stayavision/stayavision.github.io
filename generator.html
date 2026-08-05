@@ -62,8 +62,11 @@
         .btn-reset { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .btn-reset:hover { background: #ff4d4d; color: #fff; }
 
-        .btn-play-anim { background: linear-gradient(135deg, #00b09b, #96c93d); color: white; font-size: 1rem; padding: 12px; margin-top: 15px; box-shadow: 0 5px 15px rgba(150, 201, 61, 0.4); border:none; border-radius: 8px; font-weight: 800; cursor: pointer; width: 100%; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-play-anim { background: linear-gradient(135deg, #00b09b, #96c93d); color: white; font-size: 0.9rem; padding: 12px; box-shadow: 0 5px 15px rgba(150, 201, 61, 0.4); border:none; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase;}
         .btn-play-anim:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(150, 201, 61, 0.6); }
+
+        .btn-record-vid { background: linear-gradient(135deg, #ff416c, #ff4b2b); color: white; font-size: 0.9rem; padding: 12px; box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4); border:none; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase;}
+        .btn-record-vid:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 65, 108, 0.6); }
 
         .participants-editor { display: flex; flex-direction: column; gap: 8px; max-height: 450px; overflow-y: auto; padding-right: 5px; margin: 15px 0; }
         .participants-editor::-webkit-scrollbar { width: 5px; }
@@ -293,14 +296,7 @@
 
             <div class="section-title">Дизайн и Цвета</div>
             <div class="settings-grid">
-                <div class="control-group">
-                    <label>Стиль дизайна</label>
-                    <select id="inStyle" onchange="updateState('style', this.value)">
-                        <option value="stayavision">Стаявидение (Толстые)</option>
-                        <option value="eurovision">Eurovision (Тонкие)</option>
-                        <option value="splitscreen">Сплит-скрин (VS Дуэли)</option>
-                    </select>
-                </div>
+                <div class="control-group"><label>Стиль дизайна</label><select id="inStyle" onchange="updateState('style', this.value)"><option value="stayavision">Стаявидение (Толстые)</option><option value="eurovision">Eurovision (Тонкие)</option><option value="splitscreen">Сплит-скрин (VS Дуэли)</option></select></div>
                 <div class="control-group"><label>Форма аватарок</label><select id="inAvatar" onchange="updateState('avatarShape', this.value)"><option value="50%">Круг</option><option value="8px">Закругленный квадрат</option><option value="0px">Квадрат</option></select></div>
             </div>
 
@@ -325,8 +321,8 @@
 
             <div class="section-title">Макет и Фон</div>
             <div class="settings-grid">
-                <div class="control-group"><label>Отступ по бокам (X px)</label><input type="range" id="inPadX" min="0" max="200" oninput="updateState('padX', this.value)"></div>
-                <div class="control-group"><label>Отступ сверху/снизу (Y px)</label><input type="range" id="inPadY" min="0" max="200" oninput="updateState('padY', this.value)"></div>
+                <div class="control-group"><label>Отступ X (px)</label><input type="range" id="inPadX" min="0" max="200" oninput="updateState('padX', this.value)"></div>
+                <div class="control-group"><label>Отступ Y (px)</label><input type="range" id="inPadY" min="0" max="200" oninput="updateState('padY', this.value)"></div>
                 <div class="control-group"><label style="color: var(--accent3);">Масштаб (Общий)</label><input type="range" id="inScale" min="0.4" max="1.5" step="0.05" oninput="updateState('scale', this.value)"></div>
                 
                 <div class="control-group">
@@ -334,8 +330,7 @@
                     <select id="inBgType" onchange="updateState('bgType', this.value)">
                         <option value="none">Тёмная заливка</option><option value="wolfs.jpg">Волки (wolfs.jpg)</option>
                         <option value="sv6.webp">Стаявидение 6 (sv6.webp)</option><option value="sv7.webp">Стаявидение 7 (sv7.webp)</option>
-                        <option value="sv8.webp">Стаявидение 8 (sv8.webp)</option>
-                        <option value="custom">Свой фон...</option>
+                        <option value="sv8.webp">Стаявидение 8 (sv8.webp)</option><option value="custom">Свой фон...</option>
                     </select>
                     <input type="file" id="inBgCustom" style="display:none; margin-top:5px;" accept="image/*" onchange="handleBgUpload(event)">
                 </div>
@@ -381,12 +376,14 @@
                 <label class="checkbox-group"><input type="checkbox" id="inShowBars" onchange="updateState('showScoreBars', this.checked)"> Полоски</label>
             </div>
 
-            <!-- Кнопка запуска видео анимации -->
-            <button class="btn-play-anim" onclick="playAddPointsAnimation()">▶ Анимировать баллы</button>
+            <!-- Кнопки трансляции (Анимация + Запись видео) -->
+            <div style="display:flex; gap:10px; margin-top: 15px;">
+                <button class="btn-play-anim" onclick="playAddPointsAnimation()" style="flex:1; margin:0;">▶ Анимация</button>
+                <button class="btn-record-vid" id="btnRecord" onclick="recordVideo()" style="flex:1; margin:0;">🎥 В видео</button>
+            </div>
 
             <button class="btn-action btn-random" style="margin-top:15px;" onclick="randomizeParticipants()">🎲 СЛУЧАЙНАЯ ЖЕРЕБЬЕВКА</button>
             
-            <!-- Заголовки колонок редактора -->
             <div style="display: flex; font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; margin-top: 15px; padding-left: 35px;">
                 <div style="flex:1; min-width: 90px;">Участник / Аватар</div>
                 <div style="flex:1; min-width: 70px; margin-left:10px;">Балл</div>
@@ -407,7 +404,6 @@
                             <div class="board-title" id="renderTitle"></div>
                             <div class="board-subtitle" id="renderSubtitle"></div>
                         </div>
-                        <!-- board-results теперь relative для FLIP анимации -->
                         <div class="board-results" id="renderBoard" style="position: relative;"></div>
                     </div>
                 </div>
@@ -525,8 +521,7 @@
             if(!id) return; let all = [...DEFAULT_PRESETS, ...(state.customPresets || [])]; let p = all.find(x => x.id === id); if(!p) return;
             state.title = p.title; state.subtitle = p.subtitle; state.bgType = p.bgType; state.viewMode = p.viewMode; 
             state.participants = JSON.parse(JSON.stringify(p.participants));
-            state.participants.forEach(x => { if(x.addScore === undefined) x.addScore = 0; }); // Поддержка старых данных
-            
+            state.participants.forEach(x => { if(x.addScore === undefined) x.addScore = 0; });
             if(id === 'sv7') { for (let i = state.participants.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [state.participants[i], state.participants[j]] = [state.participants[j], state.participants[i]]; } }
             syncUI(); renderEditor(); updatePreview();
         }
@@ -673,10 +668,8 @@
             const hasPointsToAdd = state.participants.some(p => p.addScore > 0);
             if (!hasPointsToAdd) { alert("Укажите баллы в колонке '+ Добавить' (зеленое поле)!"); return; }
 
-            // Переключаемся на Превью (для телефонов)
             document.querySelectorAll('.mobile-tabs button')[1].click();
 
-            // 1. Показываем летающие баллы
             state.participants.forEach(p => {
                 if(p.addScore > 0) {
                     const el = document.getElementById(`float-${p.id}`);
@@ -684,7 +677,6 @@
                 }
             });
 
-            // 2. Крутим счетчики 2 секунды
             const duration = 2000;
             const startTime = performance.now();
             const startScores = state.participants.map(p => p.score);
@@ -708,7 +700,6 @@
                                 barEl.style.display = 'block';
                             }
                             
-                            // Эффект свечения если баллов >= 7 и пройдена половина анимации
                             if(progress > 0.5 && p.addScore >= 7 && rowEl) {
                                 rowEl.classList.add('glow-shimmer');
                             }
@@ -718,16 +709,14 @@
                     if (progress < 1) {
                         requestAnimationFrame(step);
                     } else {
-                        // 3. Анимация завершена, обновляем реальные данные
                         state.participants.forEach(p => {
                             if(p.addScore > 0) { p.score += p.addScore; p.addScore = 0; }
                         });
                         
-                        // Запускаем FLIP сортировку с задержкой (чтобы зритель увидел итог перед перестановкой)
                         setTimeout(() => {
                             renderEditor();
                             updatePreviewWithFLIP();
-                            resolve();
+                            setTimeout(() => { resolve(); }, 1200);
                         }, 1000);
                     }
                 }
@@ -735,20 +724,87 @@
             });
         }
 
+        // --- ЗАПИСЬ ВИДЕО ИЗ БРАУЗЕРА ---
+        async function recordVideo() {
+            const hasPointsToAdd = state.participants.some(p => p.addScore > 0);
+            if (!hasPointsToAdd) { alert("Укажите баллы в колонке '+ Добавить' (зеленое поле)!"); return; }
+
+            try {
+                // Запрашиваем доступ к экрану
+                const stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { displaySurface: "browser", logicalSurface: true },
+                    audio: false
+                });
+
+                const options = { mimeType: 'video/webm; codecs=vp9' };
+                let mediaRecorder;
+                
+                // Проверяем поддержку кодека, если webm/vp9 не поддерживается (например, в Safari), пробуем дефолтный
+                if (MediaRecorder.isTypeSupported(options.mimeType)) {
+                    mediaRecorder = new MediaRecorder(stream, options);
+                } else {
+                    mediaRecorder = new MediaRecorder(stream);
+                }
+
+                const chunks = [];
+
+                mediaRecorder.ondataavailable = function(e) {
+                    if (e.data.size > 0) chunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = function() {
+                    const blob = new Blob(chunks, { type: mediaRecorder.mimeType || 'video/mp4' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    // Если это Safari/Apple, лучше сохранить как .mp4, иначе .webm
+                    const ext = mediaRecorder.mimeType.includes('mp4') ? 'mp4' : 'webm';
+                    a.download = `${state.title}_Animation.${ext}`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    const btn = document.getElementById('btnRecord');
+                    btn.innerHTML = "🎥 В видео";
+                    btn.style.opacity = '1';
+                };
+
+                const btn = document.getElementById('btnRecord');
+                btn.innerText = "⏺ Идет запись...";
+                btn.style.opacity = '0.7';
+
+                document.querySelectorAll('.mobile-tabs button')[1].click();
+                document.getElementById('scoreboard-capture').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                setTimeout(async () => {
+                    mediaRecorder.start();
+                    await playAddPointsAnimation();
+                    
+                    setTimeout(() => {
+                        mediaRecorder.stop();
+                    }, 1500);
+                }, 1000);
+
+            } catch (err) {
+                console.error("Ошибка записи:", err);
+                alert("Запись экрана была отменена или не поддерживается вашим браузером.");
+                const btn = document.getElementById('btnRecord');
+                btn.innerText = "🎥 В видео";
+                btn.style.opacity = '1';
+            }
+        }
+
         // Умная перерисовка со слайд-анимацией
         function updatePreviewWithFLIP() {
             const board = document.getElementById('renderBoard');
-            
-            // 1. Считываем старые позиции
             const oldPositions = {};
-            document.querySelectorAll('.result-row').forEach(row => {
-                oldPositions[row.dataset.pid] = row.getBoundingClientRect();
-            });
+            document.querySelectorAll('.result-row').forEach(row => { oldPositions[row.dataset.pid] = row.getBoundingClientRect(); });
 
-            // 2. Перерисовываем (сортируем)
             updatePreview(true);
 
-            // 3. Считываем новые позиции и делаем инверт
             document.querySelectorAll('.result-row').forEach(row => {
                 const newPos = row.getBoundingClientRect();
                 const oldPos = oldPositions[row.dataset.pid];
@@ -757,18 +813,14 @@
                     const deltaX = oldPos.left - newPos.left;
                     const deltaY = oldPos.top - newPos.top;
                     
-                    // Убираем транзишн, ставим на старое место
                     row.style.transition = 'none';
                     row.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-
-                    // Форсируем перерисовку кадра браузером
                     row.getBoundingClientRect(); 
 
-                    // Включаем транзишн и убираем трансформ (элемент плавно едет на новое место)
                     requestAnimationFrame(() => {
                         row.style.transition = 'transform 1s cubic-bezier(0.25, 1, 0.5, 1), background 0.5s ease';
                         row.style.transform = '';
-                        row.classList.remove('glow-shimmer'); // Гасим эффект
+                        row.classList.remove('glow-shimmer'); 
                     });
                 }
             });
@@ -780,10 +832,10 @@
             document.getElementById('renderTitle').innerText = state.title; document.getElementById('renderSubtitle').innerText = state.subtitle;
             const capture = document.getElementById('scoreboard-capture'); const inner = document.getElementById('captureInner');
             
-            let lW = 1200;
-            if (state.aspectRatio === 'custom') { lW = state.customW; capture.style.aspectRatio = `${state.customW}/${state.customH}`; } 
-            else { if(state.aspectRatio === '1/1' || state.aspectRatio === '4/3') lW = 900; capture.style.aspectRatio = state.aspectRatio; }
-            capture.style.width = lW + 'px';
+            let logicalWidth = 1200;
+            if (state.aspectRatio === 'custom') { logicalWidth = state.customW; capture.style.aspectRatio = `${state.customW}/${state.customH}`; } 
+            else { if(state.aspectRatio === '1/1' || state.aspectRatio === '4/3') logicalWidth = 900; capture.style.aspectRatio = state.aspectRatio; }
+            capture.style.width = logicalWidth + 'px';
             
             capture.className = `style-${state.style}`;
             if (state.highlightTop3 && state.viewMode === 'results') capture.classList.add('highlight-top3'); else capture.classList.remove('highlight-top3');
@@ -794,7 +846,6 @@
             capture.style.setProperty('--text-case', state.textUppercase ? 'uppercase' : 'none');
             capture.style.setProperty('--text-scale', state.textScale); capture.style.setProperty('--bar-scale', state.barScale);
             
-            // X/Y Offsets
             capture.style.setProperty('--name-x', state.nameX + 'px'); capture.style.setProperty('--name-y', state.nameY + 'px');
             capture.style.setProperty('--score-x', state.scoreX + 'px'); capture.style.setProperty('--score-y', state.scoreY + 'px');
             capture.style.setProperty('--pos-x', state.posX + 'px'); capture.style.setProperty('--pos-y', state.posY + 'px');
