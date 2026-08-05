@@ -29,20 +29,13 @@
         .admin-login-btn:hover { background: rgba(255,255,255,0.2); }
         .admin-login-btn.logged-in { background: rgba(0, 212, 255, 0.2); border-color: var(--accent3); color: var(--accent3); }
 
-        .mobile-tabs {
-            display: none; width: 100%; background: rgba(18,18,42,0.95); padding: 10px; 
-            position: sticky; top: 0; z-index: 100; justify-content: center; gap: 10px;
-            backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .mobile-tabs button {
-            flex: 1; padding: 12px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1);
-            color: var(--text-secondary); font-weight: 700; font-family: Montserrat; cursor: pointer; transition: 0.3s;
-        }
+        .mobile-tabs { display: none; width: 100%; background: rgba(18,18,42,0.95); padding: 10px; position: sticky; top: 0; z-index: 100; justify-content: center; gap: 10px; backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .mobile-tabs button { flex: 1; padding: 12px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: var(--text-secondary); font-weight: 700; font-family: Montserrat; cursor: pointer; transition: 0.3s; }
         .mobile-tabs button.active { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; box-shadow: 0 4px 15px rgba(233, 30, 140, 0.4); }
 
         .app-container { display: flex; flex-wrap: wrap; gap: 20px; max-width: 1600px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; align-items: flex-start; }
 
-        .controls-panel { flex: 1; min-width: 350px; max-width: 500px; background: rgba(18, 18, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; height: max-content; }
+        .controls-panel { flex: 1; min-width: 350px; max-width: 530px; background: rgba(18, 18, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; height: max-content; }
         
         .section-title { font-size: 1rem; color: var(--accent3); margin: 20px 0 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
         .section-title:first-child { margin-top: 0; }
@@ -52,9 +45,7 @@
         
         .control-group { display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
         .control-group label { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
-        .control-group input[type="text"], .control-group select, .control-group input[type="file"], .control-group input[type="number"] {
-            width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-family: 'Montserrat', sans-serif;
-        }
+        .control-group input[type="text"], .control-group select, .control-group input[type="file"], .control-group input[type="number"] { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-family: 'Montserrat', sans-serif; }
         
         .control-row { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
         .control-row input[type="color"] { flex-shrink: 0; padding: 0; width: 40px; height: 35px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; background: transparent; }
@@ -71,19 +62,23 @@
         .btn-reset { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .btn-reset:hover { background: #ff4d4d; color: #fff; }
 
+        .btn-play-anim { background: linear-gradient(135deg, #00b09b, #96c93d); color: white; font-size: 1rem; padding: 12px; margin-top: 15px; box-shadow: 0 5px 15px rgba(150, 201, 61, 0.4); border:none; border-radius: 8px; font-weight: 800; cursor: pointer; width: 100%; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-play-anim:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(150, 201, 61, 0.6); }
+
         .participants-editor { display: flex; flex-direction: column; gap: 8px; max-height: 450px; overflow-y: auto; padding-right: 5px; margin: 15px 0; }
         .participants-editor::-webkit-scrollbar { width: 5px; }
         .participants-editor::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 5px; }
         
         .editor-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
-        .editor-row select { flex: 1; min-width: 100px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: none; font-size: 0.8rem; }
-        .editor-row input { flex: 1; min-width: 80px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; }
-        .editor-row input[type="number"] { flex: 0.5; min-width: 50px; }
+        .editor-row select { flex: 1; min-width: 90px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: none; font-size: 0.8rem; }
+        .editor-row input { flex: 1; min-width: 70px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; }
+        .editor-row input[type="number"] { flex: 0.5; min-width: 45px; }
         
         .btn-icon { background: rgba(255,255,255,0.1); border:none; color: white; border-radius: 4px; cursor:pointer; width:22px; height:18px; font-size:10px; display:flex; align-items:center; justify-content:center; }
         .btn-icon:hover { background: var(--accent3); }
         .btn-remove { background: #ff4d4d; color: white; border: none; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
 
+        /* --- ПРАВАЯ ПАНЕЛЬ (ПРЕВЬЮ) --- */
         .preview-panel { flex: 2; display: flex; flex-direction: column; align-items: center; min-width: 300px; overflow: hidden; }
         .preview-wrapper { width: 100%; position: relative; display: flex; justify-content: center; }
 
@@ -109,42 +104,48 @@
         .board-title { font-family: var(--font-title, 'Playfair Display'), serif; font-size: calc(clamp(1.5rem, 4vw, 3rem) * var(--text-scale, 1)); font-weight: 900; color: white; line-height: 1.2; text-transform: var(--text-case, uppercase); }
         .board-subtitle { color: var(--gold); font-family: var(--font-title, 'Playfair Display'), serif; font-size: calc(clamp(0.8rem, 2vw, 1.2rem) * var(--text-scale, 1)); text-transform: var(--text-case, uppercase); letter-spacing: 4px; font-weight: 700; margin-top: 5px; }
 
-        .board-results { display: grid; gap: calc(12px * var(--bar-scale, 1)); align-content: start; flex: 1; }
+        .board-results { display: grid; gap: calc(12px * var(--bar-scale, 1)); align-content: start; flex: 1; position: relative; }
 
-        /* Оболочки элементов с неограниченным сдвигом */
-        .result-row { display: flex; align-items: center; transition: all 0.3s ease; font-family: var(--font-board, 'Montserrat'), sans-serif; text-transform: var(--text-case, uppercase); }
+        /* Оболочки элементов */
+        .result-row { display: flex; align-items: center; transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; font-family: var(--font-board, 'Montserrat'), sans-serif; text-transform: var(--text-case, uppercase); position: relative; }
         
         .position { display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; transform: translate(var(--pos-x, 0px), var(--pos-y, 0px)); }
-        
         .participant-avatar { object-fit: cover; flex-shrink: 0; background: #2a2a4a; border-radius: var(--avatar-radius, 50%); transform: translate(var(--ava-x, 0px), var(--ava-y, 0px)); }
         
-        .participant-info { 
-            flex: 1; display: flex; flex-direction: column; overflow: hidden; white-space: nowrap; margin-right: 10px; 
-            transform: translate(var(--name-x, 0px), var(--name-y, 0px)); 
-            text-align: var(--text-align, left); align-items: var(--align-flex, flex-start); justify-content: center;
-        }
-        
+        .participant-info { flex: 1; display: flex; flex-direction: column; overflow: hidden; white-space: nowrap; margin-right: 10px; transform: translate(var(--name-x, 0px), var(--name-y, 0px)); text-align: var(--text-align, left); align-items: var(--align-flex, flex-start); justify-content: center; }
         .participant-name { font-weight: 700; text-overflow: ellipsis; overflow: hidden; }
         .participant-note { color: var(--text-secondary); text-overflow: ellipsis; overflow: hidden; font-size: 0.85em; }
         
-        .score { text-align: right; flex-shrink: 0; transform: translate(var(--score-x, 0px), var(--score-y, 0px)); }
-        .score-number { font-weight: 900; line-height: 1; }
+        .score { text-align: right; flex-shrink: 0; transform: translate(var(--score-x, 0px), var(--score-y, 0px)); position: relative; }
+        .score-number { font-weight: 900; line-height: 1; display: inline-block; }
+        .score-label { font-size: calc(0.65rem * var(--text-scale, 1)); color: var(--text-secondary); text-transform: uppercase; }
+
+        /* Floating Add Score Text */
+        .add-score-float { position: absolute; right: 10px; top: -20px; font-size: 1.5rem; font-weight: 900; color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.8); opacity: 0; transition: opacity 0.3s, transform 1s ease-out; pointer-events: none; z-index: 10; }
+        .add-score-float.animate { opacity: 1; transform: translateY(-30px); }
+
+        /* === ЭФФЕКТ ПЕРЕЛИВАНИЯ (GLOW) ПРИ ДОБАВЛЕНИИ БАЛЛОВ >= 7 === */
+        @keyframes shimmerGlow {
+            0% { background-position: 200% center; box-shadow: 0 0 10px var(--gold); }
+            100% { background-position: -200% center; box-shadow: 0 0 40px var(--gold); }
+        }
+        .glow-shimmer {
+            background: linear-gradient(90deg, var(--bar-c1), var(--accent2), var(--gold), var(--bar-c1)) !important;
+            background-size: 300% 100% !important;
+            animation: shimmerGlow 1.5s ease-in-out infinite alternate !important;
+            border: 2px solid var(--gold) !important;
+            z-index: 5;
+            transform: scale(1.02);
+        }
 
         /* === СТИЛИ === */
-        /* СТАЯВИДЕНИЕ */
-        .style-stayavision .result-row { 
-            padding: calc(12px * var(--bar-h-mult, 1) * var(--bar-scale, 1)) calc(20px * var(--bar-scale, 1)); 
-            border-radius: calc(12px * var(--bar-scale, 1)); 
-            background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); 
-        }
+        .style-stayavision .result-row { padding: calc(12px * var(--bar-h-mult, 1) * var(--bar-scale, 1)) calc(20px * var(--bar-scale, 1)); border-radius: calc(12px * var(--bar-scale, 1)); background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); }
         .style-stayavision .position { width: calc(45px * var(--bar-scale, 1)); height: calc(45px * var(--bar-scale, 1)); font-size: calc(1.2rem * var(--text-scale, 1)); margin-right: calc(15px * var(--bar-scale, 1)); background: rgba(255,255,255,0.1); color: white; }
         .style-stayavision .participant-avatar { width: calc(50px * var(--bar-scale, 1) * var(--avatar-size, 1)); height: calc(50px * var(--bar-scale, 1) * var(--avatar-size, 1)); margin-right: calc(15px * var(--bar-scale, 1)); border: 2px solid rgba(255,255,255,0.1); }
         .style-stayavision .participant-name { font-size: calc(1.3rem * var(--text-scale, 1)); color: #fff; }
-        .style-stayavision .participant-note { font-size: calc(0.85rem * var(--text-scale, 1)); }
         .style-stayavision .score-number { font-size: calc(1.8rem * var(--text-scale, 1)); color: #fff; }
-        .style-stayavision .score-label { font-size: calc(0.65rem * var(--text-scale, 1)); color: var(--text-secondary); text-transform: uppercase; }
         .style-stayavision .score-bar { width: calc(90px * var(--bar-scale, 1)); height: calc(4px * var(--bar-scale, 1)); background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 5px; margin-left: auto; }
-        .style-stayavision .score-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent2)); }
+        .style-stayavision .score-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent2)); transition: width 1s ease-out; }
 
         .highlight-top3.style-stayavision .result-row.place-1 { background: linear-gradient(90deg, var(--top1-bg), var(--bar-c2)); border-color: var(--top1); }
         .highlight-top3.style-stayavision .result-row.place-2 { background: linear-gradient(90deg, var(--top2-bg), var(--bar-c2)); border-color: rgba(255,255,255,0.1); }
@@ -171,33 +172,17 @@
         .highlight-top3.style-eurovision .place-1 .position { color: var(--top1); border-right-color: var(--top1); }
         .highlight-top3.style-eurovision .place-1 .score-number { color: var(--top1); }
 
-        /* СПЛИТ-СКРИН (ДУЭЛИ) */
+        /* СПЛИТ-СКРИН */
         .style-splitscreen .board-results { gap: 20px; }
-        .style-splitscreen .result-row { 
-            flex-direction: column; text-align: center; justify-content: center;
-            padding: calc(30px * var(--bar-h-mult, 1) * var(--bar-scale, 1)); 
-            border-radius: 20px; background: linear-gradient(180deg, var(--bar-c1), var(--bar-c2)); 
-            border: 1px solid rgba(255,255,255,0.05); position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .style-splitscreen .participant-avatar { 
-            width: calc(150px * var(--bar-scale, 1) * var(--avatar-size, 1)); 
-            height: calc(150px * var(--bar-scale, 1) * var(--avatar-size, 1)); 
-            margin: 0 auto 15px auto; border: 3px solid rgba(255,255,255,0.1);
-        }
+        .style-splitscreen .result-row { flex-direction: column; text-align: center; justify-content: center; padding: calc(30px * var(--bar-h-mult, 1) * var(--bar-scale, 1)); border-radius: 20px; background: linear-gradient(180deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .style-splitscreen .participant-avatar { width: calc(150px * var(--bar-scale, 1) * var(--avatar-size, 1)); height: calc(150px * var(--bar-scale, 1) * var(--avatar-size, 1)); margin: 0 auto 15px auto; border: 3px solid rgba(255,255,255,0.1); }
         .style-splitscreen .participant-info { margin: 0 0 15px 0; align-items: center !important; text-align: center !important; }
         .style-splitscreen .participant-name { font-size: calc(1.8rem * var(--text-scale, 1)); color: #fff; }
-        .style-splitscreen .participant-note { font-size: calc(1rem * var(--text-scale, 1)); }
         .style-splitscreen .score { margin: 0; text-align: center; }
         .style-splitscreen .score-number { font-size: calc(3rem * var(--text-scale, 1)); color: #fff; }
-        .style-splitscreen .score-label { font-size: calc(0.8rem * var(--text-scale, 1)); color: var(--text-secondary); }
         .style-splitscreen .score-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 10px; }
-        .style-splitscreen .score-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent2)); }
-        
-        .style-splitscreen .position { 
-            position: absolute; top: 15px; left: 15px; width: calc(40px * var(--bar-scale, 1)); height: calc(40px * var(--bar-scale, 1)); 
-            background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;
-            margin: 0;
-        }
+        .style-splitscreen .score-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent2)); transition: width 1s ease-out;}
+        .style-splitscreen .position { position: absolute; top: 15px; left: 15px; width: calc(40px * var(--bar-scale, 1)); height: calc(40px * var(--bar-scale, 1)); background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin: 0; }
 
         .highlight-top3.style-splitscreen .result-row.place-1 { background: linear-gradient(180deg, var(--top1-bg), var(--bar-c2)); border-color: var(--top1); }
         .highlight-top3.style-splitscreen .place-1 .participant-avatar { border-color: var(--top1); }
@@ -263,24 +248,18 @@
                 <div class="control-group">
                     <label>Шрифт заголовка</label>
                     <select id="inFontTitle" onchange="updateState('fontTitle', this.value)">
-                        <option value="Playfair Display">Playfair Display (Засечки)</option>
-                        <option value="Montserrat">Montserrat</option>
-                        <option value="Roboto">Roboto</option>
-                        <option value="Oswald">Oswald (Узкий)</option>
-                        <option value="Open Sans">Open Sans</option>
-                        <option value="Caveat">Caveat (Рукописный)</option>
+                        <option value="Playfair Display">Playfair Display (Засечки)</option><option value="Montserrat">Montserrat</option>
+                        <option value="Roboto">Roboto</option><option value="Oswald">Oswald (Узкий)</option>
+                        <option value="Open Sans">Open Sans</option><option value="Caveat">Caveat (Рукописный)</option>
                         <option value="Comfortaa">Comfortaa (Круглый)</option>
                     </select>
                 </div>
                 <div class="control-group">
                     <label>Шрифт плашек</label>
                     <select id="inFontBoard" onchange="updateState('fontBoard', this.value)">
-                        <option value="Montserrat">Montserrat</option>
-                        <option value="Playfair Display">Playfair Display</option>
-                        <option value="Roboto">Roboto</option>
-                        <option value="Oswald">Oswald (Узкий)</option>
-                        <option value="Open Sans">Open Sans</option>
-                        <option value="Caveat">Caveat (Рукописный)</option>
+                        <option value="Montserrat">Montserrat</option><option value="Playfair Display">Playfair Display</option>
+                        <option value="Roboto">Roboto</option><option value="Oswald">Oswald (Узкий)</option>
+                        <option value="Open Sans">Open Sans</option><option value="Caveat">Caveat (Рукописный)</option>
                         <option value="Comfortaa">Comfortaa (Круглый)</option>
                     </select>
                 </div>
@@ -346,8 +325,8 @@
 
             <div class="section-title">Макет и Фон</div>
             <div class="settings-grid">
-                <div class="control-group"><label>Отступ X (px)</label><input type="range" id="inPadX" min="0" max="200" oninput="updateState('padX', this.value)"></div>
-                <div class="control-group"><label>Отступ Y (px)</label><input type="range" id="inPadY" min="0" max="200" oninput="updateState('padY', this.value)"></div>
+                <div class="control-group"><label>Отступ по бокам (X px)</label><input type="range" id="inPadX" min="0" max="200" oninput="updateState('padX', this.value)"></div>
+                <div class="control-group"><label>Отступ сверху/снизу (Y px)</label><input type="range" id="inPadY" min="0" max="200" oninput="updateState('padY', this.value)"></div>
                 <div class="control-group"><label style="color: var(--accent3);">Масштаб (Общий)</label><input type="range" id="inScale" min="0.4" max="1.5" step="0.05" oninput="updateState('scale', this.value)"></div>
                 
                 <div class="control-group">
@@ -362,34 +341,24 @@
                 </div>
             </div>
 
-            <!-- ПРОДВИНУТЫЙ РЕДАКТОР -->
-            <div class="section-title">Продвинутый Редактор (Мощь!)</div>
+            <div class="section-title">Продвинутый Редактор</div>
             <div class="settings-grid">
                 <div class="control-group"><label>Сдвиг текста (↔ X px)</label><input type="number" id="inNameX" oninput="updateState('nameX', this.value)" placeholder="Влево / Вправо"></div>
                 <div class="control-group"><label>Сдвиг текста (↕ Y px)</label><input type="number" id="inNameY" oninput="updateState('nameY', this.value)" placeholder="Вверх / Вниз"></div>
-                
                 <div class="control-group"><label>Сдвиг баллов (↔ X px)</label><input type="number" id="inScoreX" oninput="updateState('scoreX', this.value)"></div>
                 <div class="control-group"><label>Сдвиг баллов (↕ Y px)</label><input type="number" id="inScoreY" oninput="updateState('scoreY', this.value)"></div>
-                
                 <div class="control-group"><label>Сдвиг Места (↔ X px)</label><input type="number" id="inPosX" oninput="updateState('posX', this.value)"></div>
                 <div class="control-group"><label>Сдвиг Места (↕ Y px)</label><input type="number" id="inPosY" oninput="updateState('posY', this.value)"></div>
-                
                 <div class="control-group"><label>Сдвиг Аватарки (↔ X px)</label><input type="number" id="inAvaX" oninput="updateState('avaX', this.value)"></div>
                 <div class="control-group"><label>Сдвиг Аватарки (↕ Y px)</label><input type="number" id="inAvaY" oninput="updateState('avaY', this.value)"></div>
-
                 <div class="control-group"><label style="color: var(--accent3);">Масштаб Плашек</label><input type="range" id="inBarScale" min="0.5" max="2" step="0.05" oninput="updateState('barScale', this.value)"></div>
                 <div class="control-group"><label style="color: var(--accent2);">Масштаб Текста</label><input type="range" id="inTextScale" min="0.5" max="2" step="0.05" oninput="updateState('textScale', this.value)"></div>
-                
                 <div class="control-group"><label>Размер аватарки</label><input type="range" id="inAvaSize" min="0.2" max="2.5" step="0.1" oninput="updateState('avatarSize', this.value)"></div>
                 <div class="control-group"><label>Высота плашки</label><input type="range" id="inBarHeight" min="0.5" max="3" step="0.1" oninput="updateState('barHeightMultiplier', this.value)"></div>
                 
                 <div class="control-group">
                     <label>Выравнивание текста</label>
-                    <select id="inAlign" onchange="updateState('align', this.value)">
-                        <option value="left">По левому краю</option>
-                        <option value="center">По центру</option>
-                        <option value="right">По правому краю</option>
-                    </select>
+                    <select id="inAlign" onchange="updateState('align', this.value)"><option value="left">Слева</option><option value="center">По центру</option><option value="right">Справа</option></select>
                 </div>
                 <div class="control-group">
                     <label style="color: transparent;">Сброс</label>
@@ -397,8 +366,10 @@
                 </div>
             </div>
 
-            <div class="section-title">Участники</div>
-            <div class="settings-grid" style="margin-bottom: 15px;">
+            <!-- ТРАНСЛЯЦИЯ И УЧАСТНИКИ -->
+            <div class="section-title" style="color: #00ff88; margin-top: 30px;">Трансляция (Анимации баллов)</div>
+            
+            <div class="settings-grid" style="margin-bottom: 10px;">
                 <div class="control-group" style="grid-column: 1 / -1;"><label>Режим экрана</label><select id="inMode" onchange="updateState('viewMode', this.value)"><option value="results">Результаты (Сортировка)</option><option value="running_order">Running Order (Жеребьевка)</option></select></div>
             </div>
             
@@ -410,7 +381,17 @@
                 <label class="checkbox-group"><input type="checkbox" id="inShowBars" onchange="updateState('showScoreBars', this.checked)"> Полоски</label>
             </div>
 
-            <button class="btn-action btn-random" onclick="randomizeParticipants()">🎲 СЛУЧАЙНАЯ ЖЕРЕБЬЕВКА</button>
+            <!-- Кнопка запуска видео анимации -->
+            <button class="btn-play-anim" onclick="playAddPointsAnimation()">▶ Анимировать баллы</button>
+
+            <button class="btn-action btn-random" style="margin-top:15px;" onclick="randomizeParticipants()">🎲 СЛУЧАЙНАЯ ЖЕРЕБЬЕВКА</button>
+            
+            <!-- Заголовки колонок редактора -->
+            <div style="display: flex; font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; margin-top: 15px; padding-left: 35px;">
+                <div style="flex:1; min-width: 90px;">Участник / Аватар</div>
+                <div style="flex:1; min-width: 70px; margin-left:10px;">Балл</div>
+                <div style="flex:0.8; min-width: 50px; color: #00ff88; margin-left:10px;">+ Добавить</div>
+            </div>
             <div class="participants-editor" id="editorContainer"></div>
             <button class="btn-action" style="border: 1px dashed var(--accent3); color: var(--accent3); background: transparent;" onclick="addParticipant()">+ ДОБАВИТЬ УЧАСТНИКА</button>
         </div>
@@ -426,7 +407,8 @@
                             <div class="board-title" id="renderTitle"></div>
                             <div class="board-subtitle" id="renderSubtitle"></div>
                         </div>
-                        <div class="board-results" id="renderBoard"></div>
+                        <!-- board-results теперь relative для FLIP анимации -->
+                        <div class="board-results" id="renderBoard" style="position: relative;"></div>
                     </div>
                 </div>
             </div>
@@ -442,17 +424,13 @@
         <div class="modal-box">
             <h2>🛠 Меню Админа</h2>
             <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 15px;">Вы вошли как администратор. Здесь можно сохранять текущие настройки как новые пресеты или генерировать случайные баллы.</p>
-            
             <label style="font-size: 0.8rem; font-weight:bold;">Имя нового пресета:</label>
             <input type="text" id="newPresetName" placeholder="Например: Полуфинал 8">
             <button class="btn-action" style="background: var(--accent3); color: black;" onclick="adminSavePreset()">💾 Сохранить как Пресет</button>
-
             <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
-
             <label style="font-size: 0.8rem; font-weight:bold;">Удалить пресет:</label>
             <select id="delPresetSelect"><option value="">-- Выберите --</option></select>
             <button class="btn-action" style="background: #ff4d4d; margin-bottom: 20px;" onclick="adminDeletePreset()">🗑 Удалить</button>
-
             <button class="btn-action" style="background: var(--accent1);" onclick="adminAutoResults()">⚡ Сгенерировать авторезультаты</button>
             <button class="btn-action" style="background: rgba(255,255,255,0.1);" onclick="closeAdminModal()">Закрыть</button>
         </div>
@@ -460,22 +438,14 @@
 
     <script>
         const DEFAULT_PRESETS = [
-            { id: "sv1", name: "Стаявидение 1", title: "Стаявидение 1", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results",
-                participants: [ { id:1, name:"Гира", score:6, avatar:"gira.jpg" }, { id:2, name:"Обалена", score:3, avatar:"obalena.jpg" }, { id:3, name:"Егорь", score:3, avatar:"egor.jpg" } ] },
-            { id: "sv2", name: "Стаявидение 2", title: "Стаявидение 2", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results",
-                participants: [ { id:1, name:"Ритикс", score:8, avatar:"ritix.jpg" }, { id:2, name:"Обалена", score:6, avatar:"obalena.jpg" }, { id:3, name:"Егорь", score:3, avatar:"egor.jpg" }, { id:4, name:"Гира", score:2, avatar:"gira.jpg" } ] },
-            { id: "sv3", name: "Стаявидение 3", title: "Стаявидение 3", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results",
-                participants: [ { id:1, name:"Егорь", score:9, avatar:"egor.jpg" }, { id:2, name:"Ритикс", score:6, avatar:"ritix.jpg" }, { id:3, name:"Обалена", score:3, avatar:"obalena.jpg" } ] },
-            { id: "sv4", name: "Стаявидение 4", title: "Стаявидение 4", subtitle: "Частично потеряно", bgType: "wolfs.jpg", viewMode: "results",
-                participants: [ { id:1, name:"Гира", score:0, note:"Победитель", avatar:"gira.jpg" } ] },
-            { id: "sv5", name: "Стаявидение 5", title: "Стаявидение 5", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results",
-                participants: [ { id:1, name:"Егорь", score:7, avatar:"egor.jpg" }, { id:2, name:"Обалена", score:5, avatar:"obalena.jpg" }, { id:3, name:"Ритикс", score:4, avatar:"ritix.jpg" } ] },
-            { id: "sv6s", name: "Стаявидение 6 (Полуфинал)", title: "Стаявидение 6", subtitle: "Полуфинал", bgType: "sv6.webp", viewMode: "results",
-                participants: [ { id:1, name:"Ритикс", score:16, avatar:"ritix.jpg" }, { id:2, name:"Обалена", score:14, avatar:"obalena.jpg" }, { id:3, name:"Гира", score:12, avatar:"gira.jpg" }, { id:4, name:"Егорь", score:7, avatar:"egor.jpg" }, { id:5, name:"Енька", score:4, avatar:"enka.jpg" }, { id:6, name:"И. Потужность", score:4, avatar:"potuzhnost.jpg" } ] },
-            { id: "sv6f", name: "Стаявидение 6 (Финал)", title: "Стаявидение 6", subtitle: "Финал", bgType: "sv6.webp", viewMode: "results",
-                participants: [ { id:1, name:"Обалена", score:16, avatar:"obalena.jpg" }, { id:2, name:"Ритикс", score:14, avatar:"ritix.jpg" }, { id:3, name:"Гира", score:12, avatar:"gira.jpg" }, { id:4, name:"Егорь", score:8, avatar:"egor.jpg" } ] },
-            { id: "sv7", name: "Стаявидение 7 (Жеребьевка)", title: "Стаявидение 7", subtitle: "Running Order", bgType: "sv7.webp", viewMode: "running_order",
-                participants: [ { id:1, name:"Машонка", score:0, avatar:"mashonka.jpg" }, { id:2, name:"Balepa", score:0, avatar:"balepa.jpg" }, { id:3, name:"Обалена", score:0, avatar:"obalena.jpg" }, { id:4, name:"Егорь", score:0, avatar:"egor.jpg" }, { id:5, name:"Ритикс", score:0, avatar:"ritix.jpg" }, { id:6, name:"Енька", score:0, avatar:"enka.jpg" } ] }
+            { id: "sv1", name: "Стаявидение 1", title: "Стаявидение 1", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results", participants: [ { id:1, name:"Гира", score:6, avatar:"gira.jpg" }, { id:2, name:"Обалена", score:3, avatar:"obalena.jpg" }, { id:3, name:"Егорь", score:3, avatar:"egor.jpg" } ] },
+            { id: "sv2", name: "Стаявидение 2", title: "Стаявидение 2", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results", participants: [ { id:1, name:"Ритикс", score:8, avatar:"ritix.jpg" }, { id:2, name:"Обалена", score:6, avatar:"obalena.jpg" }, { id:3, name:"Егорь", score:3, avatar:"egor.jpg" }, { id:4, name:"Гира", score:2, avatar:"gira.jpg" } ] },
+            { id: "sv3", name: "Стаявидение 3", title: "Стаявидение 3", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results", participants: [ { id:1, name:"Егорь", score:9, avatar:"egor.jpg" }, { id:2, name:"Ритикс", score:6, avatar:"ritix.jpg" }, { id:3, name:"Обалена", score:3, avatar:"obalena.jpg" } ] },
+            { id: "sv4", name: "Стаявидение 4", title: "Стаявидение 4", subtitle: "Частично потеряно", bgType: "wolfs.jpg", viewMode: "results", participants: [ { id:1, name:"Гира", score:0, note:"Победитель", avatar:"gira.jpg" } ] },
+            { id: "sv5", name: "Стаявидение 5", title: "Стаявидение 5", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results", participants: [ { id:1, name:"Егорь", score:7, avatar:"egor.jpg" }, { id:2, name:"Обалена", score:5, avatar:"obalena.jpg" }, { id:3, name:"Ритикс", score:4, avatar:"ritix.jpg" } ] },
+            { id: "sv6s", name: "Стаявидение 6 (Полуфинал)", title: "Стаявидение 6", subtitle: "Полуфинал", bgType: "sv6.webp", viewMode: "results", participants: [ { id:1, name:"Ритикс", score:16, avatar:"ritix.jpg" }, { id:2, name:"Обалена", score:14, avatar:"obalena.jpg" }, { id:3, name:"Гира", score:12, avatar:"gira.jpg" }, { id:4, name:"Егорь", score:7, avatar:"egor.jpg" }, { id:5, name:"Енька", score:4, avatar:"enka.jpg" }, { id:6, name:"И. Потужность", score:4, avatar:"potuzhnost.jpg" } ] },
+            { id: "sv6f", name: "Стаявидение 6 (Финал)", title: "Стаявидение 6", subtitle: "Финал", bgType: "sv6.webp", viewMode: "results", participants: [ { id:1, name:"Обалена", score:16, avatar:"obalena.jpg" }, { id:2, name:"Ритикс", score:14, avatar:"ritix.jpg" }, { id:3, name:"Гира", score:12, avatar:"gira.jpg" }, { id:4, name:"Егорь", score:8, avatar:"egor.jpg" } ] },
+            { id: "sv7", name: "Стаявидение 7 (Жеребьевка)", title: "Стаявидение 7", subtitle: "Running Order", bgType: "sv7.webp", viewMode: "running_order", participants: [ { id:1, name:"Машонка", score:0, avatar:"mashonka.jpg" }, { id:2, name:"Balepa", score:0, avatar:"balepa.jpg" }, { id:3, name:"Обалена", score:0, avatar:"obalena.jpg" }, { id:4, name:"Егорь", score:0, avatar:"egor.jpg" }, { id:5, name:"Ритикс", score:0, avatar:"ritix.jpg" }, { id:6, name:"Енька", score:0, avatar:"enka.jpg" } ] }
         ];
 
         const DEFAULT_STATE = {
@@ -487,8 +457,10 @@
             nameX: 0, nameY: 0, scoreX: 0, scoreY: 0, posX: 0, posY: 0, avaX: 0, avaY: 0, align: "left", avatarSize: 1, barHeightMultiplier: 1,
             customPresets: [],
             participants: [
-                { id: 1, name: "Обалена", score: 16, note: "", avatar: "obalena.jpg" }, { id: 2, name: "Ритикс", score: 14, note: "", avatar: "ritix.jpg" },
-                { id: 3, name: "Гира", score: 12, note: "", avatar: "gira.jpg" }, { id: 4, name: "Егорь", score: 8, note: "", avatar: "egor.jpg" }
+                { id: 1, name: "Обалена", score: 16, addScore: 0, note: "", avatar: "obalena.jpg" }, 
+                { id: 2, name: "Ритикс", score: 14, addScore: 0, note: "", avatar: "ritix.jpg" },
+                { id: 3, name: "Гира", score: 12, addScore: 0, note: "", avatar: "gira.jpg" }, 
+                { id: 4, name: "Егорь", score: 8, addScore: 0, note: "", avatar: "egor.jpg" }
             ]
         };
 
@@ -535,7 +507,7 @@
         }
         function adminAutoResults() {
             if(!confirm("Заменить текущие баллы на случайные?")) return;
-            state.participants.forEach(p => { p.score = Math.floor(Math.random() * 24) + 1; });
+            state.participants.forEach(p => { p.score = Math.floor(Math.random() * 24) + 1; p.addScore = 0; });
             state.participants.sort((a,b) => b.score - a.score);
             state.viewMode = 'results'; closeAdminModal(); syncUI(); renderEditor(); updatePreview();
         }
@@ -551,7 +523,10 @@
 
         function loadPreset(id) {
             if(!id) return; let all = [...DEFAULT_PRESETS, ...(state.customPresets || [])]; let p = all.find(x => x.id === id); if(!p) return;
-            state.title = p.title; state.subtitle = p.subtitle; state.bgType = p.bgType; state.viewMode = p.viewMode; state.participants = JSON.parse(JSON.stringify(p.participants));
+            state.title = p.title; state.subtitle = p.subtitle; state.bgType = p.bgType; state.viewMode = p.viewMode; 
+            state.participants = JSON.parse(JSON.stringify(p.participants));
+            state.participants.forEach(x => { if(x.addScore === undefined) x.addScore = 0; }); // Поддержка старых данных
+            
             if(id === 'sv7') { for (let i = state.participants.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [state.participants[i], state.participants[j]] = [state.participants[j], state.participants[i]]; } }
             syncUI(); renderEditor(); updatePreview();
         }
@@ -560,7 +535,6 @@
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) { try { state = { ...DEFAULT_STATE, ...JSON.parse(saved) }; } catch(e) {} }
             if(!state.customPresets) state.customPresets = [];
-            // Поддержка старых сохранений для новых переменных
             if(state.fontTitle === undefined) state.fontTitle = "Playfair Display"; if(state.fontBoard === undefined) state.fontBoard = "Montserrat";
             if(state.textUppercase === undefined) state.textUppercase = true;
             if(state.showScores === undefined) state.showScores = true; if(state.showScoreBars === undefined) state.showScoreBars = true;
@@ -570,6 +544,7 @@
             if(state.avaX === undefined) state.avaX = 0; if(state.avaY === undefined) state.avaY = 0;
             if(state.align === undefined) state.align = "left";
             if(state.avatarSize === undefined) state.avatarSize = 1; if(state.barHeightMultiplier === undefined) state.barHeightMultiplier = 1;
+            state.participants.forEach(p => { if(p.addScore === undefined) p.addScore = 0; });
         }
         function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
         
@@ -631,7 +606,7 @@
             updatePreview();
         }
 
-        function updateParticipant(id, field, value) { const p = state.participants.find(x => x.id === id); if(p) { p[field] = field === 'score' ? Number(value) : value; updatePreview(); } }
+        function updateParticipant(id, field, value) { const p = state.participants.find(x => x.id === id); if(p) { p[field] = field === 'score' || field === 'addScore' ? Number(value) : value; updatePreview(true); } }
 
         function moveParticipant(id, dir) {
             const idx = state.participants.findIndex(p => p.id === id); if (idx < 0) return;
@@ -671,10 +646,10 @@
                             <button type="button" class="btn-icon" onclick="moveParticipant(${p.id}, -1)">▲</button>
                             <button type="button" class="btn-icon" onclick="moveParticipant(${p.id}, 1)">▼</button>
                         </div>
-                        <select onchange="handleAvatarSelect(event, ${p.id})">${opts}</select>
-                        <input type="text" placeholder="Имя" value="${p.name}" oninput="updateParticipant(${p.id}, 'name', this.value)">
-                        <input type="text" placeholder="Заметка" value="${p.note||''}" oninput="updateParticipant(${p.id}, 'note', this.value)">
-                        <input type="number" placeholder="Балл" value="${p.score}" oninput="updateParticipant(${p.id}, 'score', this.value)">
+                        <select style="flex:1.2; min-width: 90px;" onchange="handleAvatarSelect(event, ${p.id})">${opts}</select>
+                        <input type="text" style="flex:1.5; min-width: 70px;" placeholder="Имя" value="${p.name}" oninput="updateParticipant(${p.id}, 'name', this.value)">
+                        <input type="number" style="flex:0.8; min-width: 45px;" placeholder="Балл" value="${p.score}" oninput="updateParticipant(${p.id}, 'score', this.value)">
+                        <input type="number" style="flex:0.8; min-width: 45px; background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.3); color: #00ff88; font-weight:bold;" placeholder="+ Добавить" value="${p.addScore || 0}" oninput="updateParticipant(${p.id}, 'addScore', this.value)">
                         <input type="file" id="file-${p.id}" style="display:none" accept="image/*" onchange="handleCustomAvatar(event, ${p.id})">
                         <button type="button" class="btn-remove" onclick="removeParticipant(${p.id})" title="Удалить">×</button>
                     </div>`;
@@ -685,7 +660,7 @@
         function handleCustomAvatar(e, id) { const f = e.target.files[0]; if(f){ const r=new FileReader(); r.onload=ev=>{ updateParticipant(id,'avatar',ev.target.result); renderEditor(); }; r.readAsDataURL(f); } }
         function handleBgUpload(e) { const f = e.target.files[0]; if(f){ const r=new FileReader(); r.onload=ev=>{ state.bgCustomData=ev.target.result; updatePreview(); }; r.readAsDataURL(f); } }
         
-        function addParticipant() { const nId = state.participants.length>0 ? Math.max(...state.participants.map(p=>p.id))+1 : 1; state.participants.push({ id: nId, name: "Новый", score: 0, note: "", avatar: "default.jpg" }); renderEditor(); updatePreview(); }
+        function addParticipant() { const nId = state.participants.length>0 ? Math.max(...state.participants.map(p=>p.id))+1 : 1; state.participants.push({ id: nId, name: "Новый", score: 0, addScore: 0, note: "", avatar: "default.jpg" }); renderEditor(); updatePreview(); }
         function removeParticipant(id) { state.participants = state.participants.filter(p=>p.id!==id); renderEditor(); updatePreview(); }
         
         function randomizeParticipants() {
@@ -693,8 +668,115 @@
             renderEditor(); updatePreview();
         }
 
-        function updatePreview() {
-            saveState();
+        // === АНИМАЦИЯ НАЧИСЛЕНИЯ БАЛЛОВ ===
+        async function playAddPointsAnimation() {
+            const hasPointsToAdd = state.participants.some(p => p.addScore > 0);
+            if (!hasPointsToAdd) { alert("Укажите баллы в колонке '+ Добавить' (зеленое поле)!"); return; }
+
+            // Переключаемся на Превью (для телефонов)
+            document.querySelectorAll('.mobile-tabs button')[1].click();
+
+            // 1. Показываем летающие баллы
+            state.participants.forEach(p => {
+                if(p.addScore > 0) {
+                    const el = document.getElementById(`float-${p.id}`);
+                    if(el) { el.innerText = `+${p.addScore}`; el.classList.add('animate'); }
+                }
+            });
+
+            // 2. Крутим счетчики 2 секунды
+            const duration = 2000;
+            const startTime = performance.now();
+            const startScores = state.participants.map(p => p.score);
+            let maxPotential = Math.max(...state.participants.map(p => p.score + p.addScore), 1);
+
+            return new Promise(resolve => {
+                function step(time) {
+                    let progress = Math.min((time - startTime) / duration, 1);
+                    
+                    state.participants.forEach((p, idx) => {
+                        if(p.addScore > 0) {
+                            let currentVal = Math.floor(startScores[idx] + (p.addScore * progress));
+                            let numEl = document.getElementById(`scoreNum-${p.id}`);
+                            let barEl = document.getElementById(`scoreBar-${p.id}`);
+                            let rowEl = document.getElementById(`row-${p.id}`);
+                            
+                            if(numEl) numEl.innerText = currentVal;
+                            if(barEl) {
+                                let fill = Math.max((currentVal / maxPotential) * 100, 0.1);
+                                barEl.style.width = fill + '%';
+                                barEl.style.display = 'block';
+                            }
+                            
+                            // Эффект свечения если баллов >= 7 и пройдена половина анимации
+                            if(progress > 0.5 && p.addScore >= 7 && rowEl) {
+                                rowEl.classList.add('glow-shimmer');
+                            }
+                        }
+                    });
+
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        // 3. Анимация завершена, обновляем реальные данные
+                        state.participants.forEach(p => {
+                            if(p.addScore > 0) { p.score += p.addScore; p.addScore = 0; }
+                        });
+                        
+                        // Запускаем FLIP сортировку с задержкой (чтобы зритель увидел итог перед перестановкой)
+                        setTimeout(() => {
+                            renderEditor();
+                            updatePreviewWithFLIP();
+                            resolve();
+                        }, 1000);
+                    }
+                }
+                requestAnimationFrame(step);
+            });
+        }
+
+        // Умная перерисовка со слайд-анимацией
+        function updatePreviewWithFLIP() {
+            const board = document.getElementById('renderBoard');
+            
+            // 1. Считываем старые позиции
+            const oldPositions = {};
+            document.querySelectorAll('.result-row').forEach(row => {
+                oldPositions[row.dataset.pid] = row.getBoundingClientRect();
+            });
+
+            // 2. Перерисовываем (сортируем)
+            updatePreview(true);
+
+            // 3. Считываем новые позиции и делаем инверт
+            document.querySelectorAll('.result-row').forEach(row => {
+                const newPos = row.getBoundingClientRect();
+                const oldPos = oldPositions[row.dataset.pid];
+                
+                if(oldPos) {
+                    const deltaX = oldPos.left - newPos.left;
+                    const deltaY = oldPos.top - newPos.top;
+                    
+                    // Убираем транзишн, ставим на старое место
+                    row.style.transition = 'none';
+                    row.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+
+                    // Форсируем перерисовку кадра браузером
+                    row.getBoundingClientRect(); 
+
+                    // Включаем транзишн и убираем трансформ (элемент плавно едет на новое место)
+                    requestAnimationFrame(() => {
+                        row.style.transition = 'transform 1s cubic-bezier(0.25, 1, 0.5, 1), background 0.5s ease';
+                        row.style.transform = '';
+                        row.classList.remove('glow-shimmer'); // Гасим эффект
+                    });
+                }
+            });
+        }
+
+        function updatePreview(skipSave = false) {
+            if(!skipSave) saveState();
+            
             document.getElementById('renderTitle').innerText = state.title; document.getElementById('renderSubtitle').innerText = state.subtitle;
             const capture = document.getElementById('scoreboard-capture'); const inner = document.getElementById('captureInner');
             
@@ -704,7 +786,7 @@
             capture.style.width = lW + 'px';
             
             capture.className = `style-${state.style}`;
-            if (state.highlightTop3) capture.classList.add('highlight-top3'); else capture.classList.remove('highlight-top3');
+            if (state.highlightTop3 && state.viewMode === 'results') capture.classList.add('highlight-top3'); else capture.classList.remove('highlight-top3');
             
             capture.style.setProperty('--bar-c1', hexToRgba(state.barColor1, state.barAlpha)); capture.style.setProperty('--bar-c2', hexToRgba(state.barColor2, state.barAlpha * 0.7));
             capture.style.setProperty('--avatar-radius', state.avatarShape);
@@ -739,7 +821,7 @@
             
             let list = [...state.participants];
             if (state.viewMode === 'results') list.sort((a,b) => b.score - a.score);
-            let maxScore = Math.max(...list.map(p => p.score), 1);
+            let maxScore = Math.max(...list.map(p => p.score + (p.addScore || 0)), 1);
 
             let rowsCount = Math.ceil(list.length / state.columns);
             board.style.gridTemplateColumns = `repeat(${state.columns}, 1fr)`;
@@ -747,26 +829,29 @@
             board.style.gridAutoFlow = 'column';
 
             list.forEach((p, index) => {
-                let pos = index + 1; let rC = "result-row";
-                if (state.viewMode === 'results' && pos <= 3) rC += ` place-${pos}`;
-                let fill = Math.max((p.score / maxScore) * 100, 0.1); 
+                let position = index + 1;
+                let rowClass = "result-row";
+                if (state.viewMode === 'results' && position <= 3) rowClass += ` place-${position}`;
+
+                let fillPercent = Math.max((p.score / maxScore) * 100, 0.1); 
                 
                 let scoreBlock = '';
                 if (state.viewMode === 'results' && state.showScores) {
-                    let barHtml = state.showScoreBars ? `<div class="score-bar"><div class="score-bar-fill" style="${fill>0?`width:${fill}%; min-width:2px;`:'display:none;'}"></div></div>` : '';
+                    let barHtml = state.showScoreBars ? `<div class="score-bar"><div class="score-bar-fill" id="scoreBar-${p.id}" style="${fillPercent>0.1?`width:${fillPercent}%; min-width:2px;`:'display:none;'}"></div></div>` : '';
                     scoreBlock = `
                         <div class="score">
-                            <div class="score-number">${p.score}</div>
+                            <div class="add-score-float" id="float-${p.id}"></div>
+                            <div class="score-number" id="scoreNum-${p.id}">${p.score}</div>
                             <div class="score-label">Баллов</div>
                             ${barHtml}
                         </div>`;
                 }
 
-                let posHTML = state.showPositions ? `<div class="position">${pos}</div>` : '';
+                let posHTML = state.showPositions ? `<div class="position">${position}</div>` : '';
                 let avaHTML = state.showAvatars ? `<img src="${p.avatar}" class="participant-avatar" alt="av">` : '';
 
                 board.innerHTML += `
-                    <div class="${rC}">
+                    <div class="${rowClass}" id="row-${p.id}" data-pid="${p.id}">
                         ${posHTML}
                         ${avaHTML}
                         <div class="participant-info"><div class="participant-name">${p.name}</div>${state.showNotes && p.note ? `<div class="participant-note">${p.note}</div>` : ''}</div>
