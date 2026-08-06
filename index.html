@@ -108,7 +108,7 @@
         }
         .tg-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(0, 136, 204, 0.6); }
 
-        /* Navigation */
+        /* Navigation - Островок */
         nav { 
             position: sticky; top: 20px; z-index: 100; 
             padding: 0 15px; margin-bottom: 30px;
@@ -142,7 +142,7 @@
         .era-title.silver { color: var(--silver); margin-top: 70px; }
         
         .edition-header { text-align: center; margin-bottom: 40px; }
-        .edition-number { font-size: 1rem; color: var(--accent2); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px;}
+        .edition-number { font-size: 1rem; color: var(--accent2); text-transform: uppercase; letter-spacing: 5px; margin-bottom: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px;}
         .edition-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 10px; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
         
         .badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 10px; }
@@ -196,9 +196,8 @@
         .participant-flag { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; }
 
         .score { text-align: right; margin-left: 15px; flex-shrink: 0; }
-        .score-number { font-size: 2rem; font-weight: 900; line-height: 1; }
+        .score-number { font-size: 2.2rem; font-weight: 900; line-height: 1; }
         .place-1 .score-number { background: linear-gradient(135deg, var(--gold), #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .score-label { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
 
         /* Winner showcase */
         .winner-showcase { text-align: center; padding: 20px; margin-bottom: 20px; }
@@ -285,10 +284,9 @@
             body.mobile-mode .ptc-history { grid-template-columns: repeat(2, 1fr); }
         }
 
-        footer { text-align: center; padding: 40px 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-secondary); font-size: 0.85rem; z-index: 10; position: relative; font-weight: 600;}
-        footer span { background: linear-gradient(135deg, var(--accent1), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
-        footer a { color: var(--accent3); text-decoration: none; transition: 0.3s; }
-        footer a:hover { color: white; }
+        footer { text-align: center; padding: 40px 20px; color: var(--text-secondary); font-size: 0.85rem; z-index: 10; position: relative; font-weight: 600;}
+        footer a { color: var(--text-secondary); text-decoration: none; transition: 0.3s; opacity: 0.7;}
+        footer a:hover { color: white; opacity: 1;}
         
         .scroll-top { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--accent1), var(--accent2)); border: none; color: white; font-size: 1.5rem; cursor: pointer; z-index: 100; opacity: 0; transition: all 0.3s; box-shadow: 0 5px 20px rgba(233, 30, 140, 0.4); }
         .scroll-top.visible { opacity: 1; }
@@ -339,18 +337,12 @@
     <main id="appContainer"></main>
 
     <footer>
-        <p>Создано с любовью для друзей ❤️</p>
-        <p style="margin-top: 8px; font-size: 0.75rem;">Официальный архив | <a href="generator.html">Генератор Скорборда</a></p>
+        <a href="generator.html">Генератор Скорборда</a>
     </footer>
 
     <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
 
     <script>
-        /**
-         * ==========================================
-         * 🛠️ БАЗА ДАННЫХ КОНКУРСА
-         * ==========================================
-         */
         const DATA = {
             editions: [
                 {
@@ -408,20 +400,14 @@
                 {
                     id: "edition6", shortName: "6", name: "Стаявидение 6", location: "Дюшесово", date: "28 Июня",
                     started: true, isLost: false, winner: { name: "Обалена", avatar: "obalena.jpg" },
-                    links: { semifinal: "https://youtube.com/полуфинал_ссылка", final: "https://youtube.com/финал_ссылка" },
+                    links: { final: "https://youtube.com/финал_ссылка" },
                     final: [
-                        { name: "Обалена", avatar: "obalena.jpg", score: 16, note: "🏆 Победитель Финала" },
-                        { name: "Ритикс", avatar: "ritix.jpg", score: 14, note: "★ Финалист" },
-                        { name: "Гира", avatar: "gira.jpg", score: 12, note: "★ Финалист" },
-                        { name: "Егорь", avatar: "egor.jpg", score: 8, note: "★ Финалист" }
-                    ],
-                    semifinal: [
-                        { name: "Ритикс", avatar: "ritix.jpg", score: 16, note: "Прошел в финал" },
-                        { name: "Обалена", avatar: "obalena.jpg", score: 14, note: "Прошел в финал" },
-                        { name: "Гира", avatar: "gira.jpg", score: 12, note: "Прошел в финал" },
-                        { name: "Егорь", avatar: "egor.jpg", score: 7, note: "Прошел в финал" },
-                        { name: "Енька", avatar: "enka.jpg", score: 4, note: "✗ Выбыл в полуфинале", eliminated: true },
-                        { name: "И. Потужность", avatar: "potuzhnost.jpg", score: 4, note: "✗ Выбыл в полуфинале", eliminated: true }
+                        { name: "Обалена", avatar: "obalena.jpg", score: 16, note: "🏆 Победитель" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 14, note: "" },
+                        { name: "Гира", avatar: "gira.jpg", score: 12, note: "" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 8, note: "" },
+                        { name: "Енька", avatar: "enka.jpg", score: 4, note: "" },
+                        { name: "И. Потужность", avatar: "potuzhnost.jpg", score: 4, note: "" }
                     ]
                 },
                 {
@@ -453,10 +439,10 @@
                 }
             ],
             hallOfFame: [
-                { name: "Егорь", avatar: "egor.jpg", wins: "3 победы (SV3, SV5, SV7)" },
-                { name: "Гира", avatar: "gira.jpg", wins: "2 победы (SV1, SV4)" },
-                { name: "Обалена", avatar: "obalena.jpg", wins: "1 победа (SV6)" },
-                { name: "Ритикс", avatar: "ritix.jpg", wins: "1 победа (SV2)" }
+                { name: "Егорь", avatar: "egor.jpg", wins: "3 победы (3, 5, 7)" },
+                { name: "Гира", avatar: "gira.jpg", wins: "2 победы (1, 4)" },
+                { name: "Обалена", avatar: "obalena.jpg", wins: "1 победа (6)" },
+                { name: "Ритикс", avatar: "ritix.jpg", wins: "1 победа (2)" }
             ]
         };
 
@@ -482,23 +468,8 @@
         }
 
         function renderOverviewSection() {
-            let totalEditions = DATA.editions.length;
-            let finishedEditions = DATA.editions.filter(e => e.started).length;
-            let totalWinners = DATA.hallOfFame.length;
+            let html = `<section class="edition-section active" id="overview">`;
 
-            let html = `
-                <section class="edition-section active" id="overview">
-                    <div class="stats-bar">
-                        <div class="stat-card"><div class="stat-number">${totalEditions}</div><div class="stat-label">Конкурсов</div></div>
-                        <div class="stat-card"><div class="stat-number">${finishedEditions}</div><div class="stat-label">Проведено</div></div>
-                        <div class="stat-card"><div class="stat-number">${totalWinners}</div><div class="stat-label">Победителей</div></div>
-                        <div class="stat-card"><div class="stat-number">2026</div><div class="stat-label">Год</div></div>
-                    </div>
-                    <div class="edition-header"><div class="edition-number">Все конкурсы</div><h2 class="edition-title">История Стаявидения</h2></div>
-                    <div class="all-editions-grid">
-            `;
-
-            // 1. ЗАЛ СЛАВЫ (САМЫЙ ВЕРХ)
             html += `
                 <div class="hall-of-fame" style="margin-top: 0; margin-bottom: 60px; grid-column: 1 / -1;">
                     <h2 class="hall-title">Зал Славы</h2>
@@ -516,9 +487,8 @@
             });
             html += `</div></div>`;
 
-            // 2. ИСТОРИЯ КОНКУРСОВ (РАЗДЕЛЕННАЯ)
-            let prehistoric = DATA.editions.slice(0, 5); // 1 to 5
-            let newEra = DATA.editions.slice(5); // 6+
+            let prehistoric = DATA.editions.slice(0, 5); 
+            let newEra = DATA.editions.slice(5);
 
             html += `
                 <div style="grid-column: 1 / -1;">
@@ -534,13 +504,11 @@
             `;
             prehistoric.forEach(ed => { html += generateMiniCard(ed); });
 
-            // 3. ИСТОРИЯ УЧАСТНИКОВ (ЛЕНТА)
             let allParticipants = {};
 
             DATA.editions.forEach(ed => {
                 let pool = [];
                 if (ed.final) pool.push(...ed.final);
-                if (ed.semifinal) pool.push(...ed.semifinal);
                 if (ed.participants) pool.push(...ed.participants);
 
                 pool.forEach(p => {
@@ -553,9 +521,9 @@
             for (const pName in allParticipants) {
                 let pData = allParticipants[pName];
 
-                DATA.editions.forEach((ed, index) => {
+                DATA.editions.forEach((ed) => {
                     let historyEntry = {
-                        edName: "SV " + ed.shortName,
+                        edName: ed.shortName,
                         statusClass: "history-none",
                         resultText: "Нет участия"
                     };
@@ -571,16 +539,10 @@
                         }
                     } else {
                         let finalPos = -1;
-                        let isEliminated = false;
 
                         if (ed.final) {
                             let sortedFinal = [...ed.final].sort((a,b) => (b.score || 0) - (a.score || 0));
                             finalPos = sortedFinal.findIndex(x => x.name === pName);
-                        }
-
-                        if (ed.semifinal) {
-                            let sEntry = ed.semifinal.find(x => x.name === pName);
-                            if (sEntry && sEntry.eliminated) isEliminated = true;
                         }
 
                         if (finalPos !== -1) {
@@ -590,10 +552,6 @@
                             else if (place === 2) { historyEntry.statusClass = "history-silver"; historyEntry.resultText = "2 Место 🥈"; } 
                             else if (place === 3) { historyEntry.statusClass = "history-bronze"; historyEntry.resultText = "3 Место 🥉"; } 
                             else { historyEntry.statusClass = "history-base"; historyEntry.resultText = place + " Место"; }
-                        } else if (isEliminated) {
-                            pData.participations++;
-                            historyEntry.statusClass = "history-eliminated";
-                            historyEntry.resultText = "Выбыл в ПФ";
                         }
                     }
                     pData.history.push(historyEntry);
@@ -686,27 +644,10 @@
                 `;
             }
 
-            if (ed.links && (ed.links.final || ed.links.semifinal)) {
+            if (ed.links && ed.links.final) {
                 html += `<div class="edition-links">`;
-                if (ed.links.semifinal) html += `<a href="${ed.links.semifinal}" target="_blank" class="watch-btn"><svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть Полуфинал</a>`;
-                if (ed.links.final) html += `<a href="${ed.links.final}" target="_blank" class="watch-btn"><svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть Финал</a>`;
+                html += `<a href="${ed.links.final}" target="_blank" class="watch-btn"><svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть Финал</a>`;
                 html += `</div>`;
-            }
-
-            if (ed.isLost) {
-                html += `
-                    <div class="notice-box notice-lost">
-                        <div class="notice-icon">⚠️</div>
-                        <div class="notice-text">Полные результаты и видео частично утеряны. Известно только имя победителя — <strong>${ed.winner.name}</strong>.</div>
-                    </div>
-                `;
-            } else if (!ed.started) {
-                html += `
-                    <div class="notice-box notice-pending">
-                        <div class="notice-icon">🗓️</div>
-                        <div class="notice-text">Конкурс <strong>ещё не начался</strong>. Заходите позже — здесь появятся баллы и результаты!</div>
-                    </div>
-                `;
             }
 
             if (!ed.started && ed.participants) {
@@ -714,48 +655,27 @@
                 ed.participants.forEach(p => html += renderParticipantRow(p, null, true));
                 html += `</div>`;
             } else if (ed.started) {
-                if (ed.final && ed.semifinal) {
-                    html += `
-                        <div class="stage-tabs">
-                            <button class="stage-tab active" onclick="switchStage('${ed.id}', 'final')">Финал</button>
-                            <button class="stage-tab" onclick="switchStage('${ed.id}', 'semifinal')">Полуфинал</button>
-                        </div>
-                    `;
-                    html += `<div id="${ed.id}-final" class="stage-content active"><div class="results-container">`;
-                    let maxScore = Math.max(...ed.final.map(p => p.score || 1));
-                    ed.final.forEach((p, index) => html += renderParticipantRow(p, index + 1, false, maxScore));
-                    html += `</div></div>`;
-
-                    html += `<div id="${ed.id}-semifinal" class="stage-content"><div class="results-container">`;
-                    let maxScoreSemi = Math.max(...ed.semifinal.map(p => p.score || 1));
-                    ed.semifinal.forEach((p, index) => html += renderParticipantRow(p, index + 1, false, maxScoreSemi));
-                    html += `</div></div>`;
-                } else if (ed.final) {
-                    html += `<div class="results-container">`;
-                    let maxScore = Math.max(...ed.final.map(p => p.score || 1));
-                    ed.final.forEach((p, index) => html += renderParticipantRow(p, index + 1, false, maxScore));
-                    html += `</div>`;
-                }
+                html += `<div class="results-container">`;
+                let maxScore = Math.max(...ed.final.map(p => p.score || 1));
+                ed.final.forEach((p, index) => html += renderParticipantRow(p, index + 1, false, maxScore));
+                html += `</div>`;
             }
 
             html += `</section>`;
             return html;
         }
 
-        function renderParticipantRow(p, position, isPending = false, maxScore = 10) {
+        function renderParticipantRow(p, position, isPending = false) {
             let classes = "result-row";
             if (position === 1 && !isPending) classes += " place-1";
             else if (position === 2 && !isPending) classes += " place-2";
             else if (position === 3 && !isPending) classes += " place-3";
             
-            if (p.eliminated) classes += " eliminated";
-
             let posHTML = isPending ? '' : `<div class="position ${position <= 3 ? 'position-'+position : 'position-other'}">${position}</div>`;
             
             let scoreHTML = isPending ? '' : `
                 <div class="score">
                     <div class="score-number">${p.score !== null ? p.score : '—'}</div>
-                    <div class="score-label">${p.score !== null ? 'Баллов' : 'Н/Д'}</div>
                 </div>
             `;
 
@@ -765,7 +685,7 @@
                     <img src="${p.avatar}" alt="${p.name}" class="participant-avatar">
                     <div class="participant-info">
                         <div class="participant-name">${p.name}</div>
-                        <div class="participant-flag" style="${p.eliminated ? 'color: #ff6464;' : ''}">${p.note || ''}</div>
+                        <div class="participant-flag">${p.note || ''}</div>
                     </div>
                     ${scoreHTML}
                 </div>
