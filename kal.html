@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animal Hospital Ship Generator</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        min-height: 100vh; padding: 20px;
+    }
+    h1 { text-align: center; color: white; margin-bottom: 25px; }
+    .box {
+        max-width: 1000px; margin: 0 auto; background: white;
+        border-radius: 20px; padding: 30px; position: relative;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    }
+    .close {
+        position: absolute; top: 12px; right: 12px; width: 42px; height: 42px;
+        border: none; border-radius: 50%; background: #ff6b6b; color: white;
+        font-size: 24px; cursor: pointer;
+    }
+    .modes { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+    .mode-btn {
+        padding: 12px 25px; border: 2px solid #764ba2; background: white;
+        border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold;
+    }
+    .mode-btn.active { background: #764ba2; color: white; }
+    .gen {
+        width: 100%; padding: 18px; font-size: 22px; font-weight: bold;
+        border: none; border-radius: 15px; color: white; cursor: pointer;
+        background: linear-gradient(135deg, #667eea, #764ba2); margin-bottom: 25px;
+    }
+    .ship { display: none; text-align: center; }
+    .cards { display: flex; justify-content: center; align-items: center; gap: 30px; flex-wrap: wrap; margin-bottom: 25px; }
+    .card { background: #f5f3ff; border-radius: 15px; padding: 15px; width: 220px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .card img { width: 100%; height: 200px; object-fit: contain; border-radius: 10px; background: #eee; }
+    .card h3 { margin-top: 10px; }
+    .card p { color: #777; font-size: 13px; }
+    .heart { font-size: 55px; animation: pulse 1s infinite; }
+    @keyframes pulse { 50% { transform: scale(1.25); } }
+    .actions { display: flex; gap: 20px; justify-content: center; }
+    .act { padding: 14px 40px; font-size: 18px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; color: white; }
+    .canon { background: #4CAF50; }
+    .noncanon { background: #f44336; }
+    .tabs { margin-top: 30px; }
+    .tab-btns { display: flex; gap: 10px; margin-bottom: 15px; }
+    .tab-btn { padding: 10px 25px; border: none; border-radius: 10px; background: #eee; cursor: pointer; font-size: 15px; }    .tab-btn.active { background: #667eea; color: white; }
+    .tab { display: none; }
+    .tab.active { display: block; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+    .ship-card { background: #f5f3ff; border-radius: 12px; padding: 15px; text-align: center; }
+    .ship-card img { width: 70px; height: 70px; object-fit: contain; background: #eee; border-radius: 8px; }
+    .del { margin-top: 8px; background: #ff6b6b; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>Animal Hospital Ship Generator</h1>
+<div class="box">
+    <button class="close" onclick="closeGen()">×</button>
+
+    <div class="modes">
+        <button class="mode-btn active" onclick="setMode('classes', this)">Только классы</button>
+        <button class="mode-btn" onclick="setMode('chars', this)">Только персонажи</button>
+        <button class="mode-btn" onclick="setMode('combo', this)">Комбо</button>
+    </div>
+
+    <button class="gen" onclick="generateShip()">Сгенерировать шип</button>
+
+    <div class="ship" id="ship">
+        <div class="cards">
+            <div class="card"><img id="img1"><h3 id="name1"></h3><p id="type1"></p></div>
+            <div class="heart">❤️</div>
+            <div class="card"><img id="img2"><h3 id="name2"></h3><p id="type2"></p></div>
+        </div>
+        <div class="actions">
+            <button class="act canon" onclick="saveShip(true)">Канон</button>
+            <button class="act noncanon" onclick="saveShip(false)">Не канон</button>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab-btns">
+            <button class="tab-btn active" onclick="switchTab('gen', this)">Генератор</button>
+            <button class="tab-btn" onclick="switchTab('all', this)">Все шипы (<span id="count">0</span>)</button>
+        </div>
+        <div class="tab active" id="tabGen"></div>
+        <div class="tab" id="tabAll"><div class="grid" id="grid"></div></div>
+    </div>
+</div>
+
+<script>
+// КЛАССЫ - имя и ссылка на фотку с вики
+const classes = {
+    'Intern': 'https://static.wikia.nocookie.net/animal-hospital/images/a/a3/Intern.png/revision/latest?cb=20260616013756',
+    'Nurse': 'https://static.wikia.nocookie.net/animal-hospital/images/c/cc/Nurse.png/revision/latest?cb=20260616013831',
+    'Head Nurse': 'https://static.wikia.nocookie.net/animal-hospital/images/d/dc/Head_Nurse.png/revision/latest?cb=20260710161821',    'Doctor': 'https://static.wikia.nocookie.net/animal-hospital/images/7/7a/Doctor_New.png/revision/latest?cb=20260710161057',
+    'Surgeon': 'https://static.wikia.nocookie.net/animal-hospital/images/3/35/Surgeon.png/revision/latest?cb=20260616014124',
+    'Paramedic': 'https://static.wikia.nocookie.net/animal-hospital/images/0/00/Paramedic%27s_new_skin.jpg/revision/latest?cb=20260712081143',
+    'Psychologist': 'https://static.wikia.nocookie.net/animal-hospital/images/d/d1/Psychologist_New.png/revision/latest?cb=20260710161610',
+    'Secretary': 'https://static.wikia.nocookie.net/animal-hospital/images/0/07/Secretary.png/revision/latest?cb=20260616013901',
+    'Security': 'https://static.wikia.nocookie.net/animal-hospital/images/8/8c/Security.png/revision/latest?cb=20260616014038',
+    'Secret Agent': 'https://static.wikia.nocookie.net/animal-hospital/images/e/e2/SecretAgent.png/revision/latest?cb=20260616014140'
+};
+
+// СЮЖЕТНЫЕ ПЕРСОНАЖИ
+const chars = {
+    'Barney': 'https://static.wikia.nocookie.net/animal-hospital/images/c/c9/Barney1.png/revision/latest?cb=20260624134544',
+    'Ron from Accounting': 'https://static.wikia.nocookie.net/animal-hospital/images/f/fb/Ron_From_Accounting.png/revision/latest?cb=20260705145117',
+    'Ratthew': 'https://static.wikia.nocookie.net/animal-hospital/images/c/c0/Ratthew.png/revision/latest?cb=20260705145008',
+    'Dr. Harlow': 'https://static.wikia.nocookie.net/animal-hospital/images/e/ed/Dr._Harlow.jpg/revision/latest?cb=20260616202543',
+    'Liz': 'https://static.wikia.nocookie.net/animal-hospital/images/f/f4/Liz_Animal_Hospital.png/revision/latest?cb=20260710174616',
+    'Sam': 'https://static.wikia.nocookie.net/animal-hospital/images/7/7c/Sam_render.png/revision/latest?cb=20260727040612',
+    'Officer Duckman': 'https://static.wikia.nocookie.net/animal-hospital/images/7/7e/Duckman_icon.png/revision/latest?cb=20260627123747',
+    'Rattina': 'https://static.wikia.nocookie.net/animal-hospital/images/a/ac/Rattina.png/revision/latest?cb=20260805010804'
+};
+
+let mode = 'classes';
+let current = null;
+let saved = [];
+
+function setMode(m, btn) {
+    mode = m;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function pick(obj) {
+    const keys = Object.keys(obj);
+    const k = keys[Math.floor(Math.random() * keys.length)];
+    return { name: k, img: obj[k] };
+}
+
+function generateShip() {
+    let a, b;
+    if (mode === 'classes') {
+        a = pick(classes);
+        do { b = pick(classes); } while (b.name === a.name);
+    } else if (mode === 'chars') {
+        a = pick(chars);
+        do { b = pick(chars); } while (b.name === a.name);
+    } else {
+        a = pick(classes);
+        b = pick(chars);
+    }
+    current = { a, b };    document.getElementById('ship').style.display = 'block';
+    document.getElementById('img1').src = a.img;
+    document.getElementById('name1').textContent = a.name;
+    document.getElementById('type1').textContent = (classes[a.name] ? 'Класс' : 'Персонаж');
+    document.getElementById('img2').src = b.img;
+    document.getElementById('name2').textContent = b.name;
+    document.getElementById('type2').textContent = (classes[b.name] ? 'Класс' : 'Персонаж');
+}
+
+function saveShip(canon) {
+    if (!current) return;
+    if (canon) {
+        saved.push({ ...current, time: new Date().toLocaleString() });
+        renderShips();
+    }
+    generateShip();
+}
+
+function renderShips() {
+    const g = document.getElementById('grid');
+    g.innerHTML = '';
+    document.getElementById('count').textContent = saved.length;
+    saved.forEach((s, i) => {
+        const d = document.createElement('div');
+        d.className = 'ship-card';
+        d.innerHTML = '<img src="' + s.a.img + '"><img src="' + s.b.img + '">' +
+            '<h4>' + s.a.name + ' × ' + s.b.name + '</h4><p>' + s.time + '</p>' +
+            '<button class="del" onclick="delShip(' + i + ')">Удалить</button>';
+        g.appendChild(d);
+    });
+}
+
+function delShip(i) { saved.splice(i, 1); renderShips(); }
+
+function switchTab(t, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(t === 'gen' ? 'tabGen' : 'tabAll').classList.add('active');
+}
+
+function closeGen() {
+    if (confirm('Выйти из генератора?')) document.body.innerHTML = '<h1>Пока! 💕</h1>';
+}
+</script>
+</body>
+</html>
