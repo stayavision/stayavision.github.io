@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор Скорборда PRO — Видеорендер</title>
-    <!-- Библиотека для скриншотов -->
+    <title>Генератор Скорборда Стаявидение</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- Библиотека для сборки WebM видео -->
     <script src="https://cdn.jsdelivr.net/npm/whammy@0.0.1/whammy.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700;900&family=Roboto:wght@400;700;900&family=Oswald:wght@400;700&family=Open+Sans:wght@400;700;800&family=Caveat:wght@700&family=Comfortaa:wght@700&display=swap');
@@ -26,22 +24,22 @@
         
         .admin-login-btn { position: absolute; top: 15px; right: 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .admin-login-btn:hover { background: rgba(255,255,255,0.2); }
+        .admin-login-btn.logged-in { background: rgba(0, 212, 255, 0.2); border-color: var(--accent3); color: var(--accent3); }
+
+        .mobile-tabs { display: none; width: 100%; background: rgba(18,18,42,0.95); padding: 10px; position: sticky; top: 0; z-index: 100; justify-content: center; gap: 10px; backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .mobile-tabs button { flex: 1; padding: 12px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: var(--text-secondary); font-weight: 700; font-family: Montserrat; cursor: pointer; transition: 0.3s; }
+        .mobile-tabs button.active { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; box-shadow: 0 4px 15px rgba(233, 30, 140, 0.4); }
 
         .app-container { display: flex; flex-wrap: wrap; gap: 20px; max-width: 1600px; margin: 0 auto; padding: 20px; align-items: flex-start; }
 
-        /* ЛИПКИЕ ПАНЕЛИ (Ездят при прокрутке) */
+        /* ЛИПКИЕ ПАНЕЛИ */
         .controls-panel { 
             flex: 1; min-width: 350px; max-width: 530px; background: rgba(18, 18, 42, 0.7); 
             border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; 
             position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow-y: auto;
         }
-        
-        .preview-panel { 
-            flex: 2; display: flex; flex-direction: column; align-items: center; min-width: 300px; 
-            position: sticky; top: 20px;
-        }
+        .preview-panel { flex: 2; display: flex; flex-direction: column; align-items: center; min-width: 300px; position: sticky; top: 20px; }
 
-        /* Кастомизация скроллбара в настройках */
         .controls-panel::-webkit-scrollbar { width: 6px; }
         .controls-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
@@ -49,6 +47,7 @@
         .section-title:first-child { margin-top: 0; }
 
         .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 600px) { .settings-grid { grid-template-columns: 1fr; } }
         
         .control-group { display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
         .control-group label { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
@@ -64,21 +63,25 @@
         .btn-action { background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: 600; width: 100%; }
         .btn-action:hover { background: rgba(255,255,255,0.2); }
         .btn-auto-color { background: rgba(0, 212, 255, 0.15); color: var(--accent3); border: 1px solid rgba(0, 212, 255, 0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .btn-auto-color:hover { background: var(--accent3); color: #000; }
+        .btn-reset { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-reset:hover { background: #ff4d4d; color: #fff; }
 
         .btn-render-vid { background: linear-gradient(135deg, #FF416C, #FF4B2B); color: white; font-size: 1rem; padding: 15px; box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4); border:none; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 100%; margin-top: 15px; letter-spacing: 1px;}
         .btn-render-vid:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(255, 65, 108, 0.6); }
+        .btn-render-vid:disabled { background: #333; box-shadow: none; cursor: not-allowed; transform: none; color: #888; }
 
         .participants-editor { display: flex; flex-direction: column; gap: 8px; margin: 15px 0; }
-        
         .editor-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
         .editor-row select { flex: 1; min-width: 90px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: none; font-size: 0.8rem; }
         .editor-row input { flex: 1; min-width: 70px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; }
         .editor-row input[type="number"] { flex: 0.5; min-width: 45px; }
         
         .btn-icon { background: rgba(255,255,255,0.1); border:none; color: white; border-radius: 4px; cursor:pointer; width:22px; height:18px; font-size:10px; display:flex; align-items:center; justify-content:center; }
+        .btn-icon:hover { background: var(--accent3); }
         .btn-remove { background: #ff4d4d; color: white; border: none; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
 
-        /* Окно превью */
+        /* --- ОКНО ПРЕВЬЮ --- */
         .preview-wrapper { width: 100%; position: relative; display: flex; justify-content: center; }
 
         #scoreboard-capture {
@@ -92,9 +95,7 @@
         .bg-layer-blur { background-size: cover; background-position: center; filter: blur(30px) brightness(0.6); transform: scale(1.1); }
         .bg-layer-clear { background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.9; }
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0, var(--bg-darken, 0.2)); z-index: 0; }
-        
-        /* Видео фон */
-        #bgVideo { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+        #bgVideoObj { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
 
         .capture-inner {
             position: relative; z-index: 1; width: 100%; height: 100%;
@@ -106,8 +107,10 @@
         .board-title { font-family: var(--font-title, 'Playfair Display'), serif; font-size: calc(clamp(1.5rem, 4vw, 3rem) * var(--text-scale, 1)); font-weight: 900; color: white; line-height: 1.2; text-transform: var(--text-case, uppercase); }
         .board-subtitle { color: var(--gold); font-family: var(--font-title, 'Playfair Display'), serif; font-size: calc(clamp(0.8rem, 2vw, 1.2rem) * var(--text-scale, 1)); text-transform: var(--text-case, uppercase); letter-spacing: 4px; font-weight: 700; margin-top: 5px; }
 
+        /* ИСПРАВЛЕНИЕ: grid-auto-flow: column делает порядок 1-2-3-4 сверху вниз по колонкам */
         .board-results { display: grid; gap: calc(12px * var(--bar-scale, 1)); align-content: start; flex: 1; position: relative; }
 
+        /* Оболочки элементов */
         .result-row { display: flex; align-items: center; font-family: var(--font-board, 'Montserrat'), sans-serif; text-transform: var(--text-case, uppercase); position: absolute; width: 100%; left: 0; top: 0; }
         
         .position { display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; transform: translate(var(--pos-x, 0px), var(--pos-y, 0px)); }
@@ -119,10 +122,9 @@
         
         .score { text-align: right; flex-shrink: 0; transform: translate(var(--score-x, 0px), var(--score-y, 0px)); position: relative; }
         .score-number { font-weight: 900; line-height: 1; display: inline-block; }
-        .score-label { font-size: calc(0.65rem * var(--text-scale, 1)); color: var(--text-secondary); text-transform: uppercase; }
 
         /* Floating Add Score Text */
-        .add-score-float { position: absolute; right: 10px; top: 10px; font-size: 1.5rem; font-weight: 900; color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.8); opacity: 0; pointer-events: none; z-index: 10; }
+        .add-score-float { position: absolute; right: 10px; top: 10px; font-size: 1.5rem; font-weight: 900; color: #000; text-shadow: 0 0 10px rgba(255,255,255,0.8); opacity: 0; pointer-events: none; z-index: 10; }
 
         /* Золотая плашка (7+ баллов) */
         .is-gold {
@@ -130,10 +132,11 @@
             border-color: #FFA500 !important;
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.6) !important;
             color: #000 !important;
+            z-index: 50;
         }
         .is-gold .participant-name, .is-gold .score-number { color: #000 !important; }
-        .is-gold .participant-note, .is-gold .score-label { color: #333 !important; }
-        .is-gold .position { background: #fff !important; color: #000 !important; }
+        .is-gold .participant-note { color: #333 !important; }
+        .is-gold .position { background: #fff !important; color: #000 !important; box-shadow: 0 0 10px rgba(0,0,0,0.2) !important;}
 
         /* СТАЯВИДЕНИЕ */
         .style-stayavision .result-row { padding: calc(12px * var(--bar-h-mult, 1) * var(--bar-scale, 1)) calc(20px * var(--bar-scale, 1)); border-radius: calc(12px * var(--bar-scale, 1)); background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); }
@@ -142,55 +145,139 @@
         .style-stayavision .participant-name { font-size: calc(1.3rem * var(--text-scale, 1)); color: #fff; }
         .style-stayavision .score-number { font-size: calc(1.8rem * var(--text-scale, 1)); color: #fff; }
 
+        .highlight-top3.style-stayavision .result-row.place-1 { background: linear-gradient(90deg, var(--top1-bg), var(--bar-c2)); border-color: var(--top1); }
+        .highlight-top3.style-stayavision .result-row.place-2 { background: linear-gradient(90deg, var(--top2-bg), var(--bar-c2)); border-color: rgba(255,255,255,0.1); }
+        .highlight-top3.style-stayavision .result-row.place-3 { background: linear-gradient(90deg, var(--top3-bg), var(--bar-c2)); border-color: rgba(255,255,255,0.1); }
+        .highlight-top3.style-stayavision .place-1 .position { background: var(--top1); color: #000; box-shadow: 0 0 15px var(--top1-bg); }
+        .highlight-top3.style-stayavision .place-2 .position { background: var(--top2); color: #000; }
+        .highlight-top3.style-stayavision .place-3 .position { background: var(--top3); color: #fff; }
+        .highlight-top3.style-stayavision .place-1 .participant-avatar { border-color: var(--top1); }
+        .highlight-top3.style-stayavision .place-1 .participant-name { color: var(--top1); }
+        .highlight-top3.style-stayavision .place-1 .score-number { color: var(--top1); }
+
         /* ЕВРОВИДЕНИЕ */
         .style-eurovision .result-row { padding: calc(6px * var(--bar-h-mult, 1) * var(--bar-scale, 1)) calc(12px * var(--bar-scale, 1)); background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); border-left: calc(4px * var(--bar-scale, 1)) solid var(--accent3); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .style-eurovision .position { width: calc(35px * var(--bar-scale, 1)); height: calc(35px * var(--bar-scale, 1)); font-size: calc(1.1rem * var(--text-scale, 1)); margin-right: calc(12px * var(--bar-scale, 1)); border-right: 1px solid rgba(255,255,255,0.2); padding-right: 10px; justify-content: flex-start; color: #fff; }
         .style-eurovision .participant-avatar { width: calc(35px * var(--bar-scale, 1) * var(--avatar-size, 1)); height: calc(35px * var(--bar-scale, 1) * var(--avatar-size, 1)); margin-right: calc(12px * var(--bar-scale, 1)); }
         .style-eurovision .participant-name { font-size: calc(1.1rem * var(--text-scale, 1)); color: #fff; letter-spacing: 1px; }
         .style-eurovision .score-number { font-size: calc(1.5rem * var(--text-scale, 1)); color: var(--accent3); }
+        
+        .highlight-top3.style-eurovision .result-row.place-1 { border-left-color: var(--top1); background: linear-gradient(90deg, var(--top1-bg), var(--bar-c2)); }
+        .highlight-top3.style-eurovision .result-row.place-2 { border-left-color: var(--top2); background: linear-gradient(90deg, var(--top2-bg), var(--bar-c2)); }
+        .highlight-top3.style-eurovision .result-row.place-3 { border-left-color: var(--top3); background: linear-gradient(90deg, var(--top3-bg), var(--bar-c2)); }
+        .highlight-top3.style-eurovision .place-1 .position { color: var(--top1); border-right-color: var(--top1); }
+        .highlight-top3.style-eurovision .place-1 .score-number { color: var(--top1); }
 
         /* СПЛИТ-СКРИН */
         .style-splitscreen .result-row { flex-direction: column; text-align: center; justify-content: center; padding: calc(30px * var(--bar-h-mult, 1) * var(--bar-scale, 1)); border-radius: 20px; background: linear-gradient(180deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .style-splitscreen .participant-avatar { width: calc(150px * var(--bar-scale, 1) * var(--avatar-size, 1)); height: calc(150px * var(--bar-scale, 1) * var(--avatar-size, 1)); margin: 0 auto 15px auto; border: 3px solid rgba(255,255,255,0.1); }
         .style-splitscreen .participant-info { margin: 0 0 15px 0; align-items: center !important; text-align: center !important; }
         .style-splitscreen .participant-name { font-size: calc(1.8rem * var(--text-scale, 1)); color: #fff; }
-        .style-splitscreen .score { margin: 0; text-align: center; }
+        .style-splitscreen .score { margin: 0; text-align: center; align-items: center;}
         .style-splitscreen .score-number { font-size: calc(3rem * var(--text-scale, 1)); color: #fff; }
         .style-splitscreen .position { position: absolute; top: 15px; left: 15px; width: calc(40px * var(--bar-scale, 1)); height: calc(40px * var(--bar-scale, 1)); background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin: 0; }
+
+        .highlight-top3.style-splitscreen .result-row.place-1 { background: linear-gradient(180deg, var(--top1-bg), var(--bar-c2)); border-color: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .participant-avatar { border-color: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .participant-name, .highlight-top3.style-splitscreen .place-1 .score-number { color: var(--top1); }
+        .highlight-top3.style-splitscreen .place-1 .position { background: var(--top1); color: #000; box-shadow: 0 0 15px var(--top1-bg); }
 
         /* Loading Overlay */
         #renderOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index: 9999; display:none; flex-direction: column; align-items: center; justify-content: center; color: white; }
         .progress-bar { width: 300px; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 20px; overflow: hidden; }
         .progress-fill { height: 100%; background: var(--accent3); width: 0%; transition: width 0.1s; }
+
+        @media (max-width: 900px) {
+            .mobile-tabs { display: flex; }
+            .app-container { padding: 10px; }
+            .controls-panel, .preview-panel { display: none; width: 100%; max-width: 100%; border: none; background: transparent; padding: 0; position: static; }
+            .settings-grid { grid-template-columns: 1fr; }
+            .show-editor .controls-panel { display: flex; flex-direction: column; }
+            .show-preview .preview-panel { display: flex; flex-direction: column; }
+        }
     </style>
 </head>
 <body>
-    <header><h1>Генератор Скорборда PRO</h1></header>
+    <header>
+        <h1>Генератор Скорборда PRO</h1>
+        <button class="admin-login-btn" id="btnAdminAuth" onclick="handleAdminLogin()">Вход / Админ</button>
+    </header>
 
-    <div class="app-container">
-        <!-- НАСТРОЙКИ -->
+    <div class="mobile-tabs">
+        <button class="active" onclick="switchMobileTab('editor', this)">⚙️ Настройки</button>
+        <button onclick="switchMobileTab('preview', this)">👁️ Превью</button>
+    </div>
+
+    <div class="app-container show-editor" id="appMain">
         <div class="controls-panel">
-            <div class="section-title">Текст и Формат</div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; padding-bottom: 5px;">
+                <div class="section-title" style="margin: 0; border: none; padding: 0;">Текст и Формат</div>
+                <button class="btn-reset" onclick="resetState()">🗑️ Сбросить всё</button>
+            </div>
+
+            <div class="control-group" style="margin-bottom: 15px;">
+                <label style="color: var(--gold);">База пресетов (История конкурсов)</label>
+                <select id="inPreset" onchange="loadPreset(this.value)" style="border-color: var(--gold); background: rgba(255,215,0,0.1);">
+                    <option value="">-- Выберите для загрузки --</option>
+                </select>
+            </div>
+
             <div class="settings-grid">
                 <div class="control-group"><label>Заголовок</label><input type="text" id="inTitle" oninput="updateState('title', this.value)"></div>
                 <div class="control-group"><label>Подзаголовок</label><input type="text" id="inSubtitle" oninput="updateState('subtitle', this.value)"></div>
+                
                 <div class="control-group">
-                    <label>Разрешение</label>
-                    <select id="inRatio" onchange="updateState('aspectRatio', this.value)">
-                        <option value="16/9">16:9 (YouTube)</option><option value="9/16">9:16 (TikTok/Shorts)</option><option value="1/1">1:1 (Квадрат)</option>
+                    <label>Шрифт заголовка</label>
+                    <select id="inFontTitle" onchange="updateState('fontTitle', this.value)">
+                        <option value="Playfair Display">Playfair Display</option><option value="Montserrat">Montserrat</option>
+                        <option value="Roboto">Roboto</option><option value="Oswald">Oswald</option>
+                        <option value="Open Sans">Open Sans</option><option value="Caveat">Caveat</option>
+                        <option value="Comfortaa">Comfortaa</option>
                     </select>
                 </div>
                 <div class="control-group">
-                    <label>Шрифт заголовка</label>
-                    <select id="inFontTitle" onchange="updateState('fontTitle', this.value)"><option value="Playfair Display">Playfair Display</option><option value="Montserrat">Montserrat</option></select>
+                    <label>Шрифт плашек</label>
+                    <select id="inFontBoard" onchange="updateState('fontBoard', this.value)">
+                        <option value="Montserrat">Montserrat</option><option value="Playfair Display">Playfair Display</option>
+                        <option value="Roboto">Roboto</option><option value="Oswald">Oswald</option>
+                        <option value="Open Sans">Open Sans</option><option value="Caveat">Caveat</option>
+                        <option value="Comfortaa">Comfortaa</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Разрешение экрана</label>
+                    <select id="inRatio" onchange="updateState('aspectRatio', this.value)">
+                        <option value="16/9">16:9 (Стандарт)</option><option value="21/9">21:9 (Широкий)</option>
+                        <option value="4/3">4:3 (ТВ)</option><option value="1/1">1:1 (Квадрат)</option><option value="custom">Свой размер...</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Колонки (1-6)</label>
+                    <select id="inCols" onchange="updateState('columns', this.value)">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group" style="margin-top: 10px;">
+                <label class="checkbox-group"><input type="checkbox" id="inUppercase" onchange="updateState('textUppercase', this.checked)"> ВСЕ ЗАГЛАВНЫМИ (CAPS LOCK)</label>
+            </div>
+
+            <div id="customResBlock" style="display: none; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                <div style="display:flex; gap:10px;">
+                    <div class="control-group" style="flex:1;"><label>Ширина (px)</label><input type="number" id="inW" oninput="updateState('customW', this.value)"></div>
+                    <div class="control-group" style="flex:1;"><label>Высота (px)</label><input type="number" id="inH" oninput="updateState('customH', this.value)"></div>
                 </div>
             </div>
 
             <div class="section-title">Дизайн и Цвета</div>
             <div class="settings-grid">
-                <div class="control-group"><label>Стиль</label><select id="inStyle" onchange="updateState('style', this.value)"><option value="stayavision">Стаявидение</option><option value="eurovision">Eurovision</option><option value="splitscreen">Сплит-скрин</option></select></div>
+                <div class="control-group"><label>Стиль дизайна</label><select id="inStyle" onchange="updateState('style', this.value)"><option value="stayavision">Стаявидение</option><option value="eurovision">Eurovision</option><option value="splitscreen">Сплит-скрин</option></select></div>
                 <div class="control-group">
-                    <label>Стиль Анимации (Сдвиг)</label>
+                    <label>Анимация движения</label>
                     <select id="inAnim" onchange="updateState('animStyle', this.value)">
                         <option value="smooth">Плавный (Кино)</option>
                         <option value="bounce">Пружинистый</option>
@@ -199,7 +286,10 @@
             </div>
 
             <div class="control-group" style="margin-top:10px;">
-                <label>Градиент плашек</label>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <label>Градиент плашек</label>
+                    <button class="btn-auto-color" onclick="extractColorFromBg()">🎨 Авто-цвет</button>
+                </div>
                 <div class="control-row">
                     <input type="color" id="inBarColor1" oninput="updateState('barColor1', this.value)">
                     <input type="color" id="inBarColor2" oninput="updateState('barColor2', this.value)">
@@ -207,27 +297,56 @@
                 </div>
             </div>
 
-            <div class="section-title">Макет и Фон</div>
+            <div class="section-title">Макет и Продвинутый Редактор</div>
             <div class="settings-grid">
-                <div class="control-group"><label>Отступ X</label><input type="range" id="inPadX" min="0" max="200" oninput="updateState('padX', this.value)"></div>
-                <div class="control-group"><label>Отступ Y</label><input type="range" id="inPadY" min="0" max="200" oninput="updateState('padY', this.value)"></div>
+                <div class="control-group"><label>Отступ X (px)</label><input type="range" id="inPadX" min="0" max="200" oninput="updateState('padX', this.value)"></div>
+                <div class="control-group"><label>Отступ Y (px)</label><input type="range" id="inPadY" min="0" max="200" oninput="updateState('padY', this.value)"></div>
+                <div class="control-group"><label style="color: var(--accent3);">Масштаб (Общий)</label><input type="range" id="inScale" min="0.4" max="1.5" step="0.05" oninput="updateState('scale', this.value)"></div>
+                
                 <div class="control-group">
                     <label>Фон (Изображение / Видео)</label>
                     <select id="inBgType" onchange="updateState('bgType', this.value)">
                         <option value="none">Тёмная заливка</option>
                         <option value="wolfs.jpg">Волки (Картинка)</option>
-                        <option value="custom">Свой файл...</option>
+                        <option value="sv6.webp">Стаявидение 6</option>
+                        <option value="sv7.webp">Стаявидение 7</option>
+                        <option value="sv8.webp">Стаявидение 8</option>
+                        <option value="custom">Свой файл (Картинка/Видео)...</option>
                     </select>
                     <input type="file" id="inBgCustom" style="display:none;" accept="image/*,video/*" onchange="handleBgUpload(event)">
                 </div>
+
+                <div class="control-group"><label>Сдвиг текста (↔ X)</label><input type="number" id="inNameX" oninput="updateState('nameX', this.value)"></div>
+                <div class="control-group"><label>Сдвиг текста (↕ Y)</label><input type="number" id="inNameY" oninput="updateState('nameY', this.value)"></div>
+                <div class="control-group"><label>Сдвиг баллов (↔ X)</label><input type="number" id="inScoreX" oninput="updateState('scoreX', this.value)"></div>
+                <div class="control-group"><label>Сдвиг баллов (↕ Y)</label><input type="number" id="inScoreY" oninput="updateState('scoreY', this.value)"></div>
+                <div class="control-group"><label>Сдвиг Места (↔ X)</label><input type="number" id="inPosX" oninput="updateState('posX', this.value)"></div>
+                <div class="control-group"><label>Сдвиг Места (↕ Y)</label><input type="number" id="inPosY" oninput="updateState('posY', this.value)"></div>
+                <div class="control-group"><label>Сдвиг Аватарки (↔ X)</label><input type="number" id="inAvaX" oninput="updateState('avaX', this.value)"></div>
+                <div class="control-group"><label>Сдвиг Аватарки (↕ Y)</label><input type="number" id="inAvaY" oninput="updateState('avaY', this.value)"></div>
+                <div class="control-group"><label style="color: var(--accent3);">Масштаб Плашек</label><input type="range" id="inBarScale" min="0.5" max="2" step="0.05" oninput="updateState('barScale', this.value)"></div>
+                <div class="control-group"><label style="color: var(--accent2);">Масштаб Текста</label><input type="range" id="inTextScale" min="0.5" max="2" step="0.05" oninput="updateState('textScale', this.value)"></div>
+                <div class="control-group"><label>Размер аватарки</label><input type="range" id="inAvaSize" min="0.2" max="2.5" step="0.1" oninput="updateState('avatarSize', this.value)"></div>
+                <div class="control-group"><label>Высота плашки</label><input type="range" id="inBarHeight" min="0.5" max="3" step="0.1" oninput="updateState('barHeightMultiplier', this.value)"></div>
+                <div class="control-group"><label>Выравнивание текста</label><select id="inAlign" onchange="updateState('align', this.value)"><option value="left">Слева</option><option value="center">По центру</option><option value="right">Справа</option></select></div>
+                <div class="control-group"><label style="color: transparent;">Сброс</label><button class="btn-action" style="margin:0; background:rgba(255,100,100,0.2); color:#ff6464;" onclick="resetOffsets()">Сбросить X/Y сдвиги</button></div>
             </div>
 
-            <!-- РЕНДЕР ВИДЕО -->
-            <div class="section-title" style="color: #ff4d4d; margin-top: 30px;">Экспорт (WebM 30 FPS)</div>
-            <p style="font-size:0.75rem; color: var(--text-secondary);">Укажите баллы в колонке "+ Добавить". Программа покадрово создаст видео анимации начисления и смены мест. Это займёт 10-30 секунд.</p>
-            <button class="btn-render-vid" onclick="exportVideo()">🎬 СКАЧАТЬ ВИДЕО (WebM)</button>
+            <!-- РЕНДЕР ВИДЕО И УЧАСТНИКИ -->
+            <div class="section-title" style="color: #ff4d4d; margin-top: 30px;">Рендер Видео (30 FPS)</div>
+            <p style="font-size:0.75rem; color: var(--text-secondary);">Видео генерируется покадрово. Оптимизировано для RX 6600. Просто укажите баллы в зеленой колонке.</p>
+            <button class="btn-render-vid" id="btnExport" onclick="exportVideo()">🎬 СКАЧАТЬ ВИДЕО (WebM)</button>
 
-            <!-- Участники -->
+            <div class="settings-grid" style="margin-top: 20px;">
+                <div class="control-group" style="grid-column: 1 / -1;"><label>Режим экрана</label><select id="inMode" onchange="updateState('viewMode', this.value)"><option value="results">Результаты (Сортировка)</option><option value="running_order">Running Order (Жеребьевка)</option></select></div>
+            </div>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 15px; justify-content: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                <label class="checkbox-group"><input type="checkbox" id="inShowPos" onchange="updateState('showPositions', this.checked)"> Места</label>
+                <label class="checkbox-group"><input type="checkbox" id="inShowAva" onchange="updateState('showAvatars', this.checked)"> Аватарки</label>
+                <label class="checkbox-group"><input type="checkbox" id="inShowNotes" onchange="updateState('showNotes', this.checked)"> Заметки</label>
+            </div>
+
             <div style="display: flex; font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; margin-top: 25px; padding-left: 35px;">
                 <div style="flex:1; min-width: 90px;">Участник / Аватар</div>
                 <div style="flex:1; min-width: 70px; margin-left:10px;">Балл</div>
@@ -235,19 +354,16 @@
             </div>
             <div class="participants-editor" id="editorContainer"></div>
             <button class="btn-action" style="border: 1px dashed var(--accent3); color: var(--accent3); background: transparent;" onclick="addParticipant()">+ ДОБАВИТЬ УЧАСТНИКА</button>
+            <button class="btn-action btn-random" style="margin-top:15px;" onclick="randomizeParticipants()">🎲 СЛУЧАЙНАЯ ЖЕРЕБЬЕВКА</button>
         </div>
 
         <!-- ПРЕВЬЮ -->
         <div class="preview-panel">
             <div class="preview-wrapper" id="previewWrapper">
                 <div id="scoreboard-capture">
-                    
                     <div class="bg-layer bg-layer-blur" id="bgBlur"></div>
                     <div class="bg-layer bg-layer-clear" id="bgClear"></div>
-                    
-                    <!-- Скрытое видео для захвата кадров -->
                     <video id="bgVideoObj" loop muted playsinline style="display:none;"></video>
-                    
                     <div class="bg-overlay"></div>
                     
                     <div class="capture-inner" id="captureInner">
@@ -255,7 +371,6 @@
                             <div class="board-title" id="renderTitle"></div>
                             <div class="board-subtitle" id="renderSubtitle"></div>
                         </div>
-                        <!-- Абсолютное позиционирование внутри -->
                         <div class="board-results" id="renderBoard" style="position: relative;"></div>
                     </div>
                 </div>
@@ -265,50 +380,214 @@
 
     <!-- Загрузочный экран -->
     <div id="renderOverlay">
-        <h2 style="font-family: Montserrat;">Рендеринг видео...</h2>
+        <h2 style="font-family: Montserrat;">Рендеринг видео (WebM)...</h2>
         <p id="renderStatus" style="color: var(--accent3); margin-top: 10px;">Подготовка</p>
         <div class="progress-bar"><div class="progress-fill" id="renderProgress"></div></div>
     </div>
 
+    <!-- Модалка Админа -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-box">
+            <h2>🛠 Меню Админа</h2>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 15px;">Здесь можно сохранять настройки как новые пресеты.</p>
+            <label style="font-size: 0.8rem; font-weight:bold;">Имя нового пресета:</label>
+            <input type="text" id="newPresetName" placeholder="Например: Полуфинал 8">
+            <button class="btn-action" style="background: var(--accent3); color: black;" onclick="adminSavePreset()">💾 Сохранить</button>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+            <label style="font-size: 0.8rem; font-weight:bold;">Удалить пресет:</label>
+            <select id="delPresetSelect"><option value="">-- Выберите --</option></select>
+            <button class="btn-action" style="background: #ff4d4d; margin-bottom: 20px;" onclick="adminDeletePreset()">🗑 Удалить</button>
+            <button class="btn-action" style="background: rgba(255,255,255,0.1);" onclick="closeAdminModal()">Закрыть</button>
+        </div>
+    </div>
+
     <script>
+        const DEFAULT_PRESETS = [
+            { id: "sv1", name: "Стаявидение 1", title: "Стаявидение 1", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results", participants: [ { id:1, name:"Гира", score:6, avatar:"gira.jpg" }, { id:2, name:"Обалена", score:3, avatar:"obalena.jpg" }, { id:3, name:"Егорь", score:3, avatar:"egor.jpg" } ] },
+            { id: "sv2", name: "Стаявидение 2", title: "Стаявидение 2", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results", participants: [ { id:1, name:"Ритикс", score:8, avatar:"ritix.jpg" }, { id:2, name:"Обалена", score:6, avatar:"obalena.jpg" }, { id:3, name:"Егорь", score:3, avatar:"egor.jpg" }, { id:4, name:"Гира", score:2, avatar:"gira.jpg" } ] },
+            { id: "sv3", name: "Стаявидение 3", title: "Стаявидение 3", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results", participants: [ { id:1, name:"Егорь", score:9, avatar:"egor.jpg" }, { id:2, name:"Ритикс", score:6, avatar:"ritix.jpg" }, { id:3, name:"Обалена", score:3, avatar:"obalena.jpg" } ] },
+            { id: "sv4", name: "Стаявидение 4", title: "Стаявидение 4", subtitle: "Частично потеряно", bgType: "wolfs.jpg", viewMode: "results", participants: [ { id:1, name:"Гира", score:16, note:"Победитель", avatar:"gira.jpg" } ] },
+            { id: "sv5", name: "Стаявидение 5", title: "Стаявидение 5", subtitle: "Результаты", bgType: "wolfs.jpg", viewMode: "results", participants: [ { id:1, name:"Егорь", score:7, avatar:"egor.jpg" }, { id:2, name:"Обалена", score:5, avatar:"obalena.jpg" }, { id:3, name:"Ритикс", score:4, avatar:"ritix.jpg" } ] },
+            { id: "sv6s", name: "Стаявидение 6 (Полуфинал)", title: "Стаявидение 6", subtitle: "Полуфинал", bgType: "sv6.webp", viewMode: "results", participants: [ { id:1, name:"Ритикс", score:16, avatar:"ritix.jpg" }, { id:2, name:"Обалена", score:14, avatar:"obalena.jpg" }, { id:3, name:"Гира", score:12, avatar:"gira.jpg" }, { id:4, name:"Егорь", score:7, avatar:"egor.jpg" }, { id:5, name:"Енька", score:4, avatar:"enka.jpg" }, { id:6, name:"И. Потужность", score:4, avatar:"potuzhnost.jpg" } ] },
+            { id: "sv6f", name: "Стаявидение 6 (Финал)", title: "Стаявидение 6", subtitle: "Финал", bgType: "sv6.webp", viewMode: "results", participants: [ { id:1, name:"Обалена", score:16, avatar:"obalena.jpg" }, { id:2, name:"Ритикс", score:14, avatar:"ritix.jpg" }, { id:3, name:"Гира", score:12, avatar:"gira.jpg" }, { id:4, name:"Егорь", score:8, avatar:"egor.jpg" } ] },
+            { id: "sv7", name: "Стаявидение 7 (Жеребьевка)", title: "Стаявидение 7", subtitle: "Running Order", bgType: "sv7.webp", viewMode: "running_order", participants: [ { id:1, name:"Машонка", score:0, avatar:"mashonka.jpg" }, { id:2, name:"Balepa", score:0, avatar:"balepa.jpg" }, { id:3, name:"Обалена", score:0, avatar:"obalena.jpg" }, { id:4, name:"Егорь", score:0, avatar:"egor.jpg" }, { id:5, name:"Ритикс", score:0, avatar:"ritix.jpg" }, { id:6, name:"Енька", score:0, avatar:"enka.jpg" } ] }
+        ];
+
         const DEFAULT_STATE = {
-            title: "Стаявидение 6", subtitle: "Финал", style: "stayavision", animStyle: "smooth",
+            title: "Стаявидение 6", subtitle: "Финал", style: "stayavision", animStyle: "smooth", viewMode: "results",
             aspectRatio: "16/9", customW: 1920, customH: 1080, columns: 1, fontTitle: "Playfair Display", fontBoard: "Montserrat",
             textUppercase: true, bgType: "none", bgCustomData: "", bgIsVideo: false, padX: 40, padY: 40, scale: 1, textScale: 1, barScale: 1,
-            showNotes: true, showPositions: true, showAvatars: true, showScores: true, avatarShape: "50%",
-            barColor1: "#2a1b42", barColor2: "#0a0a1a", barAlpha: 0.85, 
+            showNotes: true, showPositions: true, showAvatars: true, avatarShape: "50%",
+            barColor1: "#2a1b42", barColor2: "#0a0a1a", barAlpha: 0.85, highlightTop3: true, c1: "#FFD700", c2: "#C0C0C0", c3: "#CD7F32",
             nameX: 0, nameY: 0, scoreX: 0, scoreY: 0, posX: 0, posY: 0, avaX: 0, avaY: 0, align: "left", avatarSize: 1, barHeightMultiplier: 1,
+            customPresets: [],
             participants: [
-                { id: 1, name: "Обалена", score: 16, addScore: 0, note: "", avatar: "default.jpg" }, 
-                { id: 2, name: "Ритикс", score: 14, addScore: 0, note: "", avatar: "default.jpg" },
-                { id: 3, name: "Гира", score: 12, addScore: 12, note: "ПРИМЕР ТЕСТА", avatar: "default.jpg" }, 
-                { id: 4, name: "Егорь", score: 8, addScore: 0, note: "", avatar: "default.jpg" }
+                { id: 1, name: "Обалена", score: 16, addScore: 0, note: "", avatar: "obalena.jpg" }, 
+                { id: 2, name: "Ритикс", score: 14, addScore: 0, note: "", avatar: "ritix.jpg" },
+                { id: 3, name: "Гира", score: 12, addScore: 12, note: "ПРИМЕР ТЕСТА", avatar: "gira.jpg" }, 
+                { id: 4, name: "Егорь", score: 8, addScore: 0, note: "", avatar: "egor.jpg" }
             ]
         };
 
         let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-        let layoutData = []; // Хранит Y-координаты для каждой строки
+        const STORAGE_KEY = 'stayavision_generator_state';
+        let layoutData = [];
+
+        const serverImages = [
+            { file: "default.jpg", name: "Дефолт" }, { file: "gira.jpg", name: "Гира" },
+            { file: "obalena.jpg", name: "Обалена" }, { file: "egor.jpg", name: "Егорь" },
+            { file: "ritix.jpg", name: "Ритикс" }, { file: "enka.jpg", name: "Енька" },
+            { file: "potuzhnost.jpg", name: "Потужн." }, { file: "mashonka.jpg", name: "Машонка" }, { file: "balepa.jpg", name: "Balepa" }
+        ];
 
         function hexToRgba(hex, alpha) { let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
+        function rgbToHex(r, g, b) { return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase(); }
 
-        function init() { syncUI(); renderEditor(); updatePreview(); window.addEventListener('resize', adjustMobileScale); }
+        // --- Админка ---
+        function checkAdminUI() {
+            const btn = document.getElementById('btnAdminAuth');
+            if(sessionStorage.getItem('isAdmin') === 'true') { btn.innerText = "🛠 DEBUG Админка"; btn.classList.add('logged-in'); } 
+            else { btn.innerText = "Вход / Админ"; btn.classList.remove('logged-in'); }
+        }
+        function handleAdminLogin() {
+            if(sessionStorage.getItem('isAdmin') === 'true') { openAdminModal(); } 
+            else {
+                let u = prompt("Логин:"); let p = prompt("Пароль:");
+                if(u === 'admin' && p === 'admin') { sessionStorage.setItem('isAdmin', 'true'); checkAdminUI(); openAdminModal(); } else if(u || p) { alert("Неверные данные!"); }
+            }
+        }
+        function openAdminModal() { updatePresetLists(); document.getElementById('adminModal').style.display = 'flex'; }
+        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
+        
+        function adminSavePreset() {
+            let name = document.getElementById('newPresetName').value; if(!name) return alert("Введите имя пресета!");
+            let newPreset = { id: 'custom_' + Date.now(), name: name, title: state.title, subtitle: state.subtitle, bgType: state.bgType, viewMode: state.viewMode, participants: JSON.parse(JSON.stringify(state.participants)) };
+            if(!state.customPresets) state.customPresets = []; state.customPresets.push(newPreset); document.getElementById('newPresetName').value = '';
+            alert("Пресет сохранен!"); updatePresetLists(); saveState();
+        }
+        function adminDeletePreset() { let id = document.getElementById('delPresetSelect').value; if(!id) return; state.customPresets = state.customPresets.filter(p => p.id !== id); alert("Пресет удален!"); updatePresetLists(); saveState(); }
+        function adminAutoResults() { if(!confirm("Заменить текущие баллы на случайные?")) return; state.participants.forEach(p => { p.score = Math.floor(Math.random() * 24) + 1; p.addScore = 0; }); state.participants.sort((a,b) => b.score - a.score); state.viewMode = 'results'; closeAdminModal(); syncUI(); renderEditor(); updatePreview(); }
+
+        function updatePresetLists() {
+            let all = [...DEFAULT_PRESETS, ...(state.customPresets || [])];
+            let mainSel = document.getElementById('inPreset'); let delSel = document.getElementById('delPresetSelect');
+            let html = '<option value="">-- Выберите для загрузки --</option>'; all.forEach(p => html += `<option value="${p.id}">${p.name}</option>`);
+            mainSel.innerHTML = html; mainSel.value = "";
+            let delHtml = '<option value="">-- Выберите кастомный пресет --</option>'; (state.customPresets || []).forEach(p => delHtml += `<option value="${p.id}">${p.name}</option>`);
+            if(delSel) { delSel.innerHTML = delHtml; delSel.value = ""; }
+        }
+
+        function loadPreset(id) {
+            if(!id) return; let all = [...DEFAULT_PRESETS, ...(state.customPresets || [])]; let p = all.find(x => x.id === id); if(!p) return;
+            state.title = p.title; state.subtitle = p.subtitle; state.bgType = p.bgType; state.viewMode = p.viewMode; 
+            state.participants = JSON.parse(JSON.stringify(p.participants));
+            state.participants.forEach(x => { if(x.addScore === undefined) x.addScore = 0; });
+            if(id === 'sv7') { for (let i = state.participants.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [state.participants[i], state.participants[j]] = [state.participants[j], state.participants[i]]; } }
+            syncUI(); renderEditor(); updatePreview();
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) { try { state = { ...DEFAULT_STATE, ...JSON.parse(saved) }; } catch(e) {} }
+            if(!state.customPresets) state.customPresets = [];
+            if(state.fontTitle === undefined) state.fontTitle = "Playfair Display"; if(state.fontBoard === undefined) state.fontBoard = "Montserrat";
+            if(state.textUppercase === undefined) state.textUppercase = true;
+            if(state.animStyle === undefined) state.animStyle = "smooth";
+            if(state.nameX === undefined) state.nameX = 0; if(state.nameY === undefined) state.nameY = 0;
+            if(state.scoreX === undefined) state.scoreX = 0; if(state.scoreY === undefined) state.scoreY = 0;
+            if(state.posX === undefined) state.posX = 0; if(state.posY === undefined) state.posY = 0;
+            if(state.avaX === undefined) state.avaX = 0; if(state.avaY === undefined) state.avaY = 0;
+            if(state.align === undefined) state.align = "left";
+            if(state.avatarSize === undefined) state.avatarSize = 1; if(state.barHeightMultiplier === undefined) state.barHeightMultiplier = 1;
+            state.participants.forEach(p => { if(p.addScore === undefined) p.addScore = 0; });
+        }
+        function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+        
+        function resetState() {
+            if(confirm("Сбросить все настройки на по умолчанию? (Ваши кастомные пресеты останутся)")) {
+                let savedCustom = state.customPresets; state = JSON.parse(JSON.stringify(DEFAULT_STATE)); state.customPresets = savedCustom;
+                syncUI(); renderEditor(); updatePreview();
+            }
+        }
+        function resetOffsets() {
+            state.nameX=0; state.nameY=0; state.scoreX=0; state.scoreY=0; state.posX=0; state.posY=0; state.avaX=0; state.avaY=0; state.align="left";
+            syncUI(); updatePreview();
+        }
 
         function syncUI() {
             document.getElementById('inTitle').value = state.title; document.getElementById('inSubtitle').value = state.subtitle;
-            document.getElementById('inRatio').value = state.aspectRatio; 
-            document.getElementById('inStyle').value = state.style; document.getElementById('inAnim').value = state.animStyle;
+            document.getElementById('inFontTitle').value = state.fontTitle; document.getElementById('inFontBoard').value = state.fontBoard;
+            document.getElementById('inUppercase').checked = state.textUppercase;
+            document.getElementById('inRatio').value = state.aspectRatio; document.getElementById('inCols').value = state.columns;
+            document.getElementById('inW').value = state.customW; document.getElementById('inH').value = state.customH;
+            document.getElementById('inStyle').value = state.style; document.getElementById('inAvatar').value = state.avatarShape;
+            document.getElementById('inAnim').value = state.animStyle;
             document.getElementById('inBarColor1').value = state.barColor1; document.getElementById('inBarColor2').value = state.barColor2;
+            document.getElementById('inBarAlpha').value = state.barAlpha; document.getElementById('inTop3').checked = state.highlightTop3;
+            document.getElementById('inC1').value = state.c1; document.getElementById('inC2').value = state.c2; document.getElementById('inC3').value = state.c3;
             document.getElementById('inPadX').value = state.padX; document.getElementById('inPadY').value = state.padY;
+            document.getElementById('inScale').value = state.scale; document.getElementById('inTextScale').value = state.textScale; document.getElementById('inBarScale').value = state.barScale;
+            
+            document.getElementById('inNameX').value = state.nameX; document.getElementById('inNameY').value = state.nameY;
+            document.getElementById('inScoreX').value = state.scoreX; document.getElementById('inScoreY').value = state.scoreY;
+            document.getElementById('inPosX').value = state.posX; document.getElementById('inPosY').value = state.posY;
+            document.getElementById('inAvaX').value = state.avaX; document.getElementById('inAvaY').value = state.avaY;
+            document.getElementById('inAlign').value = state.align;
+            document.getElementById('inAvaSize').value = state.avatarSize; document.getElementById('inBarHeight').value = state.barHeightMultiplier;
+            
+            document.getElementById('inBgType').value = state.bgType; document.getElementById('inMode').value = state.viewMode; 
+            document.getElementById('inShowNotes').checked = state.showNotes; document.getElementById('inShowPos').checked = state.showPositions;
+            document.getElementById('inShowAva').checked = state.showAvatars; 
+
+            document.getElementById('customResBlock').style.display = state.aspectRatio === 'custom' ? 'block' : 'none';
+            document.getElementById('top3Colors').style.opacity = state.highlightTop3 ? '1' : '0.3';
+            document.getElementById('inBgCustom').style.display = state.bgType === 'custom' ? 'block' : 'none';
+            updatePresetLists();
         }
 
-        function updateState(key, value) { state[key] = value; updatePreview(); }
+        function switchMobileTab(tabName, btn) {
+            document.querySelectorAll('.mobile-tabs button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); document.getElementById('appMain').className = `app-container show-${tabName}`;
+            if(tabName === 'preview') setTimeout(adjustMobileScale, 50);
+        }
+
+        function init() { loadState(); checkAdminUI(); syncUI(); renderEditor(); updatePreview(); window.addEventListener('resize', adjustMobileScale); }
+
+        function updateState(key, value) {
+            state[key] = value;
+            if(key === 'aspectRatio') document.getElementById('customResBlock').style.display = value === 'custom' ? 'block' : 'none';
+            if(key === 'highlightTop3') document.getElementById('top3Colors').style.opacity = value ? '1' : '0.3';
+            if(key === 'bgType') { const fileIn = document.getElementById('inBgCustom'); if (value === 'custom') { fileIn.style.display = 'block'; fileIn.click(); } else { fileIn.style.display = 'none'; } }
+            updatePreview();
+        }
+
         function updateParticipant(id, field, value) { const p = state.participants.find(x => x.id === id); if(p) { p[field] = field === 'score' || field === 'addScore' ? Number(value) : value; updatePreview(); } }
-        
+
         function moveParticipant(id, dir) {
             const idx = state.participants.findIndex(p => p.id === id); if (idx < 0) return;
             const nIdx = idx + dir; if (nIdx < 0 || nIdx >= state.participants.length) return;
             [state.participants[idx], state.participants[nIdx]] = [state.participants[nIdx], state.participants[idx]];
             renderEditor(); updatePreview();
+        }
+
+        function extractColorFromBg() {
+            let bgUrl = ""; if (state.bgType === 'custom' && !state.bgIsVideo && state.bgCustomData) bgUrl = state.bgCustomData; else if (state.bgType !== 'none') bgUrl = state.bgType;
+            if (!bgUrl) { alert("Сначала выберите фон (картинку)!"); return; }
+            const img = new Image(); img.crossOrigin = "Anonymous";
+            img.onload = function() {
+                const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                canvas.width = img.width; canvas.height = img.height; ctx.drawImage(img, 0, 0, img.width, img.height);
+                try {
+                    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data; let rS=0, gS=0, bS=0, wS=0;
+                    for (let i=0; i<data.length; i+=16) { let r=data[i], g=data[i+1], b=data[i+2]; let max=Math.max(r,g,b), min=Math.min(r,g,b); let w=(max-min)+5; rS+=r*w; gS+=g*w; bS+=b*w; wS+=w; }
+                    let rA=Math.floor(rS/wS), gA=Math.floor(gS/wS), bA=Math.floor(bS/wS);
+                    let lum = 0.299*rA + 0.587*gA + 0.114*bA; if (lum>70) { let f=70/lum; rA=Math.floor(rA*f); gA=Math.floor(gA*f); bA=Math.floor(bA*f); }
+                    const hex1 = rgbToHex(rA, gA, bA); const hex2 = rgbToHex(Math.floor(rA*0.4), Math.floor(gA*0.4), Math.floor(bA*0.4));
+                    document.getElementById('inBarColor1').value=hex1; document.getElementById('inBarColor2').value=hex2;
+                    state.barColor1=hex1; state.barColor2=hex2; updatePreview();
+                } catch (e) { alert("Не удалось определить цвет."); }
+            };
+            img.src = bgUrl;
         }
 
         function handleBgUpload(e) { 
@@ -321,7 +600,7 @@
                     if(state.bgIsVideo) {
                         let vid = document.getElementById('bgVideoObj');
                         vid.src = state.bgCustomData;
-                        vid.play(); // Для превью
+                        vid.play(); 
                     }
                     updatePreview(); 
                 }; 
@@ -332,101 +611,151 @@
         function renderEditor() {
             const container = document.getElementById('editorContainer'); container.innerHTML = '';
             state.participants.forEach((p) => {
+                let opts = serverImages.map(img => `<option value="${img.file}" ${p.avatar === img.file ? 'selected' : ''}>${img.name}</option>`).join('');
+                opts += `<option value="custom" ${p.avatar.startsWith('data:') ? 'selected' : ''}>Своя...</option>`;
                 container.innerHTML += `
                     <div class="editor-row">
                         <div style="display:flex; flex-direction:column; gap:2px; margin-right: 2px;">
                             <button type="button" class="btn-icon" onclick="moveParticipant(${p.id}, -1)">▲</button>
                             <button type="button" class="btn-icon" onclick="moveParticipant(${p.id}, 1)">▼</button>
                         </div>
+                        <select style="flex:1.2; min-width: 90px;" onchange="handleAvatarSelect(event, ${p.id})">${opts}</select>
                         <input type="text" style="flex:1.5; min-width: 70px;" placeholder="Имя" value="${p.name}" oninput="updateParticipant(${p.id}, 'name', this.value)">
                         <input type="number" style="flex:0.8; min-width: 45px;" placeholder="Балл" value="${p.score}" oninput="updateParticipant(${p.id}, 'score', this.value)">
-                        <input type="number" style="flex:0.8; min-width: 45px; background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.3); color: #00ff88; font-weight:bold;" placeholder="+ Добав." value="${p.addScore || 0}" oninput="updateParticipant(${p.id}, 'addScore', this.value)">
+                        <input type="number" style="flex:0.8; min-width: 45px; background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.3); color: #00ff88; font-weight:bold;" placeholder="+ Добавить" value="${p.addScore || 0}" oninput="updateParticipant(${p.id}, 'addScore', this.value)">
+                        <input type="file" id="file-${p.id}" style="display:none" accept="image/*" onchange="handleCustomAvatar(event, ${p.id})">
+                        <button type="button" class="btn-remove" onclick="removeParticipant(${p.id})" title="Удалить">×</button>
                     </div>`;
             });
         }
 
+        function handleAvatarSelect(e, id) { if(e.target.value==='custom') document.getElementById('file-'+id).click(); else updateParticipant(id, 'avatar', e.target.value); }
+        function handleCustomAvatar(e, id) { const f = e.target.files[0]; if(f){ const r=new FileReader(); r.onload=ev=>{ updateParticipant(id,'avatar',ev.target.result); renderEditor(); }; r.readAsDataURL(f); } }
+        
         function addParticipant() { const nId = state.participants.length>0 ? Math.max(...state.participants.map(p=>p.id))+1 : 1; state.participants.push({ id: nId, name: "Новый", score: 0, addScore: 0, note: "", avatar: "default.jpg" }); renderEditor(); updatePreview(); }
+        function removeParticipant(id) { state.participants = state.participants.filter(p=>p.id!==id); renderEditor(); updatePreview(); }
+        
+        function randomizeParticipants() {
+            for (let i = state.participants.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [state.participants[i], state.participants[j]] = [state.participants[j], state.participants[i]]; }
+            renderEditor(); updatePreview();
+        }
 
         // === ГЕНЕРАЦИЯ МАКЕТА ===
-        // Эта функция просто строит HTML, но позиционирует всё АБСОЛЮТНО (top/left) на основе сетки
         function updatePreview() {
+            saveState();
             document.getElementById('renderTitle').innerText = state.title; document.getElementById('renderSubtitle').innerText = state.subtitle;
             const capture = document.getElementById('scoreboard-capture'); const inner = document.getElementById('captureInner');
             
-            // Задаем жесткий размер для рендера (1280x720 для 16:9, чтобы рендер был быстрым и качественным)
             let w = 1280, h = 720;
+            if(state.aspectRatio === 'custom') { w = state.customW; h = state.customH; }
             if(state.aspectRatio === '9/16') { w = 720; h = 1280; }
             if(state.aspectRatio === '1/1') { w = 1000; h = 1000; }
-            capture.style.width = w + 'px'; capture.style.height = h + 'px';
             
+            capture.style.width = w + 'px'; capture.style.height = h + 'px';
             capture.className = `style-${state.style}`;
+            
             capture.style.setProperty('--bar-c1', hexToRgba(state.barColor1, state.barAlpha)); 
             capture.style.setProperty('--bar-c2', hexToRgba(state.barColor2, state.barAlpha * 0.7));
-            inner.style.setProperty('--pad-x', state.padX + 'px'); inner.style.setProperty('--pad-y', state.padY + 'px');
-
-            // Фон
-            let bgUrl = (state.bgType === 'custom' && !state.bgIsVideo) ? state.bgCustomData : (state.bgType !== 'none' && state.bgType !== 'custom' ? state.bgType : "");
+            capture.style.setProperty('--avatar-radius', state.avatarShape);
+            capture.style.setProperty('--font-title', `"${state.fontTitle}"`); capture.style.setProperty('--font-board', `"${state.fontBoard}"`);
+            capture.style.setProperty('--text-case', state.textUppercase ? 'uppercase' : 'none');
+            capture.style.setProperty('--text-scale', state.textScale); capture.style.setProperty('--bar-scale', state.barScale);
             
+            capture.style.setProperty('--name-x', state.nameX + 'px'); capture.style.setProperty('--name-y', state.nameY + 'px');
+            capture.style.setProperty('--score-x', state.scoreX + 'px'); capture.style.setProperty('--score-y', state.scoreY + 'px');
+            capture.style.setProperty('--pos-x', state.posX + 'px'); capture.style.setProperty('--pos-y', state.posY + 'px');
+            capture.style.setProperty('--ava-x', state.avaX + 'px'); capture.style.setProperty('--ava-y', state.avaY + 'px');
+            
+            let flexAlign = 'flex-start'; if(state.align === 'center') flexAlign = 'center'; if(state.align === 'right') flexAlign = 'flex-end';
+            capture.style.setProperty('--align-flex', flexAlign); capture.style.setProperty('--text-align', state.align); 
+            
+            capture.style.setProperty('--avatar-size', state.avatarSize); capture.style.setProperty('--bar-h-mult', state.barHeightMultiplier);
+            
+            capture.style.setProperty('--top1', state.c1); capture.style.setProperty('--top1-bg', hexToRgba(state.c1, state.barAlpha * 0.5));
+            capture.style.setProperty('--top2', state.c2); capture.style.setProperty('--top2-bg', hexToRgba(state.c2, state.barAlpha * 0.3));
+            capture.style.setProperty('--top3', state.c3); capture.style.setProperty('--top3-bg', hexToRgba(state.c3, state.barAlpha * 0.3));
+
+            inner.style.setProperty('--pad-x', state.padX + 'px'); inner.style.setProperty('--pad-y', state.padY + 'px');
+            inner.style.transform = `scale(${state.scale})`;
+
+            let bgUrl = (state.bgType === 'custom' && !state.bgIsVideo) ? state.bgCustomData : (state.bgType !== 'none' && state.bgType !== 'custom' ? state.bgType : "");
             if(state.bgIsVideo && state.bgCustomData) {
-                // Если видео - берем текущий кадр из скрытого video tag
                 let vid = document.getElementById('bgVideoObj');
                 let c = document.createElement('canvas'); c.width = w; c.height = h;
-                c.getContext('2d').drawImage(vid, 0,0, w, h);
-                bgUrl = c.toDataURL();
+                c.getContext('2d').drawImage(vid, 0,0, w, h); bgUrl = c.toDataURL();
             }
-
             document.getElementById('bgBlur').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
             document.getElementById('bgClear').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
 
-            // Отрисовка участников
             const board = document.getElementById('renderBoard');
             board.innerHTML = '';
             
-            let list = [...state.participants].sort((a,b) => b.score - a.score);
-            let maxScore = Math.max(...list.map(p => p.score + (p.addScore || 0)), 1);
+            let list = [...state.participants];
+            if (state.viewMode === 'results') list.sort((a,b) => b.score - a.score);
 
-            // Так как мы используем абсолютное позиционирование, нам нужно вычислить Y-сдвиг для каждой строки
-            // Это делается математически:
-            let rowHeight = state.style === 'splitscreen' ? 180 : 80;
-            let gap = 12;
-            
-            // Сохраняем логические координаты для рендера анимации
+            let rowsCount = Math.ceil(list.length / state.columns);
+            board.style.gridTemplateColumns = `repeat(${state.columns}, 1fr)`;
+            board.style.gridTemplateRows = `repeat(${rowsCount}, auto)`;
+            board.style.gridAutoFlow = 'column'; // ВАЖНО: Заполнение по колонкам
+
+            // Вычисляем высоту строки для позиционирования
+            // Скрытый рендер для получения высоты
+            let dummy = document.createElement('div');
+            dummy.className = `result-row place-other`; dummy.style.visibility = 'hidden'; dummy.style.position = 'absolute';
+            dummy.innerHTML = `<div class="position">1</div><img src="default.jpg" class="participant-avatar"><div class="participant-info"><div class="participant-name">A</div></div><div class="score"><div class="score-number">1</div></div>`;
+            board.appendChild(dummy);
+            let rowHeight = dummy.offsetHeight || (state.style === 'splitscreen' ? 180 : 80);
+            board.innerHTML = '';
+
+            let gap = 12 * state.barScale;
+            let colWidth = (w - (state.padX * 2) - ((state.columns - 1) * gap)) / state.columns;
+
             layoutData = list.map((p, index) => {
+                let col = Math.floor(index / rowsCount);
+                let row = index % rowsCount;
                 return {
                     id: p.id,
-                    startY: index * (rowHeight + gap), // Начальная позиция (до баллов)
-                    endY: 0, // Вычислим позже
-                    pData: p
+                    startX: col * (colWidth + gap),
+                    startY: row * (rowHeight + gap),
+                    endX: 0, endY: 0, pData: p
                 };
             });
 
-            // Вычисляем конечные Y-позиции (после прибавления баллов)
             let finalList = [...state.participants].sort((a,b) => (b.score+b.addScore) - (a.score+a.addScore));
             layoutData.forEach(ld => {
                 let finalIndex = finalList.findIndex(x => x.id === ld.id);
-                ld.endY = finalIndex * (rowHeight + gap);
+                let col = Math.floor(finalIndex / rowsCount);
+                let row = finalIndex % rowsCount;
+                ld.endX = col * (colWidth + gap);
+                ld.endY = row * (rowHeight + gap);
             });
 
-            // Отрисовываем DOM элементы с абсолютным top (по умолчанию startY)
             layoutData.forEach((ld, index) => {
                 let p = ld.pData;
-                let position = index + 1; // Начальное место
-                
-                let sb = `
-                    <div class="score">
-                        <div class="add-score-float" id="float-${p.id}">+${p.addScore} БАЛЛОВ</div>
-                        <div class="score-number" id="scoreNum-${p.id}">${p.score}</div>
-                    </div>`;
+                let position = index + 1;
+                let rowClass = "result-row";
+                if (state.highlightTop3 && state.viewMode === 'results' && position <= 3) rowClass += ` place-${position}`;
+
+                let scoreBlock = '';
+                if (state.viewMode === 'results') {
+                    scoreBlock = `
+                        <div class="score">
+                            <div class="add-score-float" id="float-${p.id}">+${p.addScore} БАЛЛОВ</div>
+                            <div class="score-number" id="scoreNum-${p.id}">${p.score}</div>
+                        </div>`;
+                }
+
+                let posHTML = state.showPositions ? `<div class="position" id="pos-${p.id}">${position}</div>` : '';
+                let avaHTML = state.showAvatars ? `<img src="${p.avatar}" class="participant-avatar" alt="av">` : '';
 
                 board.innerHTML += `
-                    <div class="result-row" id="row-${p.id}" style="top: ${ld.startY}px; height: ${rowHeight}px;">
-                        <div class="position" id="pos-${p.id}">${position}</div>
-                        <img src="${p.avatar}" class="participant-avatar" alt="av">
-                        <div class="participant-info"><div class="participant-name">${p.name}</div></div>
-                        ${sb}
+                    <div class="${rowClass}" id="row-${p.id}" style="width: ${colWidth}px; top: ${ld.startY}px; left: ${ld.startX}px;">
+                        ${posHTML}
+                        ${avaHTML}
+                        <div class="participant-info"><div class="participant-name">${p.name}</div>${state.showNotes && p.note ? `<div class="participant-note">${p.note}</div>` : ''}</div>
+                        ${scoreBlock}
                     </div>`;
             });
-
             setTimeout(adjustMobileScale, 10);
         }
 
@@ -437,11 +766,11 @@
             capture.style.transform = `scale(${scale})`; wrapper.style.height = (capture.offsetHeight * scale) + 'px';
         }
 
-        // === МАТЕМАТИКА АНИМАЦИИ (Easing) ===
+        // === МАТЕМАТИКА АНИМАЦИИ ===
         function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
         function easeOutElastic(x) { const c4 = (2 * Math.PI) / 3; return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1; }
 
-        // === ПОКАДРОВЫЙ РЕНДЕР WEBM (МАГИЯ!) ===
+        // === ПОКАДРОВЫЙ РЕНДЕР WEBM (30 FPS, АППАРАТНОЕ УСКОРЕНИЕ WEBP) ===
         async function exportVideo() {
             const hasPointsToAdd = state.participants.some(p => p.addScore > 0);
             if (!hasPointsToAdd) { alert("Сначала укажите баллы (+ Добавить)!"); return; }
@@ -449,30 +778,31 @@
             const overlay = document.getElementById('renderOverlay');
             const pFill = document.getElementById('renderProgress');
             const pStatus = document.getElementById('renderStatus');
-            overlay.style.display = 'flex';
-            pFill.style.width = '0%';
+            overlay.style.display = 'flex'; pFill.style.width = '0%';
             
-            // Настройки видео
             const fps = 30;
-            const framesScore = 60; // 2 секунды - бегут цифры
-            const framesPause1 = 15; // 0.5 сек - пауза
-            const framesMove = 45;   // 1.5 сек - движение мест
-            const framesPause2 = 30; // 1 сек - пауза в конце
-            const totalFrames = framesScore + framesPause1 + framesMove + framesPause2; // Всего 150 кадров (5 сек видео)
+            const framesScore = 60; // 2 сек - бегут баллы
+            const framesPause1 = 15; // 0.5 сек - смотрим на результат
+            const framesMove = 45;   // 1.5 сек - перестановка
+            const framesPause2 = 30; // 1 сек - любуемся
+            const totalFrames = framesScore + framesPause1 + framesMove + framesPause2;
 
             let video = new Whammy.Video(fps);
             let captureDiv = document.getElementById('scoreboard-capture');
             let bgVid = document.getElementById('bgVideoObj');
 
-            // Подготавливаем начальные данные
-            let list = [...state.participants];
-            let maxTotal = Math.max(...list.map(p => p.score + (p.addScore||0)), 1);
+            let startScores = state.participants.map(p => p.score);
+
+            // Оптимизация рендера для html2canvas
+            const canvasOpts = {
+                scale: 1, // Родное разрешение (быстрее для процессора)
+                useCORS: true, logging: false, backgroundColor: null
+            };
 
             for(let frame = 0; frame < totalFrames; frame++) {
                 pStatus.innerText = `Рендер кадра ${frame + 1} из ${totalFrames}...`;
                 pFill.style.width = ((frame / totalFrames) * 100) + '%';
 
-                // Если фон это видео, перематываем его покадрово!
                 if(state.bgIsVideo) {
                     bgVid.currentTime = frame / fps;
                     let c = document.createElement('canvas'); c.width = captureDiv.offsetWidth; c.height = captureDiv.offsetHeight;
@@ -480,7 +810,6 @@
                     document.getElementById('bgClear').style.backgroundImage = `url(${c.toDataURL()})`;
                 }
 
-                // Логика фазы
                 layoutData.forEach(ld => {
                     let p = ld.pData;
                     let numEl = document.getElementById(`scoreNum-${p.id}`);
@@ -488,73 +817,46 @@
                     let rowEl = document.getElementById(`row-${p.id}`);
 
                     if(frame <= framesScore) {
-                        // ФАЗА 1: Начисление баллов
                         let prog = frame / framesScore;
                         if(p.addScore > 0) {
-                            let curr = Math.floor(p.score + (p.addScore * prog));
-                            numEl.innerText = curr;
-                            
-                            // Всплывающий текст "+ Х"
+                            numEl.innerText = Math.floor(startScores[p.id-1] + (p.addScore * prog));
                             let op = prog < 0.2 ? prog*5 : (prog > 0.8 ? (1-prog)*5 : 1);
-                            let yShift = prog * -30;
                             floatEl.style.opacity = op;
-                            floatEl.style.transform = `translateY(${yShift}px)`;
-
-                            // Золотая плашка (Если > 7 баллов)
-                            if(prog > 0.5 && p.addScore >= 7) { rowEl.classList.add('is-gold'); }
+                            floatEl.style.transform = `translateY(${prog * -30}px)`;
+                            if(prog > 0.5 && p.addScore >= 7) rowEl.classList.add('is-gold');
                         }
                     } 
                     else if (frame > framesScore + framesPause1 && frame <= framesScore + framesPause1 + framesMove) {
-                        // ФАЗА 3: Движение строк
-                        floatEl.style.opacity = 0; // Прячем текст +Х
-                        rowEl.classList.remove('is-gold'); // Убираем золото
-
+                        floatEl.style.opacity = 0; rowEl.classList.remove('is-gold');
                         let prog = (frame - (framesScore + framesPause1)) / framesMove;
                         let eased = state.animStyle === 'bounce' ? easeOutElastic(prog) : easeOutCubic(prog);
                         
-                        let currentY = ld.startY + ((ld.endY - ld.startY) * eased);
-                        rowEl.style.top = currentY + 'px';
-                        
-                        // Смена номера места на лету, если обгоняет
-                        // Просчет места в текущем кадре слишком сложен, просто перепишем места в конце.
+                        rowEl.style.left = ld.startX + ((ld.endX - ld.startX) * eased) + 'px';
+                        rowEl.style.top = ld.startY + ((ld.endY - ld.startY) * eased) + 'px';
                     }
                     else if (frame > framesScore + framesPause1 + framesMove) {
-                        // ФАЗА 4: Финал (просто статичная пауза)
-                        rowEl.style.top = ld.endY + 'px';
-                        
-                        // Обновляем цифру места
-                        let finalIndex = [...state.participants].sort((a,b)=>(b.score+b.addScore)-(a.score+a.addScore)).findIndex(x=>x.id===p.id);
-                        document.getElementById(`pos-${p.id}`).innerText = finalIndex + 1;
+                        rowEl.style.left = ld.endX + 'px'; rowEl.style.top = ld.endY + 'px';
+                        if(state.showPositions) {
+                            let finalIndex = [...state.participants].sort((a,b)=>(b.score+b.addScore)-(a.score+a.addScore)).findIndex(x=>x.id===p.id);
+                            document.getElementById(`pos-${p.id}`).innerText = finalIndex + 1;
+                        }
                     }
                 });
 
-                // ДЕЛАЕМ СКРИНШОТ
-                // Ждем 1 миллисекунду, чтобы браузер применил CSS
                 await new Promise(r => setTimeout(r, 1));
                 
-                const canvas = await html2canvas(captureDiv, { 
-                    scale: 1, // Scale 1 (1280x720) - идеально для быстрого рендера HD
-                    backgroundColor: null, logging: false, useCORS: true 
-                });
-
-                // Конвертируем в WEBP и добавляем в видео
+                // Рендер кадра (оптимизировано под WebP - быстро работает на RX6600)
+                const canvas = await html2canvas(captureDiv, canvasOpts);
                 video.add(canvas.toDataURL('image/webp', 0.9));
             }
 
-            pStatus.innerText = "Сборка видеофайла (Мультиплексинг)...";
-            
-            // Компиляция WebM и скачивание
+            pStatus.innerText = "Сборка видеофайла (WebM)...";
             video.compile(false, function(output) {
                 const url = URL.createObjectURL(output);
-                const a = document.createElement('a');
-                a.style.display = 'none'; a.href = url; a.download = `${state.title}_Anim.webm`;
-                document.body.appendChild(a); a.click();
-                window.URL.revokeObjectURL(url);
-                
-                // Возвращаем UI в норму
+                const a = document.createElement('a'); a.style.display = 'none'; a.href = url; a.download = `${state.title}_Anim.webm`;
+                document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url);
                 overlay.style.display = 'none';
                 
-                // Обновляем баллы навсегда
                 state.participants.forEach(p => { if(p.addScore > 0) { p.score += p.addScore; p.addScore = 0; } });
                 updatePreview(); renderEditor();
             });
