@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор Скорборда Стаявидение</title>
+    <title>Генератор Скорборда PRO — Hardware GPU Edition</title>
+    <!-- Библиотека для скриншотов -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/whammy@0.0.1/whammy.min.js"></script>
+    <!-- Современная библиотека для сборки WebM видео (Поддерживает WebCodecs и GPU) -->
+    <script src="https://unpkg.com/webm-muxer/build/webm-muxer.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700;900&family=Roboto:wght@400;700;900&family=Oswald:wght@400;700&family=Open+Sans:wght@400;700;800&family=Caveat:wght@700&family=Comfortaa:wght@700&display=swap');
 
@@ -32,12 +34,7 @@
 
         .app-container { display: flex; flex-wrap: wrap; gap: 20px; max-width: 1600px; margin: 0 auto; padding: 20px; align-items: flex-start; }
 
-        /* ЛИПКИЕ ПАНЕЛИ */
-        .controls-panel { 
-            flex: 1; min-width: 350px; max-width: 530px; background: rgba(18, 18, 42, 0.7); 
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; 
-            position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow-y: auto;
-        }
+        .controls-panel { flex: 1; min-width: 350px; max-width: 530px; background: rgba(18, 18, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow-y: auto; }
         .preview-panel { flex: 2; display: flex; flex-direction: column; align-items: center; min-width: 300px; position: sticky; top: 20px; }
 
         .controls-panel::-webkit-scrollbar { width: 6px; }
@@ -67,16 +64,20 @@
         .btn-reset { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .btn-reset:hover { background: #ff4d4d; color: #fff; }
 
-        .btn-render-vid { background: linear-gradient(135deg, #FF416C, #FF4B2B); color: white; font-size: 1rem; padding: 15px; box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4); border:none; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 100%; margin-top: 15px; letter-spacing: 1px;}
+        /* Красивая кнопка рендера */
+        .btn-render-vid { 
+            background: linear-gradient(135deg, #FF416C, #FF4B2B); color: white; font-size: 1rem; padding: 15px; 
+            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4); border:none; border-radius: 8px; font-weight: 800; 
+            cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 100%; margin-top: 15px; letter-spacing: 1px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
         .btn-render-vid:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(255, 65, 108, 0.6); }
-        .btn-render-vid:disabled { background: #333; box-shadow: none; cursor: not-allowed; transform: none; color: #888; }
 
         .participants-editor { display: flex; flex-direction: column; gap: 8px; margin: 15px 0; }
         .editor-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
         .editor-row select { flex: 1; min-width: 90px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: none; font-size: 0.8rem; }
         .editor-row input { flex: 1; min-width: 70px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; }
         .editor-row input[type="number"] { flex: 0.5; min-width: 45px; }
-        
         .btn-icon { background: rgba(255,255,255,0.1); border:none; color: white; border-radius: 4px; cursor:pointer; width:22px; height:18px; font-size:10px; display:flex; align-items:center; justify-content:center; }
         .btn-icon:hover { background: var(--accent3); }
         .btn-remove { background: #ff4d4d; color: white; border: none; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
@@ -107,36 +108,26 @@
         .board-title { font-family: var(--font-title, 'Playfair Display'), serif; font-size: calc(clamp(1.5rem, 4vw, 3rem) * var(--text-scale, 1)); font-weight: 900; color: white; line-height: 1.2; text-transform: var(--text-case, uppercase); }
         .board-subtitle { color: var(--gold); font-family: var(--font-title, 'Playfair Display'), serif; font-size: calc(clamp(0.8rem, 2vw, 1.2rem) * var(--text-scale, 1)); text-transform: var(--text-case, uppercase); letter-spacing: 4px; font-weight: 700; margin-top: 5px; }
 
-        /* ИСПРАВЛЕНИЕ: grid-auto-flow: column делает порядок 1-2-3-4 сверху вниз по колонкам */
         .board-results { display: grid; gap: calc(12px * var(--bar-scale, 1)); align-content: start; flex: 1; position: relative; }
 
-        /* Оболочки элементов */
         .result-row { display: flex; align-items: center; font-family: var(--font-board, 'Montserrat'), sans-serif; text-transform: var(--text-case, uppercase); position: absolute; width: 100%; left: 0; top: 0; }
-        
         .position { display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; transform: translate(var(--pos-x, 0px), var(--pos-y, 0px)); }
         .participant-avatar { object-fit: cover; flex-shrink: 0; background: #2a2a4a; border-radius: var(--avatar-radius, 50%); transform: translate(var(--ava-x, 0px), var(--ava-y, 0px)); }
-        
         .participant-info { flex: 1; display: flex; flex-direction: column; overflow: hidden; white-space: nowrap; margin-right: 10px; transform: translate(var(--name-x, 0px), var(--name-y, 0px)); text-align: var(--text-align, left); align-items: var(--align-flex, flex-start); justify-content: center; }
         .participant-name { font-weight: 700; text-overflow: ellipsis; overflow: hidden; }
         .participant-note { color: var(--text-secondary); text-overflow: ellipsis; overflow: hidden; font-size: 0.85em; }
-        
-        .score { text-align: right; flex-shrink: 0; transform: translate(var(--score-x, 0px), var(--score-y, 0px)); position: relative; }
+        .score { text-align: right; flex-shrink: 0; transform: translate(var(--score-x, 0px), var(--score-y, 0px)); position: relative; display: flex; flex-direction: column; align-items: flex-end;}
         .score-number { font-weight: 900; line-height: 1; display: inline-block; }
 
         /* Floating Add Score Text */
-        .add-score-float { position: absolute; right: 10px; top: 10px; font-size: 1.5rem; font-weight: 900; color: #000; text-shadow: 0 0 10px rgba(255,255,255,0.8); opacity: 0; pointer-events: none; z-index: 10; }
+        .add-score-float { position: absolute; right: 10px; top: -30px; font-size: 1.5rem; font-weight: 900; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); opacity: 0; z-index: 10; white-space: nowrap; }
 
         /* Золотая плашка (7+ баллов) */
-        .is-gold {
-            background: var(--gold) !important;
-            border-color: #FFA500 !important;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6) !important;
-            color: #000 !important;
-            z-index: 50;
-        }
+        .is-gold { background: var(--gold) !important; border-color: #FFA500 !important; box-shadow: 0 0 30px rgba(255, 215, 0, 0.6) !important; color: #000 !important; z-index: 50; }
         .is-gold .participant-name, .is-gold .score-number { color: #000 !important; }
-        .is-gold .participant-note { color: #333 !important; }
-        .is-gold .position { background: #fff !important; color: #000 !important; box-shadow: 0 0 10px rgba(0,0,0,0.2) !important;}
+        .is-gold .participant-note, .is-gold .score-label { color: #333 !important; }
+        .is-gold .position { background: #fff !important; color: #000 !important; box-shadow: 0 0 10px rgba(255,255,255,0.5) !important;}
+        .is-gold .score-bar-fill { background: #000 !important; }
 
         /* СТАЯВИДЕНИЕ */
         .style-stayavision .result-row { padding: calc(12px * var(--bar-h-mult, 1) * var(--bar-scale, 1)) calc(20px * var(--bar-scale, 1)); border-radius: calc(12px * var(--bar-scale, 1)); background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); }
@@ -182,10 +173,20 @@
         .highlight-top3.style-splitscreen .place-1 .participant-name, .highlight-top3.style-splitscreen .place-1 .score-number { color: var(--top1); }
         .highlight-top3.style-splitscreen .place-1 .position { background: var(--top1); color: #000; box-shadow: 0 0 15px var(--top1-bg); }
 
-        /* Loading Overlay */
-        #renderOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index: 9999; display:none; flex-direction: column; align-items: center; justify-content: center; color: white; }
-        .progress-bar { width: 300px; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--accent3); width: 0%; transition: width 0.1s; }
+        /* ЭКРАН РЕНДЕРИНГА ВИДЕО */
+        #renderOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(10,10,26,0.95); backdrop-filter: blur(10px); z-index: 9999; display:none; flex-direction: column; align-items: center; justify-content: center; color: white; }
+        
+        /* Предпросмотр кадра во время рендера */
+        .render-preview-box { width: 640px; height: 360px; background: #000; border: 2px solid var(--accent3); border-radius: 12px; margin-top: 20px; overflow: hidden; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);}
+        #renderLiveCanvas { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .progress-stages { display: flex; gap: 20px; margin-top: 30px; }
+        .stage-badge { background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; opacity: 0.5; transition: 0.3s; }
+        .stage-badge.active { background: var(--accent3); color: #000; opacity: 1; box-shadow: 0 0 15px var(--accent3); }
+        .stage-badge.done { background: #00ff88; color: #000; opacity: 1; }
+
+        .progress-bar { width: 500px; height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; margin-top: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent3)); width: 0%; transition: width 0.1s; }
 
         @media (max-width: 900px) {
             .mobile-tabs { display: flex; }
@@ -194,6 +195,9 @@
             .settings-grid { grid-template-columns: 1fr; }
             .show-editor .controls-panel { display: flex; flex-direction: column; }
             .show-preview .preview-panel { display: flex; flex-direction: column; }
+            .render-preview-box { width: 90vw; height: auto; aspect-ratio: 16/9; }
+            .progress-bar { width: 90vw; }
+            .progress-stages { flex-direction: column; gap: 10px; align-items: center; }
         }
     </style>
 </head>
@@ -279,10 +283,10 @@
                 <div class="control-group">
                     <label>Анимация движения</label>
                     <select id="inAnim" onchange="updateState('animStyle', this.value)">
-                        <option value="smooth">Плавный (Кино)</option>
-                        <option value="bounce">Пружинистый</option>
+                        <option value="smooth">Плавный (Кино)</option><option value="bounce">Пружинистый</option>
                     </select>
                 </div>
+                <div class="control-group"><label>Форма аватарок</label><select id="inAvatar" onchange="updateState('avatarShape', this.value)"><option value="50%">Круг</option><option value="8px">Закругленный квадрат</option><option value="0px">Квадрат</option></select></div>
             </div>
 
             <div class="control-group" style="margin-top:10px;">
@@ -297,6 +301,13 @@
                 </div>
             </div>
 
+            <label class="checkbox-group" style="margin-top: 15px;"><input type="checkbox" id="inTop3" onchange="updateState('highlightTop3', this.checked)"> Выделять 1, 2, 3 места</label>
+            <div id="top3Colors" style="display: flex; gap:10px; margin-top: 10px;">
+                <div class="control-group" style="flex:1"><label>1 место</label><input type="color" id="inC1" oninput="updateState('c1', this.value)"></div>
+                <div class="control-group" style="flex:1"><label>2 место</label><input type="color" id="inC2" oninput="updateState('c2', this.value)"></div>
+                <div class="control-group" style="flex:1"><label>3 место</label><input type="color" id="inC3" oninput="updateState('c3', this.value)"></div>
+            </div>
+
             <div class="section-title">Макет и Продвинутый Редактор</div>
             <div class="settings-grid">
                 <div class="control-group"><label>Отступ X (px)</label><input type="range" id="inPadX" min="0" max="200" oninput="updateState('padX', this.value)"></div>
@@ -306,12 +317,9 @@
                 <div class="control-group">
                     <label>Фон (Изображение / Видео)</label>
                     <select id="inBgType" onchange="updateState('bgType', this.value)">
-                        <option value="none">Тёмная заливка</option>
-                        <option value="wolfs.jpg">Волки (Картинка)</option>
-                        <option value="sv6.webp">Стаявидение 6</option>
-                        <option value="sv7.webp">Стаявидение 7</option>
-                        <option value="sv8.webp">Стаявидение 8</option>
-                        <option value="custom">Свой файл (Картинка/Видео)...</option>
+                        <option value="none">Тёмная заливка</option><option value="wolfs.jpg">Волки (Картинка)</option>
+                        <option value="sv6.webp">Стаявидение 6</option><option value="sv7.webp">Стаявидение 7</option>
+                        <option value="sv8.webp">Стаявидение 8</option><option value="custom">Свой файл...</option>
                     </select>
                     <input type="file" id="inBgCustom" style="display:none;" accept="image/*,video/*" onchange="handleBgUpload(event)">
                 </div>
@@ -332,12 +340,16 @@
                 <div class="control-group"><label style="color: transparent;">Сброс</label><button class="btn-action" style="margin:0; background:rgba(255,100,100,0.2); color:#ff6464;" onclick="resetOffsets()">Сбросить X/Y сдвиги</button></div>
             </div>
 
-            <!-- РЕНДЕР ВИДЕО И УЧАСТНИКИ -->
-            <div class="section-title" style="color: #ff4d4d; margin-top: 30px;">Рендер Видео (30 FPS)</div>
-            <p style="font-size:0.75rem; color: var(--text-secondary);">Видео генерируется покадрово. Оптимизировано для RX 6600. Просто укажите баллы в зеленой колонке.</p>
-            <button class="btn-render-vid" id="btnExport" onclick="exportVideo()">🎬 СКАЧАТЬ ВИДЕО (WebM)</button>
+            <!-- РЕНДЕР ВИДЕО -->
+            <div class="section-title" style="color: #ff4d4d; margin-top: 30px;">Рендер Видео (Аппаратный GPU)</div>
+            <p style="font-size:0.75rem; color: var(--text-secondary); margin-bottom:10px;">Впишите баллы в зеленую колонку (+ Добавить). Процесс сборки WebM видео займет 10-20 секунд (Оптимизировано для AMD/NVIDIA).</p>
+            <button class="btn-render-vid" id="btnExport" onclick="exportVideoHardware()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                СКАЧАТЬ АНИМАЦИЮ (WebM)
+            </button>
 
-            <div class="settings-grid" style="margin-top: 20px;">
+            <!-- Участники -->
+            <div class="settings-grid" style="margin-top: 25px;">
                 <div class="control-group" style="grid-column: 1 / -1;"><label>Режим экрана</label><select id="inMode" onchange="updateState('viewMode', this.value)"><option value="results">Результаты (Сортировка)</option><option value="running_order">Running Order (Жеребьевка)</option></select></div>
             </div>
             
@@ -378,10 +390,18 @@
         </div>
     </div>
 
-    <!-- Загрузочный экран -->
+    <!-- Загрузочный экран (Видеорендер) -->
     <div id="renderOverlay">
-        <h2 style="font-family: Montserrat;">Рендеринг видео (WebM)...</h2>
-        <p id="renderStatus" style="color: var(--accent3); margin-top: 10px;">Подготовка</p>
+        <h2 style="font-family: Montserrat; font-weight: 900; margin-bottom: 10px;">Генерация видео...</h2>
+        <div class="progress-stages">
+            <div class="stage-badge" id="stage1">1. Подготовка</div>
+            <div class="stage-badge" id="stage2">2. Рендер кадров (CPU)</div>
+            <div class="stage-badge" id="stage3">3. Кодирование (GPU)</div>
+        </div>
+        <div class="render-preview-box">
+            <canvas id="renderLiveCanvas"></canvas>
+        </div>
+        <p id="renderStatus" style="color: var(--accent3); margin-top: 15px; font-weight: 700;">Инициализация...</p>
         <div class="progress-bar"><div class="progress-fill" id="renderProgress"></div></div>
     </div>
 
@@ -424,7 +444,7 @@
             participants: [
                 { id: 1, name: "Обалена", score: 16, addScore: 0, note: "", avatar: "obalena.jpg" }, 
                 { id: 2, name: "Ритикс", score: 14, addScore: 0, note: "", avatar: "ritix.jpg" },
-                { id: 3, name: "Гира", score: 12, addScore: 12, note: "ПРИМЕР ТЕСТА", avatar: "gira.jpg" }, 
+                { id: 3, name: "Гира", score: 12, addScore: 12, note: "ПРИМЕР", avatar: "gira.jpg" }, 
                 { id: 4, name: "Егорь", score: 8, addScore: 0, note: "", avatar: "egor.jpg" }
             ]
         };
@@ -466,7 +486,6 @@
             alert("Пресет сохранен!"); updatePresetLists(); saveState();
         }
         function adminDeletePreset() { let id = document.getElementById('delPresetSelect').value; if(!id) return; state.customPresets = state.customPresets.filter(p => p.id !== id); alert("Пресет удален!"); updatePresetLists(); saveState(); }
-        function adminAutoResults() { if(!confirm("Заменить текущие баллы на случайные?")) return; state.participants.forEach(p => { p.score = Math.floor(Math.random() * 24) + 1; p.addScore = 0; }); state.participants.sort((a,b) => b.score - a.score); state.viewMode = 'results'; closeAdminModal(); syncUI(); renderEditor(); updatePreview(); }
 
         function updatePresetLists() {
             let all = [...DEFAULT_PRESETS, ...(state.customPresets || [])];
@@ -570,6 +589,24 @@
             renderEditor(); updatePreview();
         }
 
+        function handleBgUpload(e) { 
+            const f = e.target.files[0]; 
+            if(f) { 
+                state.bgIsVideo = f.type.startsWith('video/');
+                const r = new FileReader(); 
+                r.onload = ev => { 
+                    state.bgCustomData = ev.target.result; 
+                    if(state.bgIsVideo) {
+                        let vid = document.getElementById('bgVideoObj');
+                        vid.src = state.bgCustomData;
+                        vid.play(); 
+                    }
+                    updatePreview(); 
+                }; 
+                r.readAsDataURL(f); 
+            } 
+        }
+
         function extractColorFromBg() {
             let bgUrl = ""; if (state.bgType === 'custom' && !state.bgIsVideo && state.bgCustomData) bgUrl = state.bgCustomData; else if (state.bgType !== 'none') bgUrl = state.bgType;
             if (!bgUrl) { alert("Сначала выберите фон (картинку)!"); return; }
@@ -590,24 +627,6 @@
             img.src = bgUrl;
         }
 
-        function handleBgUpload(e) { 
-            const f = e.target.files[0]; 
-            if(f) { 
-                state.bgIsVideo = f.type.startsWith('video/');
-                const r = new FileReader(); 
-                r.onload = ev => { 
-                    state.bgCustomData = ev.target.result; 
-                    if(state.bgIsVideo) {
-                        let vid = document.getElementById('bgVideoObj');
-                        vid.src = state.bgCustomData;
-                        vid.play(); 
-                    }
-                    updatePreview(); 
-                }; 
-                r.readAsDataURL(f); 
-            } 
-        }
-
         function renderEditor() {
             const container = document.getElementById('editorContainer'); container.innerHTML = '';
             state.participants.forEach((p) => {
@@ -622,7 +641,7 @@
                         <select style="flex:1.2; min-width: 90px;" onchange="handleAvatarSelect(event, ${p.id})">${opts}</select>
                         <input type="text" style="flex:1.5; min-width: 70px;" placeholder="Имя" value="${p.name}" oninput="updateParticipant(${p.id}, 'name', this.value)">
                         <input type="number" style="flex:0.8; min-width: 45px;" placeholder="Балл" value="${p.score}" oninput="updateParticipant(${p.id}, 'score', this.value)">
-                        <input type="number" style="flex:0.8; min-width: 45px; background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.3); color: #00ff88; font-weight:bold;" placeholder="+ Добавить" value="${p.addScore || 0}" oninput="updateParticipant(${p.id}, 'addScore', this.value)">
+                        <input type="number" style="flex:0.8; min-width: 45px; background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.3); color: #00ff88; font-weight:bold;" placeholder="+ Добав." value="${p.addScore || 0}" oninput="updateParticipant(${p.id}, 'addScore', this.value)">
                         <input type="file" id="file-${p.id}" style="display:none" accept="image/*" onchange="handleCustomAvatar(event, ${p.id})">
                         <button type="button" class="btn-remove" onclick="removeParticipant(${p.id})" title="Удалить">×</button>
                     </div>`;
@@ -679,11 +698,14 @@
             inner.style.transform = `scale(${state.scale})`;
 
             let bgUrl = (state.bgType === 'custom' && !state.bgIsVideo) ? state.bgCustomData : (state.bgType !== 'none' && state.bgType !== 'custom' ? state.bgType : "");
+            
             if(state.bgIsVideo && state.bgCustomData) {
                 let vid = document.getElementById('bgVideoObj');
                 let c = document.createElement('canvas'); c.width = w; c.height = h;
-                c.getContext('2d').drawImage(vid, 0,0, w, h); bgUrl = c.toDataURL();
+                c.getContext('2d').drawImage(vid, 0,0, w, h);
+                bgUrl = c.toDataURL();
             }
+
             document.getElementById('bgBlur').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
             document.getElementById('bgClear').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
 
@@ -692,14 +714,14 @@
             
             let list = [...state.participants];
             if (state.viewMode === 'results') list.sort((a,b) => b.score - a.score);
+            let maxScore = Math.max(...list.map(p => p.score + (p.addScore || 0)), 1);
 
             let rowsCount = Math.ceil(list.length / state.columns);
             board.style.gridTemplateColumns = `repeat(${state.columns}, 1fr)`;
             board.style.gridTemplateRows = `repeat(${rowsCount}, auto)`;
-            board.style.gridAutoFlow = 'column'; // ВАЖНО: Заполнение по колонкам
+            board.style.gridAutoFlow = 'column';
 
-            // Вычисляем высоту строки для позиционирования
-            // Скрытый рендер для получения высоты
+            // Измеряем реальную высоту одной строки для расчетов позиций
             let dummy = document.createElement('div');
             dummy.className = `result-row place-other`; dummy.style.visibility = 'hidden'; dummy.style.position = 'absolute';
             dummy.innerHTML = `<div class="position">1</div><img src="default.jpg" class="participant-avatar"><div class="participant-info"><div class="participant-name">A</div></div><div class="score"><div class="score-number">1</div></div>`;
@@ -710,6 +732,7 @@
             let gap = 12 * state.barScale;
             let colWidth = (w - (state.padX * 2) - ((state.columns - 1) * gap)) / state.columns;
 
+            // Вычисляем координаты
             layoutData = list.map((p, index) => {
                 let col = Math.floor(index / rowsCount);
                 let row = index % rowsCount;
@@ -762,51 +785,98 @@
         function adjustMobileScale() {
             const capture = document.getElementById('scoreboard-capture'); const wrapper = document.getElementById('previewWrapper');
             if(!capture || !wrapper || capture.offsetWidth === 0) return;
-            let scale = Math.min(wrapper.clientWidth / capture.offsetWidth, 1);
-            capture.style.transform = `scale(${scale})`; wrapper.style.height = (capture.offsetHeight * scale) + 'px';
+            let scale = Math.min(wrapper.clientWidth / capture.offsetWidth, wrapper.clientHeight / capture.offsetHeight, 1);
+            capture.style.transform = `scale(${scale})`; 
         }
 
-        // === МАТЕМАТИКА АНИМАЦИИ ===
+        // === МАТЕМАТИКА АНИМАЦИИ (Easing) ===
         function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
         function easeOutElastic(x) { const c4 = (2 * Math.PI) / 3; return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1; }
 
-        // === ПОКАДРОВЫЙ РЕНДЕР WEBM (30 FPS, АППАРАТНОЕ УСКОРЕНИЕ WEBP) ===
-        async function exportVideo() {
+        // === ПОКАДРОВЫЙ РЕНДЕР (WEBCODECS API - АППАРАТНОЕ УСКОРЕНИЕ) ===
+        async function exportVideoHardware() {
             const hasPointsToAdd = state.participants.some(p => p.addScore > 0);
             if (!hasPointsToAdd) { alert("Сначала укажите баллы (+ Добавить)!"); return; }
+
+            // Проверка поддержки
+            if (typeof VideoEncoder === "undefined" || typeof WebMMuxer === "undefined") {
+                alert("Ваш браузер не поддерживает аппаратный рендер видео. Пожалуйста, используйте Google Chrome, Edge или Yandex Browser последних версий.");
+                return;
+            }
+
+            const btn = document.getElementById('btnExport');
+            btn.disabled = true;
 
             const overlay = document.getElementById('renderOverlay');
             const pFill = document.getElementById('renderProgress');
             const pStatus = document.getElementById('renderStatus');
+            const pStage1 = document.getElementById('stage1');
+            const pStage2 = document.getElementById('stage2');
+            const pStage3 = document.getElementById('stage3');
+            const liveCanvas = document.getElementById('renderLiveCanvas');
+            const liveCtx = liveCanvas.getContext('2d');
+
             overlay.style.display = 'flex'; pFill.style.width = '0%';
+            pStage1.classList.add('active'); pStage2.classList.remove('active', 'done'); pStage3.classList.remove('active', 'done');
             
             const fps = 30;
             const framesScore = 60; // 2 сек - бегут баллы
-            const framesPause1 = 15; // 0.5 сек - смотрим на результат
+            const framesPause1 = 15; // 0.5 сек - пауза
             const framesMove = 45;   // 1.5 сек - перестановка
-            const framesPause2 = 30; // 1 сек - любуемся
+            const framesPause2 = 30; // 1 сек - пауза в конце
             const totalFrames = framesScore + framesPause1 + framesMove + framesPause2;
 
-            let video = new Whammy.Video(fps);
             let captureDiv = document.getElementById('scoreboard-capture');
             let bgVid = document.getElementById('bgVideoObj');
 
+            // Физические размеры видео
+            const w = captureDiv.offsetWidth;
+            const h = captureDiv.offsetHeight;
+            liveCanvas.width = w; liveCanvas.height = h;
+
             let startScores = state.participants.map(p => p.score);
 
-            // Оптимизация рендера для html2canvas
-            const canvasOpts = {
-                scale: 1, // Родное разрешение (быстрее для процессора)
-                useCORS: true, logging: false, backgroundColor: null
-            };
+            // Инициализация WebM Muxer
+            let muxer = new WebMMuxer.Muxer({
+                target: new WebMMuxer.ArrayBufferTarget(),
+                video: {
+                    codec: 'V_VP9',
+                    width: w,
+                    height: h,
+                    frameRate: fps
+                }
+            });
+
+            // Инициализация аппаратного кодировщика (GPU)
+            let videoEncoder = new VideoEncoder({
+                output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+                error: e => { console.error(e); alert("Ошибка кодирования: " + e.message); overlay.style.display='none'; btn.disabled=false; }
+            });
+
+            // Настраиваем кодек на максимальное качество и скорость
+            videoEncoder.configure({
+                codec: 'vp09.00.10.08', // VP9 Profile 0, Level 1
+                width: w,
+                height: h,
+                bitrate: 8_000_000, // 8 Mbps
+                framerate: fps,
+                hardwareAcceleration: 'prefer-hardware' // RX 6600 в деле!
+            });
+
+            pStage1.classList.remove('active'); pStage1.classList.add('done');
+            pStage2.classList.add('active');
+
+            // Оптимизация html2canvas
+            const canvasOpts = { scale: 1, useCORS: true, logging: false, backgroundColor: null };
 
             for(let frame = 0; frame < totalFrames; frame++) {
-                pStatus.innerText = `Рендер кадра ${frame + 1} из ${totalFrames}...`;
+                pStatus.innerText = `Чтение DOM (Кадр ${frame + 1} из ${totalFrames})...`;
                 pFill.style.width = ((frame / totalFrames) * 100) + '%';
 
                 if(state.bgIsVideo) {
                     bgVid.currentTime = frame / fps;
-                    let c = document.createElement('canvas'); c.width = captureDiv.offsetWidth; c.height = captureDiv.offsetHeight;
-                    c.getContext('2d').drawImage(bgVid, 0,0, c.width, c.height);
+                    let c = document.createElement('canvas'); c.width = w; c.height = h;
+                    c.getContext('2d').drawImage(bgVid, 0,0, w, h);
                     document.getElementById('bgClear').style.backgroundImage = `url(${c.toDataURL()})`;
                 }
 
@@ -845,21 +915,40 @@
 
                 await new Promise(r => setTimeout(r, 1));
                 
-                // Рендер кадра (оптимизировано под WebP - быстро работает на RX6600)
-                const canvas = await html2canvas(captureDiv, canvasOpts);
-                video.add(canvas.toDataURL('image/webp', 0.9));
+                // Делаем скриншот DOM-дерева (Это делает процессор Ryzen)
+                const domCanvas = await html2canvas(captureDiv, canvasOpts);
+                
+                // Выводим в предпросмотр
+                liveCtx.clearRect(0,0,w,h);
+                liveCtx.drawImage(domCanvas, 0,0);
+
+                // Отправляем кадр на видеокарту
+                let videoFrame = new VideoFrame(domCanvas, { timestamp: (frame / fps) * 1e6 });
+                videoEncoder.encode(videoFrame, { keyFrame: frame % 30 === 0 });
+                videoFrame.close();
             }
 
-            pStatus.innerText = "Сборка видеофайла (WebM)...";
-            video.compile(false, function(output) {
-                const url = URL.createObjectURL(output);
-                const a = document.createElement('a'); a.style.display = 'none'; a.href = url; a.download = `${state.title}_Anim.webm`;
-                document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url);
-                overlay.style.display = 'none';
-                
-                state.participants.forEach(p => { if(p.addScore > 0) { p.score += p.addScore; p.addScore = 0; } });
-                updatePreview(); renderEditor();
-            });
+            pStage2.classList.remove('active'); pStage2.classList.add('done');
+            pStage3.classList.add('active');
+            pStatus.innerText = "Видеокарта собирает файл (WebM)...";
+
+            // Завершаем кодирование
+            await videoEncoder.flush();
+            muxer.finalize();
+            let buffer = muxer.target.buffer;
+
+            // Скачиваем
+            const blob = new Blob([buffer], { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.style.display = 'none'; a.href = url; a.download = `${state.title}_Anim.webm`;
+            document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url);
+            
+            overlay.style.display = 'none';
+            btn.disabled = false;
+            
+            // Фиксируем баллы
+            state.participants.forEach(p => { if(p.addScore > 0) { p.score += p.addScore; p.addScore = 0; } });
+            updatePreview(); renderEditor();
         }
 
         init();
