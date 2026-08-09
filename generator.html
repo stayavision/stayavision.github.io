@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор Скорборда PRO — Build 2.1.8</title>
-    <!-- Библиотека для скриншотов -->
+    <title>Генератор Скорборда</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- Надежный кодировщик WebM (работает на Firefox, Linux, Windows) -->
     <script src="https://cdn.jsdelivr.net/npm/whammy@0.0.1/whammy.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700;900&family=Roboto:wght@400;700;900&family=Oswald:wght@400;700&family=Open+Sans:wght@400;700;800&family=Caveat:wght@700&family=Comfortaa:wght@700&display=swap');
@@ -24,7 +22,7 @@
         header { text-align: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(10,10,26,0.9); z-index: 10; position: relative; }
         h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; background: linear-gradient(135deg, var(--gold), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; margin: 0; }
         .build-badge { font-family: monospace; font-size: 0.4em; color: var(--text-secondary); vertical-align: middle; margin-left: 10px; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; letter-spacing: 0; text-transform: none; -webkit-text-fill-color: var(--text-secondary); }
-        
+
         .admin-login-btn { position: absolute; top: 15px; right: 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .admin-login-btn:hover { background: rgba(255,255,255,0.2); }
         .admin-login-btn.logged-in { background: rgba(0, 212, 255, 0.2); border-color: var(--accent3); color: var(--accent3); }
@@ -93,9 +91,6 @@
         .bg-layer-clear { background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.9; }
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0, var(--bg-darken, 0.2)); z-index: 0; }
         
-        /* ВАЖНО: ignore для html2canvas, иначе виснет! */
-        #bgVideoObj { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-
         .capture-inner {
             position: relative; z-index: 1; width: 100%; height: 100%;
             padding: var(--pad-y, 40px) var(--pad-x, 40px);
@@ -124,7 +119,7 @@
         .is-gold .participant-note { color: #333 !important; }
         .is-gold .position { background: #fff !important; color: #000 !important; box-shadow: 0 0 10px rgba(255,255,255,0.5) !important;}
 
-        /* СТИЛИ ПЛАШЕК */
+        /* СТИЛИ */
         .style-stayavision .result-row { padding: calc(12px * var(--bar-h-mult, 1) * var(--bar-scale, 1)) calc(20px * var(--bar-scale, 1)); border-radius: calc(12px * var(--bar-scale, 1)); background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); }
         .style-stayavision .position { width: calc(45px * var(--bar-scale, 1)); height: calc(45px * var(--bar-scale, 1)); font-size: calc(1.2rem * var(--text-scale, 1)); margin-right: calc(15px * var(--bar-scale, 1)); background: rgba(255,255,255,0.1); color: white; }
         .style-stayavision .participant-avatar { width: calc(50px * var(--bar-scale, 1) * var(--avatar-size, 1)); height: calc(50px * var(--bar-scale, 1) * var(--avatar-size, 1)); margin-right: calc(15px * var(--bar-scale, 1)); border: 2px solid rgba(255,255,255,0.1); }
@@ -166,14 +161,11 @@
         .highlight-top3.style-splitscreen .place-1 .participant-name, .highlight-top3.style-splitscreen .place-1 .score-number { color: var(--top1); }
         .highlight-top3.style-splitscreen .place-1 .position { background: var(--top1); color: #000; box-shadow: 0 0 15px var(--top1-bg); }
 
-        /* ОКНО ЗАГРУЗКИ (С КОНСОЛЬЮ И ПРЕДПРОСМОТРОМ) */
+        /* ОКНО ЗАГРУЗКИ (С КОНСОЛЬЮ) */
         #renderOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 9999; display:none; flex-direction: column; align-items: center; justify-content: center; color: white; }
         .progress-bar { width: 500px; max-width: 90%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 15px; overflow: hidden; }
         .progress-fill { height: 100%; background: var(--accent3); width: 0%; transition: width 0.1s; }
         
-        .render-preview-box { width: 640px; height: 360px; background: #000; border: 2px solid var(--accent3); border-radius: 12px; margin-top: 20px; overflow: hidden; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);}
-        #renderLiveCanvas { max-width: 100%; max-height: 100%; object-fit: contain; }
-
         .render-console {
             width: 100%; max-width: 640px; height: 150px; background: #050505; border: 1px solid #333; border-radius: 8px;
             margin-top: 15px; padding: 10px; font-family: monospace; font-size: 0.8rem; color: #00ff88;
@@ -197,13 +189,15 @@
             .settings-grid { grid-template-columns: 1fr; }
             .show-editor .controls-panel { display: flex; flex-direction: column; }
             .show-preview .preview-panel { display: flex; flex-direction: column; }
-            .render-preview-box { width: 90vw; height: auto; aspect-ratio: 16/9; }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Генератор Скорборда PRO <span class="build-badge">Build 2.1.8</span></h1>
+        <!-- Видео тег вынесен из области скриншота, чтобы избежать ошибки Canvas 0x0 -->
+        <video id="bgVideoObj" loop muted playsinline style="display:none;"></video>
+
+        <h1>Генератор Скорборда <span class="build-badge">Build 2.2.0</span></h1>
         <button class="admin-login-btn" id="btnAdminAuth" onclick="handleAdminLogin()">Вход / Админ</button>
     </header>
 
@@ -273,7 +267,7 @@
 
             <div class="section-title">Дизайн и Цвета</div>
             <div class="settings-grid">
-                <div class="control-group"><label>Стиль дизайна</label><select id="inStyle" onchange="updateState('style', this.value)"><option value="stayavision">Стаявидение (Толстые)</option><option value="eurovision">Eurovision (Тонкие)</option><option value="splitscreen">Сплит-скрин (VS Дуэли)</option></select></div>
+                <div class="control-group"><label>Стиль дизайна</label><select id="inStyle" onchange="updateState('style', this.value)"><option value="stayavision">Стаявидение</option><option value="eurovision">Eurovision</option><option value="splitscreen">Сплит-скрин</option></select></div>
                 <div class="control-group"><label>Анимация движения</label><select id="inAnim" onchange="updateState('animStyle', this.value)"><option value="smooth">Плавная</option><option value="bounce">Пружинка</option></select></div>
                 <div class="control-group"><label>Форма аватарок</label><select id="inAvatar" onchange="updateState('avatarShape', this.value)"><option value="50%">Круг</option><option value="8px">Закругленный квадрат</option><option value="0px">Квадрат</option></select></div>
             </div>
@@ -304,11 +298,11 @@
                 <div class="control-group"><label style="color: var(--accent3);">Масштаб (Общий)</label><input type="range" id="inScale" min="0.4" max="1.5" step="0.05" oninput="updateState('scale', this.value)"></div>
                 
                 <div class="control-group">
-                    <label>Задний фон (Авторазмытие)</label>
+                    <label>Задний фон</label>
                     <select id="inBgType" onchange="updateState('bgType', this.value)">
                         <option value="none">Тёмная заливка</option><option value="wolfs.jpg">Волки</option>
                         <option value="sv6.webp">Стаявидение 6</option><option value="sv7.webp">Стаявидение 7</option>
-                        <option value="sv8.webp">Стаявидение 8</option><option value="custom">Свой фон...</option>
+                        <option value="sv8.webp">Стаявидение 8</option><option value="custom">Свой файл...</option>
                     </select>
                     <input type="file" id="inBgCustom" style="display:none; margin-top:5px;" accept="image/*,video/*" onchange="handleBgUpload(event)">
                 </div>
@@ -330,8 +324,8 @@
             </div>
 
             <!-- РЕНДЕР ВИДЕО -->
-            <div class="section-title" style="color: #ff4d4d; margin-top: 30px;">Рендер Видео (Без OBS)</div>
-            <p style="font-size:0.75rem; color: var(--text-secondary); margin-bottom:10px;">Впишите баллы в зеленую колонку (+ Добавить). Процесс сборки видео займет 10-30 секунд (в зависимости от ПК). <b style="color:#ff4d4d">Не сворачивайте вкладку!</b></p>
+            <div class="section-title" style="color: #ff4d4d; margin-top: 30px;">Рендер Видео</div>
+            <p style="font-size:0.75rem; color: var(--text-secondary); margin-bottom:10px;">Впишите баллы в зеленую колонку (+ Добавить). Не сворачивайте вкладку при рендере!</p>
             <button class="btn-render-vid" id="btnExport" onclick="exportVideoHardware()">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
                 СКАЧАТЬ АНИМАЦИЮ (WebM)
@@ -363,7 +357,6 @@
                 <div id="scoreboard-capture" class="highlight-top3">
                     <div class="bg-layer bg-layer-blur" id="bgBlur"></div>
                     <div class="bg-layer bg-layer-clear" id="bgClear"></div>
-                    <video id="bgVideoObj" data-html2canvas-ignore="true" loop muted playsinline style="display:none;"></video>
                     <div class="bg-overlay"></div>
                     
                     <div class="capture-inner" id="captureInner">
@@ -378,18 +371,12 @@
         </div>
     </div>
 
-    <!-- Загрузочный экран (Видеорендер с Консолью) -->
+    <!-- Загрузочный экран -->
     <div id="renderOverlay">
         <h2 style="font-family: Montserrat; font-weight: 900; margin-bottom: 5px;">Рендеринг видео...</h2>
         <div class="progress-bar"><div class="progress-fill" id="renderProgress"></div></div>
+        <p id="renderStatus" style="color: var(--accent3); margin-top: 10px; font-weight: 700;">Инициализация...</p>
         
-        <!-- Live-Превью -->
-        <div class="render-preview-box">
-            <canvas id="renderLiveCanvas"></canvas>
-        </div>
-
-        <p id="renderStatus" style="color: var(--accent3); margin-top: 15px; font-weight: 700;">Инициализация...</p>
-        <!-- Live-Консоль -->
         <div class="render-console" id="renderConsole"></div>
         <button class="btn-cancel" onclick="cancelRender()">Отменить рендер</button>
     </div>
@@ -461,10 +448,7 @@
         }
         function handleAdminLogin() {
             if(sessionStorage.getItem('isAdmin') === 'true') { openAdminModal(); } 
-            else {
-                let u = prompt("Логин:"); let p = prompt("Пароль:");
-                if(u === 'admin' && p === 'admin') { sessionStorage.setItem('isAdmin', 'true'); checkAdminUI(); openAdminModal(); } else if(u || p) { alert("Неверные данные!"); }
-            }
+            else { let u = prompt("Логин:"); let p = prompt("Пароль:"); if(u === 'admin' && p === 'admin') { sessionStorage.setItem('isAdmin', 'true'); checkAdminUI(); openAdminModal(); } else if(u || p) { alert("Неверные данные!"); } }
         }
         function openAdminModal() { updatePresetLists(); document.getElementById('adminModal').style.display = 'flex'; }
         function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
@@ -651,7 +635,6 @@
             renderEditor(); updatePreview();
         }
 
-        // === ГЕНЕРАЦИЯ МАКЕТА ===
         function updatePreview() {
             saveState();
             document.getElementById('renderTitle').innerText = state.title; document.getElementById('renderSubtitle').innerText = state.subtitle;
@@ -691,10 +674,10 @@
 
             inner.style.setProperty('--pad-x', state.padX + 'px'); inner.style.setProperty('--pad-y', state.padY + 'px');
             
-            // Если мы не рендерим видео, возвращаем масштаб
             if(!isRendering) inner.style.transform = `scale(${state.scale})`;
 
             let bgUrl = (state.bgType === 'custom' && !state.bgIsVideo) ? state.bgCustomData : (state.bgType !== 'none' && state.bgType !== 'custom' ? state.bgType : "");
+            
             if(state.bgIsVideo && state.bgCustomData) {
                 let vid = document.getElementById('bgVideoObj');
                 let c = document.createElement('canvas'); c.width = w; c.height = h;
@@ -702,12 +685,11 @@
                 bgUrl = c.toDataURL();
             }
 
-            // ВАЖНО: ОТКЛЮЧЕНИЕ БЛЮРА
             const bgBlurNode = document.getElementById('bgBlur');
             if (isRendering) {
-                bgBlurNode.style.filter = 'none'; // Отключаем фильтр при рендере!
+                bgBlurNode.style.filter = 'none'; 
             } else {
-                bgBlurNode.style.filter = 'blur(30px) brightness(0.6)'; // Включаем для превью
+                bgBlurNode.style.filter = 'blur(30px) brightness(0.6)'; 
             }
 
             bgBlurNode.style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
@@ -718,7 +700,6 @@
             
             let list = [...state.participants];
             if (state.viewMode === 'results') list.sort((a,b) => b.score - a.score);
-            let maxScore = Math.max(...list.map(p => p.score + (p.addScore || 0)), 1);
 
             let rowsCount = Math.ceil(list.length / state.columns);
             board.style.gridTemplateColumns = `repeat(${state.columns}, 1fr)`;
@@ -761,15 +742,6 @@
                 let rowClass = "result-row";
                 if (state.highlightTop3 && state.viewMode === 'results' && position <= 3) rowClass += ` place-${position}`;
 
-                let scoreBlock = '';
-                if (state.viewMode === 'results') {
-                    scoreBlock = `
-                        <div class="score">
-                            <div class="add-score-float" id="float-${p.id}">+${p.addScore} БАЛЛОВ</div>
-                            <div class="score-number" id="scoreNum-${p.id}">${p.score}</div>
-                        </div>`;
-                }
-
                 let posHTML = state.showPositions ? `<div class="position" id="pos-${p.id}">${position}</div>` : '';
                 let avaHTML = state.showAvatars ? `<img src="${p.avatar}" class="participant-avatar" alt="av">` : '';
 
@@ -778,7 +750,10 @@
                         ${posHTML}
                         ${avaHTML}
                         <div class="participant-info"><div class="participant-name">${p.name}</div>${state.showNotes && p.note ? `<div class="participant-note">${p.note}</div>` : ''}</div>
-                        ${scoreBlock}
+                        <div class="score">
+                            <div class="add-score-float" id="float-${p.id}">+${p.addScore} БАЛЛОВ</div>
+                            <div class="score-number" id="scoreNum-${p.id}">${p.score}</div>
+                        </div>
                     </div>`;
             });
             setTimeout(adjustMobileScale, 10);
@@ -787,11 +762,10 @@
         function adjustMobileScale() {
             const capture = document.getElementById('scoreboard-capture'); const wrapper = document.getElementById('previewWrapper');
             if(!capture || !wrapper || capture.offsetWidth === 0) return;
-            let scale = Math.min(wrapper.clientWidth / capture.offsetWidth, wrapper.clientHeight / capture.offsetHeight, 1);
-            capture.style.transform = `scale(${scale})`; 
+            let scale = Math.min(wrapper.clientWidth / capture.offsetWidth, 1);
+            capture.style.transform = `scale(${scale})`; wrapper.style.height = (capture.offsetHeight * scale) + 'px';
         }
 
-        // КОНСОЛЬ РЕНДЕРА
         function logRender(msg) {
             const con = document.getElementById('renderConsole');
             const time = new Date().toISOString().substr(11, 8);
@@ -805,15 +779,13 @@
                 logRender(">>> ОТМЕНА ОПЕРАЦИИ ПОЛЬЗОВАТЕЛЕМ <<<");
                 document.getElementById('renderOverlay').style.display = 'none';
                 document.getElementById('btnExport').disabled = false;
-                updatePreview(); // Включаем блюр обратно
+                updatePreview(); 
             }
         }
 
-        // === МАТЕМАТИКА АНИМАЦИИ ===
         function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
         function easeOutElastic(x) { const c4 = (2 * Math.PI) / 3; return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1; }
 
-        // === РЕНДЕР WEBM (WHAMMY.JS) С КОНСОЛЬЮ ===
         async function exportVideoHardware() {
             const hasPointsToAdd = state.participants.some(p => p.addScore > 0);
             if (!hasPointsToAdd) { alert("Сначала укажите баллы (+ Добавить)!"); return; }
@@ -824,8 +796,6 @@
             const pFill = document.getElementById('renderProgress');
             const pStatus = document.getElementById('renderStatus');
             const con = document.getElementById('renderConsole');
-            const liveCanvas = document.getElementById('renderLiveCanvas');
-            const liveCtx = liveCanvas.getContext('2d');
             
             con.innerHTML = ''; 
             logRender("Инициализация движка Whammy.js (v0.0.1)...");
@@ -847,36 +817,29 @@
             let bgVid = document.getElementById('bgVideoObj');
             let innerDiv = document.getElementById('captureInner');
 
-            // Устанавливаем правильные размеры для Live-Canvas
-            liveCanvas.width = captureDiv.offsetWidth;
-            liveCanvas.height = captureDiv.offsetHeight;
-
-            // ОПТИМИЗАЦИЯ DOM И СТИЛЕЙ
             logRender("Оптимизация DOM: Снятие визуального масштаба...");
             const oldTransform = captureDiv.style.transform;
             captureDiv.style.transform = 'none';
             innerDiv.style.transform = 'none';
 
             logRender("Оптимизация DOM: Выключение тяжелых CSS-фильтров (отключен blur)...");
-            updatePreview(true); // Перерисовываем DOM без фильтров
+            updatePreview(true); 
 
             let startScores = state.participants.map(p => p.score);
-            
-            // ЖЕСТКАЯ ОПТИМИЗАЦИЯ ДЛЯ HTML2CANVAS
             const canvasOpts = { 
                 scale: 1, 
                 width: captureDiv.offsetWidth,
                 height: captureDiv.offsetHeight,
                 useCORS: true, 
                 logging: false, 
-                backgroundColor: '#0a0a1a' // Задаем фон явно
+                backgroundColor: '#0a0a1a' 
             };
 
             for(let frame = 0; frame < totalFrames; frame++) {
                 if(!isRendering) {
                     captureDiv.style.transform = oldTransform;
-                    updatePreview(); // Возвращаем стили
-                    return; // Выход при отмене
+                    updatePreview(); 
+                    return; 
                 }
 
                 pStatus.innerText = `Чтение кадра ${frame + 1} из ${totalFrames}...`;
@@ -889,7 +852,6 @@
                     document.getElementById('bgClear').style.backgroundImage = `url(${c.toDataURL()})`;
                 }
 
-                // Математика кадра
                 layoutData.forEach(ld => {
                     let p = ld.pData;
                     let numEl = document.getElementById(`scoreNum-${p.id}`);
@@ -922,17 +884,10 @@
                     }
                 });
 
-                // Даем браузеру обновить CSS и не вешать вкладку
-                await new Promise(r => setTimeout(r, 10)); 
+                await new Promise(r => setTimeout(r, 15)); 
                 
                 try {
                     const domCanvas = await html2canvas(captureDiv, canvasOpts);
-                    
-                    // Обновляем предпросмотр
-                    liveCtx.clearRect(0,0, liveCanvas.width, liveCanvas.height);
-                    liveCtx.drawImage(domCanvas, 0,0);
-
-                    // Добавляем кадр в видео
                     video.add(domCanvas.toDataURL('image/webp', 0.9));
                     if (frame % 10 === 0 || frame === totalFrames - 1) {
                         logRender(`[html2canvas] Успешно захвачен кадр ${frame + 1}/${totalFrames}`);
@@ -947,7 +902,7 @@
             logRender("ВНИМАНИЕ: Это может занять до 15 секунд. Не закрывайте вкладку!");
             
             video.compile(false, function(output) {
-                if(!isRendering) return; // Если отменили на последней секунде
+                if(!isRendering) return; 
 
                 logRender("Сборка успешно завершена!");
                 logRender("Формирование файла для скачивания...");
