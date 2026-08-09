@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор Скорборда PRO — Оптимизация</title>
+    <title>Генератор Скорборда PRO — Build 2.1.8</title>
     <!-- Библиотека для скриншотов -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Надежный кодировщик WebM (работает на Firefox, Linux, Windows) -->
@@ -92,6 +92,8 @@
         .bg-layer-blur { background-size: cover; background-position: center; filter: blur(30px) brightness(0.6); transform: scale(1.1); }
         .bg-layer-clear { background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.9; }
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0, var(--bg-darken, 0.2)); z-index: 0; }
+        
+        /* ВАЖНО: ignore для html2canvas, иначе виснет! */
         #bgVideoObj { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
 
         .capture-inner {
@@ -105,7 +107,7 @@
         .board-subtitle { color: var(--gold); font-family: var(--font-title, 'Playfair Display'), serif; font-size: calc(clamp(0.8rem, 2vw, 1.2rem) * var(--text-scale, 1)); text-transform: var(--text-case, uppercase); letter-spacing: 4px; font-weight: 700; margin-top: 5px; }
 
         .board-results { display: grid; gap: calc(12px * var(--bar-scale, 1)); align-content: start; flex: 1; position: relative; }
-        .result-row { display: flex; align-items: center; transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; font-family: var(--font-board, 'Montserrat'), sans-serif; text-transform: var(--text-case, uppercase); position: absolute; width: 100%; left: 0; top: 0; }
+        .result-row { display: flex; align-items: center; font-family: var(--font-board, 'Montserrat'), sans-serif; text-transform: var(--text-case, uppercase); position: absolute; width: 100%; left: 0; top: 0; }
         
         .position { display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; transform: translate(var(--pos-x, 0px), var(--pos-y, 0px)); }
         .participant-avatar { object-fit: cover; flex-shrink: 0; background: #2a2a4a; border-radius: var(--avatar-radius, 50%); transform: translate(var(--ava-x, 0px), var(--ava-y, 0px)); }
@@ -117,13 +119,12 @@
 
         .add-score-float { position: absolute; right: 10px; top: 10px; font-size: 1.5rem; font-weight: 900; color: #000; text-shadow: 0 0 10px rgba(255,255,255,0.8); opacity: 0; pointer-events: none; z-index: 10; white-space: nowrap; }
 
-        /* Золотая плашка */
         .is-gold { background: var(--gold) !important; border-color: #FFA500 !important; box-shadow: 0 0 30px rgba(255, 215, 0, 0.6) !important; color: #000 !important; z-index: 50; }
         .is-gold .participant-name, .is-gold .score-number { color: #000 !important; }
         .is-gold .participant-note { color: #333 !important; }
         .is-gold .position { background: #fff !important; color: #000 !important; box-shadow: 0 0 10px rgba(255,255,255,0.5) !important;}
 
-        /* СТИЛИ */
+        /* СТИЛИ ПЛАШЕК */
         .style-stayavision .result-row { padding: calc(12px * var(--bar-h-mult, 1) * var(--bar-scale, 1)) calc(20px * var(--bar-scale, 1)); border-radius: calc(12px * var(--bar-scale, 1)); background: linear-gradient(90deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); }
         .style-stayavision .position { width: calc(45px * var(--bar-scale, 1)); height: calc(45px * var(--bar-scale, 1)); font-size: calc(1.2rem * var(--text-scale, 1)); margin-right: calc(15px * var(--bar-scale, 1)); background: rgba(255,255,255,0.1); color: white; }
         .style-stayavision .participant-avatar { width: calc(50px * var(--bar-scale, 1) * var(--avatar-size, 1)); height: calc(50px * var(--bar-scale, 1) * var(--avatar-size, 1)); margin-right: calc(15px * var(--bar-scale, 1)); border: 2px solid rgba(255,255,255,0.1); }
@@ -165,13 +166,16 @@
         .highlight-top3.style-splitscreen .place-1 .participant-name, .highlight-top3.style-splitscreen .place-1 .score-number { color: var(--top1); }
         .highlight-top3.style-splitscreen .place-1 .position { background: var(--top1); color: #000; box-shadow: 0 0 15px var(--top1-bg); }
 
-        /* ОКНО ЗАГРУЗКИ И КОНСОЛИ */
+        /* ОКНО ЗАГРУЗКИ (С КОНСОЛЬЮ И ПРЕДПРОСМОТРОМ) */
         #renderOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 9999; display:none; flex-direction: column; align-items: center; justify-content: center; color: white; }
         .progress-bar { width: 500px; max-width: 90%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 15px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--accent3); width: 0%; }
+        .progress-fill { height: 100%; background: var(--accent3); width: 0%; transition: width 0.1s; }
         
+        .render-preview-box { width: 640px; height: 360px; background: #000; border: 2px solid var(--accent3); border-radius: 12px; margin-top: 20px; overflow: hidden; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);}
+        #renderLiveCanvas { max-width: 100%; max-height: 100%; object-fit: contain; }
+
         .render-console {
-            width: 100%; max-width: 600px; height: 180px; background: #050505; border: 1px solid #333; border-radius: 8px;
+            width: 100%; max-width: 640px; height: 150px; background: #050505; border: 1px solid #333; border-radius: 8px;
             margin-top: 15px; padding: 10px; font-family: monospace; font-size: 0.8rem; color: #00ff88;
             overflow-y: auto; text-align: left; white-space: pre-wrap; box-shadow: inset 0 0 10px #000;
         }
@@ -193,6 +197,7 @@
             .settings-grid { grid-template-columns: 1fr; }
             .show-editor .controls-panel { display: flex; flex-direction: column; }
             .show-preview .preview-panel { display: flex; flex-direction: column; }
+            .render-preview-box { width: 90vw; height: auto; aspect-ratio: 16/9; }
         }
     </style>
 </head>
@@ -225,8 +230,25 @@
             <div class="settings-grid">
                 <div class="control-group"><label>Заголовок</label><input type="text" id="inTitle" oninput="updateState('title', this.value)"></div>
                 <div class="control-group"><label>Подзаголовок</label><input type="text" id="inSubtitle" oninput="updateState('subtitle', this.value)"></div>
-                <div class="control-group"><label>Шрифт заголовка</label><select id="inFontTitle" onchange="updateState('fontTitle', this.value)"><option value="Playfair Display">Playfair Display</option><option value="Montserrat">Montserrat</option><option value="Roboto">Roboto</option><option value="Oswald">Oswald</option><option value="Open Sans">Open Sans</option><option value="Caveat">Caveat</option><option value="Comfortaa">Comfortaa</option></select></div>
-                <div class="control-group"><label>Шрифт плашек</label><select id="inFontBoard" onchange="updateState('fontBoard', this.value)"><option value="Montserrat">Montserrat</option><option value="Playfair Display">Playfair Display</option><option value="Roboto">Roboto</option><option value="Oswald">Oswald</option><option value="Open Sans">Open Sans</option><option value="Caveat">Caveat</option><option value="Comfortaa">Comfortaa</option></select></div>
+                
+                <div class="control-group">
+                    <label>Шрифт заголовка</label>
+                    <select id="inFontTitle" onchange="updateState('fontTitle', this.value)">
+                        <option value="Playfair Display">Playfair Display</option><option value="Montserrat">Montserrat</option>
+                        <option value="Roboto">Roboto</option><option value="Oswald">Oswald</option>
+                        <option value="Open Sans">Open Sans</option><option value="Caveat">Caveat</option>
+                        <option value="Comfortaa">Comfortaa</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Шрифт плашек</label>
+                    <select id="inFontBoard" onchange="updateState('fontBoard', this.value)">
+                        <option value="Montserrat">Montserrat</option><option value="Playfair Display">Playfair Display</option>
+                        <option value="Roboto">Roboto</option><option value="Oswald">Oswald</option>
+                        <option value="Open Sans">Open Sans</option><option value="Caveat">Caveat</option>
+                        <option value="Comfortaa">Comfortaa</option>
+                    </select>
+                </div>
 
                 <div class="control-group">
                     <label>Разрешение экрана</label>
@@ -277,16 +299,16 @@
 
             <div class="section-title">Макет и Редактор</div>
             <div class="settings-grid">
-                <div class="control-group"><label>Отступ по бокам (X px)</label><input type="range" id="inPadX" min="0" max="200" oninput="updateState('padX', this.value)"></div>
-                <div class="control-group"><label>Отступ сверху/снизу (Y px)</label><input type="range" id="inPadY" min="0" max="200" oninput="updateState('padY', this.value)"></div>
+                <div class="control-group"><label>Отступ X (px)</label><input type="range" id="inPadX" min="0" max="200" oninput="updateState('padX', this.value)"></div>
+                <div class="control-group"><label>Отступ Y (px)</label><input type="range" id="inPadY" min="0" max="200" oninput="updateState('padY', this.value)"></div>
                 <div class="control-group"><label style="color: var(--accent3);">Масштаб (Общий)</label><input type="range" id="inScale" min="0.4" max="1.5" step="0.05" oninput="updateState('scale', this.value)"></div>
                 
                 <div class="control-group">
-                    <label>Задний фон</label>
+                    <label>Задний фон (Авторазмытие)</label>
                     <select id="inBgType" onchange="updateState('bgType', this.value)">
                         <option value="none">Тёмная заливка</option><option value="wolfs.jpg">Волки</option>
                         <option value="sv6.webp">Стаявидение 6</option><option value="sv7.webp">Стаявидение 7</option>
-                        <option value="sv8.webp">Стаявидение 8</option><option value="custom">Свой файл (Картинка/Видео)...</option>
+                        <option value="sv8.webp">Стаявидение 8</option><option value="custom">Свой фон...</option>
                     </select>
                     <input type="file" id="inBgCustom" style="display:none; margin-top:5px;" accept="image/*,video/*" onchange="handleBgUpload(event)">
                 </div>
@@ -307,7 +329,7 @@
                 <div class="control-group"><label style="color: transparent;">Сброс</label><button class="btn-action" style="margin:0; background:rgba(255,100,100,0.2); color:#ff6464;" onclick="resetOffsets()">Сбросить сдвиги</button></div>
             </div>
 
-            <!-- ТРАНСЛЯЦИЯ И УЧАСТНИКИ -->
+            <!-- РЕНДЕР ВИДЕО -->
             <div class="section-title" style="color: #ff4d4d; margin-top: 30px;">Рендер Видео (Без OBS)</div>
             <p style="font-size:0.75rem; color: var(--text-secondary); margin-bottom:10px;">Впишите баллы в зеленую колонку (+ Добавить). Процесс сборки видео займет 10-30 секунд (в зависимости от ПК). <b style="color:#ff4d4d">Не сворачивайте вкладку!</b></p>
             <button class="btn-render-vid" id="btnExport" onclick="exportVideoHardware()">
@@ -338,10 +360,10 @@
         <!-- ПРЕВЬЮ -->
         <div class="preview-panel">
             <div class="preview-wrapper" id="previewWrapper">
-                <div id="scoreboard-capture">
+                <div id="scoreboard-capture" class="highlight-top3">
                     <div class="bg-layer bg-layer-blur" id="bgBlur"></div>
                     <div class="bg-layer bg-layer-clear" id="bgClear"></div>
-                    <video id="bgVideoObj" loop muted playsinline style="display:none;"></video>
+                    <video id="bgVideoObj" data-html2canvas-ignore="true" loop muted playsinline style="display:none;"></video>
                     <div class="bg-overlay"></div>
                     
                     <div class="capture-inner" id="captureInner">
@@ -360,11 +382,15 @@
     <div id="renderOverlay">
         <h2 style="font-family: Montserrat; font-weight: 900; margin-bottom: 5px;">Рендеринг видео...</h2>
         <div class="progress-bar"><div class="progress-fill" id="renderProgress"></div></div>
-        <p id="renderStatus" style="color: var(--accent3); margin-top: 10px; font-weight: 700;">Инициализация...</p>
         
+        <!-- Live-Превью -->
+        <div class="render-preview-box">
+            <canvas id="renderLiveCanvas"></canvas>
+        </div>
+
+        <p id="renderStatus" style="color: var(--accent3); margin-top: 15px; font-weight: 700;">Инициализация...</p>
         <!-- Live-Консоль -->
         <div class="render-console" id="renderConsole"></div>
-        
         <button class="btn-cancel" onclick="cancelRender()">Отменить рендер</button>
     </div>
 
@@ -416,7 +442,7 @@
         let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
         const STORAGE_KEY = 'stayavision_generator_state';
         let layoutData = [];
-        let isRendering = false; // Флаг для отмены рендера
+        let isRendering = false; 
 
         const serverImages = [
             { file: "default.jpg", name: "Дефолт" }, { file: "gira.jpg", name: "Гира" },
@@ -545,7 +571,7 @@
             updatePreview();
         }
 
-        function updateParticipant(id, field, value) { const p = state.participants.find(x => x.id === id); if(p) { p[field] = field === 'score' || field === 'addScore' ? Number(value) : value; updatePreview(true); } }
+        function updateParticipant(id, field, value) { const p = state.participants.find(x => x.id === id); if(p) { p[field] = field === 'score' || field === 'addScore' ? Number(value) : value; updatePreview(); } }
 
         function moveParticipant(id, dir) {
             const idx = state.participants.findIndex(p => p.id === id); if (idx < 0) return;
@@ -605,7 +631,8 @@
                         </div>
                         <select style="flex:1.2; min-width: 90px;" onchange="handleAvatarSelect(event, ${p.id})">${opts}</select>
                         <input type="text" style="flex:1.5; min-width: 70px;" placeholder="Имя" value="${p.name}" oninput="updateParticipant(${p.id}, 'name', this.value)">
-                        <input type="number" style="flex:0.8; min-width: 45px;" placeholder="Балл" value="${p.score}" oninput="updateParticipant(${p.id}, 'score', this.value)">
+                        <input type="text" placeholder="Заметка" value="${p.note||''}" oninput="updateParticipant(${p.id}, 'note', this.value)">
+                        <input type="number" placeholder="Балл" value="${p.score}" oninput="updateParticipant(${p.id}, 'score', this.value)">
                         <input type="number" style="flex:0.8; min-width: 45px; background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.3); color: #00ff88; font-weight:bold;" placeholder="+ Добав." value="${p.addScore || 0}" oninput="updateParticipant(${p.id}, 'addScore', this.value)">
                         <input type="file" id="file-${p.id}" style="display:none" accept="image/*" onchange="handleCustomAvatar(event, ${p.id})">
                         <button type="button" class="btn-remove" onclick="removeParticipant(${p.id})" title="Удалить">×</button>
@@ -625,9 +652,8 @@
         }
 
         // === ГЕНЕРАЦИЯ МАКЕТА ===
-        function updatePreview(skipSave = false) {
-            if(!skipSave) saveState();
-            
+        function updatePreview() {
+            saveState();
             document.getElementById('renderTitle').innerText = state.title; document.getElementById('renderSubtitle').innerText = state.subtitle;
             const capture = document.getElementById('scoreboard-capture'); const inner = document.getElementById('captureInner');
             
@@ -676,7 +702,15 @@
                 bgUrl = c.toDataURL();
             }
 
-            document.getElementById('bgBlur').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
+            // ВАЖНО: ОТКЛЮЧЕНИЕ БЛЮРА
+            const bgBlurNode = document.getElementById('bgBlur');
+            if (isRendering) {
+                bgBlurNode.style.filter = 'none'; // Отключаем фильтр при рендере!
+            } else {
+                bgBlurNode.style.filter = 'blur(30px) brightness(0.6)'; // Включаем для превью
+            }
+
+            bgBlurNode.style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
             document.getElementById('bgClear').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
 
             const board = document.getElementById('renderBoard');
@@ -771,6 +805,7 @@
                 logRender(">>> ОТМЕНА ОПЕРАЦИИ ПОЛЬЗОВАТЕЛЕМ <<<");
                 document.getElementById('renderOverlay').style.display = 'none';
                 document.getElementById('btnExport').disabled = false;
+                updatePreview(); // Включаем блюр обратно
             }
         }
 
@@ -789,6 +824,8 @@
             const pFill = document.getElementById('renderProgress');
             const pStatus = document.getElementById('renderStatus');
             const con = document.getElementById('renderConsole');
+            const liveCanvas = document.getElementById('renderLiveCanvas');
+            const liveCtx = liveCanvas.getContext('2d');
             
             con.innerHTML = ''; 
             logRender("Инициализация движка Whammy.js (v0.0.1)...");
@@ -803,12 +840,16 @@
             const framesPause2 = 30; 
             const totalFrames = framesScore + framesPause1 + framesMove + framesPause2;
 
-            logRender(`Рассчитано кадров: ${totalFrames} (FPS: ${fps}, Длина: ${totalFrames/fps}с)`);
+            logRender(`Рассчитано кадров: ${totalFrames} (FPS: ${fps}, Длина: ${(totalFrames/fps).toFixed(1)}с)`);
 
             let video = new Whammy.Video(fps); 
             let captureDiv = document.getElementById('scoreboard-capture');
             let bgVid = document.getElementById('bgVideoObj');
             let innerDiv = document.getElementById('captureInner');
+
+            // Устанавливаем правильные размеры для Live-Canvas
+            liveCanvas.width = captureDiv.offsetWidth;
+            liveCanvas.height = captureDiv.offsetHeight;
 
             // ОПТИМИЗАЦИЯ DOM И СТИЛЕЙ
             logRender("Оптимизация DOM: Снятие визуального масштаба...");
@@ -816,19 +857,25 @@
             captureDiv.style.transform = 'none';
             innerDiv.style.transform = 'none';
 
-            logRender("Оптимизация DOM: Выключение тяжелых CSS-фильтров...");
-            const bgBlurNode = document.getElementById('bgBlur');
-            const oldFilter = bgBlurNode.style.filter;
-            bgBlurNode.style.filter = 'none'; // Это решает проблему 10-минутного зависания!
+            logRender("Оптимизация DOM: Выключение тяжелых CSS-фильтров (отключен blur)...");
+            updatePreview(true); // Перерисовываем DOM без фильтров
 
             let startScores = state.participants.map(p => p.score);
-            const canvasOpts = { scale: 1, useCORS: true, logging: false, backgroundColor: null, imageTimeout: 2000 };
+            
+            // ЖЕСТКАЯ ОПТИМИЗАЦИЯ ДЛЯ HTML2CANVAS
+            const canvasOpts = { 
+                scale: 1, 
+                width: captureDiv.offsetWidth,
+                height: captureDiv.offsetHeight,
+                useCORS: true, 
+                logging: false, 
+                backgroundColor: '#0a0a1a' // Задаем фон явно
+            };
 
             for(let frame = 0; frame < totalFrames; frame++) {
                 if(!isRendering) {
                     captureDiv.style.transform = oldTransform;
-                    innerDiv.style.transform = `scale(${state.scale})`;
-                    bgBlurNode.style.filter = oldFilter;
+                    updatePreview(); // Возвращаем стили
                     return; // Выход при отмене
                 }
 
@@ -875,10 +922,17 @@
                     }
                 });
 
-                await new Promise(r => setTimeout(r, 1)); 
+                // Даем браузеру обновить CSS и не вешать вкладку
+                await new Promise(r => setTimeout(r, 10)); 
                 
                 try {
                     const domCanvas = await html2canvas(captureDiv, canvasOpts);
+                    
+                    // Обновляем предпросмотр
+                    liveCtx.clearRect(0,0, liveCanvas.width, liveCanvas.height);
+                    liveCtx.drawImage(domCanvas, 0,0);
+
+                    // Добавляем кадр в видео
                     video.add(domCanvas.toDataURL('image/webp', 0.9));
                     if (frame % 10 === 0 || frame === totalFrames - 1) {
                         logRender(`[html2canvas] Успешно захвачен кадр ${frame + 1}/${totalFrames}`);
@@ -898,10 +952,7 @@
                 logRender("Сборка успешно завершена!");
                 logRender("Формирование файла для скачивания...");
 
-                // Восстановление UI
                 captureDiv.style.transform = oldTransform;
-                innerDiv.style.transform = `scale(${state.scale})`;
-                bgBlurNode.style.filter = oldFilter;
 
                 const url = URL.createObjectURL(output);
                 const a = document.createElement('a'); a.style.display = 'none'; a.href = url; a.download = `${state.title}_Anim.webm`;
