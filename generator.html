@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Генератор Скорборда</title>
-    <!-- Библиотека для скриншотов -->
+    
+    <!-- Библиотеки -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- Библиотека для видео -->
     <script src="https://cdn.jsdelivr.net/npm/whammy@0.0.1/whammy.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700;900&family=Roboto:wght@400;700;900&family=Oswald:wght@400;700&family=Open+Sans:wght@400;700;800&family=Caveat:wght@700&family=Comfortaa:wght@700&display=swap');
 
@@ -27,6 +28,7 @@
             overflow-x: hidden; 
         }
 
+        /* --- ШАПКА --- */
         header { 
             text-align: center; 
             padding: 15px; 
@@ -71,6 +73,7 @@
         .admin-login-btn:hover { background: rgba(255,255,255,0.2); }
         .admin-login-btn.logged-in { background: rgba(0, 212, 255, 0.2); border-color: var(--accent3); color: var(--accent3); }
 
+        /* --- МОБИЛЬНЫЕ ВКЛАДКИ --- */
         .mobile-tabs { 
             display: none; width: 100%; 
             background: rgba(18,18,42,0.95); padding: 10px; 
@@ -85,35 +88,45 @@
         }
         .mobile-tabs button.active { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; box-shadow: 0 4px 15px rgba(233, 30, 140, 0.4); }
 
-        .app-container { display: flex; flex-wrap: wrap; gap: 20px; max-width: 1600px; margin: 0 auto; padding: 20px; align-items: flex-start; }
+        /* --- ОСНОВНОЙ КОНТЕЙНЕР --- */
+        .app-container { 
+            display: flex; flex-wrap: wrap; gap: 20px; 
+            max-width: 1600px; margin: 0 auto; padding: 20px; 
+            align-items: flex-start; 
+        }
 
+        /* --- ЛЕВАЯ ПАНЕЛЬ (НАСТРОЙКИ) --- */
         .controls-panel { 
             flex: 1; min-width: 350px; max-width: 530px; 
             background: rgba(18, 18, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); 
             border-radius: 16px; padding: 20px; position: sticky; top: 20px; 
             max-height: calc(100vh - 40px); overflow-y: auto; 
         }
-        
-        .preview-panel { 
-            flex: 2; display: flex; flex-direction: column; align-items: center; 
-            min-width: 300px; position: sticky; top: 20px; 
-        }
-
         .controls-panel::-webkit-scrollbar { width: 6px; }
         .controls-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
-        .section-title { font-size: 1rem; color: var(--accent3); margin: 20px 0 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .section-title { 
+            font-size: 1rem; color: var(--accent3); margin: 20px 0 10px; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; 
+            font-weight: 800; text-transform: uppercase; letter-spacing: 1px; 
+        }
         .section-title:first-child { margin-top: 0; }
 
         .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         
         .control-group { display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
         .control-group label { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
-        .control-group input[type="text"], .control-group select, .control-group input[type="file"], .control-group input[type="number"] { 
-            width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); 
-            background: rgba(0,0,0,0.3); color: white; font-family: 'Montserrat', sans-serif; 
+        
+        .control-group input[type="text"], 
+        .control-group select, 
+        .control-group input[type="file"], 
+        .control-group input[type="number"] { 
+            width: 100%; padding: 8px 10px; border-radius: 8px; 
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); 
+            color: white; font-family: 'Montserrat', sans-serif; 
         }
         
+        /* ФИКС ДЛЯ FIREFOX: Темный фон у выпадающих списков */
         select option { background: #12122a; color: #ffffff; }
 
         .control-row { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
@@ -123,34 +136,40 @@
         .checkbox-group { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: white; }
         .checkbox-group input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--accent2); }
 
+        /* Кнопки */
         .btn-action { background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: 600; width: 100%; }
         .btn-action:hover { background: rgba(255,255,255,0.2); }
+        
         .btn-auto-color { background: rgba(0, 212, 255, 0.15); color: var(--accent3); border: 1px solid rgba(0, 212, 255, 0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .btn-auto-color:hover { background: var(--accent3); color: #000; }
+        
         .btn-reset { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .btn-reset:hover { background: #ff4d4d; color: #fff; }
 
-        /* Кнопки экспорта */
-        .export-buttons { display: flex; gap: 10px; margin-top: 15px; }
+        .export-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        
+        .btn-preview-anim { 
+            background: linear-gradient(135deg, #00b09b, #96c93d); color: white; font-size: 0.9rem; padding: 12px; 
+            box-shadow: 0 5px 15px rgba(150, 201, 61, 0.4); border:none; border-radius: 8px; font-weight: 800; 
+            cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 100%;
+        }
+        .btn-preview-anim:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(150, 201, 61, 0.6); }
+
         .btn-render-vid { 
-            background: linear-gradient(135deg, #FF416C, #FF4B2B); color: white; font-size: 0.9rem; padding: 15px; 
+            background: linear-gradient(135deg, #FF416C, #FF4B2B); color: white; font-size: 0.9rem; padding: 12px; 
             box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4); border:none; border-radius: 8px; font-weight: 800; 
-            cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;
+            cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 100%;
         }
         .btn-render-vid:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(255, 65, 108, 0.6); }
-        .btn-render-vid:disabled { background: #333; box-shadow: none; cursor: not-allowed; transform: none; color: #888; }
-
+        
         .btn-render-img { 
-            background: linear-gradient(135deg, #00D4FF, #7B2FBE); color: white; font-size: 0.9rem; padding: 15px; 
+            background: linear-gradient(135deg, #00D4FF, #7B2FBE); color: white; font-size: 0.9rem; padding: 12px; 
             box-shadow: 0 5px 15px rgba(123, 47, 190, 0.4); border:none; border-radius: 8px; font-weight: 800; 
-            cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;
+            cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 100%;
         }
         .btn-render-img:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(123, 47, 190, 0.6); }
 
-        .btn-preview-anim { background: linear-gradient(135deg, #00b09b, #96c93d); color: white; font-size: 1rem; padding: 15px; box-shadow: 0 5px 15px rgba(150, 201, 61, 0.4); border:none; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 100%; margin-top: 15px; letter-spacing: 1px; display: flex; justify-content: center; align-items: center; gap: 10px;}
-        .btn-preview-anim:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(150, 201, 61, 0.6); }
-
-        /* Участники в редакторе */
+        /* Редактор участников */
         .participants-editor { display: flex; flex-direction: column; gap: 8px; margin: 15px 0; }
         .editor-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
         .editor-row select { flex: 1; min-width: 90px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: none; font-size: 0.8rem; }
@@ -160,7 +179,11 @@
         .btn-icon:hover { background: var(--accent3); }
         .btn-remove { background: #ff4d4d; color: white; border: none; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
 
-        /* --- ОКНО ПРЕВЬЮ (СКОРБОРД) --- */
+        /* --- ПРАВАЯ ПАНЕЛЬ (ПРЕВЬЮ) --- */
+        .preview-panel { 
+            flex: 2; display: flex; flex-direction: column; align-items: center; 
+            min-width: 300px; position: sticky; top: 20px; 
+        }
         .preview-wrapper { width: 100%; position: relative; display: flex; justify-content: center; }
 
         #scoreboard-capture {
@@ -170,7 +193,7 @@
             font-family: var(--custom-font, 'Montserrat'), sans-serif;
         }
 
-        /* Видео тег скрыт от html2canvas */
+        /* Видео фон (скрыт от html2canvas) */
         #bgVideoObj { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.8; z-index: -1; }
 
         .bg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
@@ -191,19 +214,36 @@
         .board-results { display: grid; gap: calc(12px * var(--bar-scale, 1)); align-content: start; flex: 1; position: relative; }
 
         /* Оболочки элементов */
-        .result-row { display: flex; align-items: center; font-family: var(--font-board, 'Montserrat'), sans-serif; text-transform: var(--text-case, uppercase); position: absolute; width: 100%; left: 0; top: 0; transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
+        .result-row { 
+            display: flex; align-items: center; 
+            font-family: var(--font-board, 'Montserrat'), sans-serif; 
+            text-transform: var(--text-case, uppercase); 
+            position: absolute; width: 100%; left: 0; top: 0; 
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; 
+        }
         
         .position { display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; transform: translate(var(--pos-x, 0px), var(--pos-y, 0px)); }
         .participant-avatar { object-fit: cover; flex-shrink: 0; background: #2a2a4a; border-radius: var(--avatar-radius, 50%); transform: translate(var(--ava-x, 0px), var(--ava-y, 0px)); }
-        .participant-info { flex: 1; display: flex; flex-direction: column; overflow: hidden; white-space: nowrap; margin-right: 10px; transform: translate(var(--name-x, 0px), var(--name-y, 0px)); text-align: var(--text-align, left); align-items: var(--align-flex, flex-start); justify-content: center; }
+        
+        .participant-info { 
+            flex: 1; display: flex; flex-direction: column; overflow: hidden; white-space: nowrap; margin-right: 10px; 
+            transform: translate(var(--name-x, 0px), var(--name-y, 0px)); 
+            text-align: var(--text-align, left); align-items: var(--align-flex, flex-start); justify-content: center; 
+        }
         .participant-name { font-weight: 700; text-overflow: ellipsis; overflow: hidden; }
         .participant-note { color: var(--text-secondary); text-overflow: ellipsis; overflow: hidden; font-size: 0.85em; }
+        
         .score { text-align: right; flex-shrink: 0; transform: translate(var(--score-x, 0px), var(--score-y, 0px)); position: relative; display: flex; flex-direction: column; align-items: flex-end;}
         .score-number { font-weight: 900; line-height: 1; display: inline-block; }
         .score-label { font-size: calc(0.65rem * var(--text-scale, 1)); color: var(--text-secondary); text-transform: uppercase; }
 
         /* Всплывающие баллы */
-        .add-score-float { position: absolute; right: 10px; top: -10px; font-size: calc(1.5rem * var(--text-scale, 1)); font-weight: 900; color: #000; text-shadow: 0 0 10px rgba(255,255,255,0.8); opacity: 0; pointer-events: none; z-index: 10; white-space: nowrap; transition: transform 1s ease-out, opacity 0.3s;}
+        .add-score-float { 
+            position: absolute; right: 10px; top: -10px; 
+            font-size: calc(1.5rem * var(--text-scale, 1)); font-weight: 900; color: #000; 
+            text-shadow: 0 0 10px rgba(255,255,255,0.8); opacity: 0; pointer-events: none; z-index: 10; white-space: nowrap; 
+            transition: transform 1s ease-out, opacity 0.3s;
+        }
         .add-score-float.animate { opacity: 1; transform: translateY(-40px); }
 
         /* Золотая плашка (7+ баллов) */
@@ -248,6 +288,7 @@
         .highlight-top3.style-eurovision .place-1 .score-number { color: var(--top1); }
 
         /* === СТИЛЬ 3: СПЛИТ-СКРИН === */
+        .style-splitscreen .board-results { gap: 20px; }
         .style-splitscreen .result-row { flex-direction: column; text-align: center; justify-content: center; padding: calc(30px * var(--bar-h-mult, 1) * var(--bar-scale, 1)); border-radius: 20px; background: linear-gradient(180deg, var(--bar-c1), var(--bar-c2)); border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .style-splitscreen .participant-avatar { width: calc(150px * var(--bar-scale, 1) * var(--avatar-size, 1)); height: calc(150px * var(--bar-scale, 1) * var(--avatar-size, 1)); margin: 0 auto 15px auto; border: 3px solid rgba(255,255,255,0.1); }
         .style-splitscreen .participant-info { margin: 0 0 15px 0; align-items: center !important; text-align: center !important; }
@@ -270,7 +311,15 @@
             background:rgba(0,0,0,0.95); z-index: 9999; display:none; 
             flex-direction: column; align-items: center; justify-content: center; color: white; 
         }
-        .progress-bar { width: 500px; max-width: 90%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 15px; overflow: hidden; }
+        
+        .render-preview-box { 
+            width: 640px; height: 360px; background: #000; border: 2px solid var(--accent3); 
+            border-radius: 12px; margin-top: 20px; overflow: hidden; display: flex; 
+            justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+        #renderLiveCanvas { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .progress-bar { width: 640px; max-width: 90%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 15px; overflow: hidden; }
         .progress-fill { height: 100%; background: var(--accent3); width: 0%; transition: width 0.1s; }
         
         .render-console {
@@ -288,7 +337,7 @@
         .modal-box h2 { color: var(--accent3); margin-bottom: 20px; font-size: 1.5rem; text-align: center; }
         .modal-box input, .modal-box select { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white; }
         .modal-btns { display: flex; gap: 10px; }
-
+        
         @media (max-width: 900px) {
             .mobile-tabs { display: flex; }
             .app-container { padding: 10px; }
@@ -296,12 +345,14 @@
             .settings-grid { grid-template-columns: 1fr; }
             .show-editor .controls-panel { display: flex; flex-direction: column; }
             .show-preview .preview-panel { display: flex; flex-direction: column; }
+            .render-preview-box { width: 90vw; height: auto; aspect-ratio: 16/9; }
+            .progress-bar { width: 90vw; }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Генератор Скорборда <span class="build-badge">Build 2.3.1</span></h1>
+        <h1>Генератор Скорборда <span class="build-badge">Build 2.4.0</span></h1>
         <button class="admin-login-btn" id="btnAdminAuth" onclick="handleAdminLogin()">Вход / Админ</button>
     </header>
 
@@ -370,22 +421,14 @@
 
             <label class="checkbox-group" style="margin-top: 15px;"><input type="checkbox" id="inTop3" onchange="updateState('highlightTop3', this.checked)"> Выделять 1, 2, 3 места</label>
 
-            <div id="top3Colors" style="display: flex; gap:10px; margin-top: 10px;">
-                <div class="control-group" style="flex:1"><label>1 место</label><input type="color" id="inC1" oninput="updateState('c1', this.value)"></div>
-                <div class="control-group" style="flex:1"><label>2 место</label><input type="color" id="inC2" oninput="updateState('c2', this.value)"></div>
-                <div class="control-group" style="flex:1"><label>3 место</label><input type="color" id="inC3" oninput="updateState('c3', this.value)"></div>
-            </div>
-
             <div class="section-title">Макет и Редактор</div>
             <div class="settings-grid">
                 <div class="control-group"><label>Отступ X (px)</label><input type="range" id="inPadX" min="0" max="200" oninput="updateState('padX', this.value)"></div>
                 <div class="control-group"><label>Отступ Y (px)</label><input type="range" id="inPadY" min="0" max="200" oninput="updateState('padY', this.value)"></div>
                 <div class="control-group"><label style="color: var(--accent3);">Масштаб (Общий)</label><input type="range" id="inScale" min="0.4" max="1.5" step="0.05" oninput="updateState('scale', this.value)"></div>
-                <div class="control-group"><label style="color: var(--accent3);">Масштаб Плашек</label><input type="range" id="inBarScale" min="0.5" max="2" step="0.05" oninput="updateState('barScale', this.value)"></div>
-                <div class="control-group"><label style="color: var(--accent2);">Масштаб Текста</label><input type="range" id="inTextScale" min="0.5" max="2" step="0.05" oninput="updateState('textScale', this.value)"></div>
                 
                 <div class="control-group">
-                    <label>Задний фон (Авторазмытие)</label>
+                    <label>Задний фон</label>
                     <select id="inBgType" onchange="updateState('bgType', this.value)">
                         <option value="none">Тёмная заливка</option><option value="wolfs.jpg">Волки</option>
                         <option value="sv6.webp">Стаявидение 6</option><option value="sv7.webp">Стаявидение 7</option>
@@ -402,18 +445,18 @@
                 <div class="control-group"><label>Сдвиг Места (↕ Y)</label><input type="number" id="inPosY" oninput="updateState('posY', this.value)"></div>
                 <div class="control-group"><label>Сдвиг Аватарки (↔ X)</label><input type="number" id="inAvaX" oninput="updateState('avaX', this.value)"></div>
                 <div class="control-group"><label>Сдвиг Аватарки (↕ Y)</label><input type="number" id="inAvaY" oninput="updateState('avaY', this.value)"></div>
-                
+                <div class="control-group"><label style="color: var(--accent3);">Масштаб Плашек</label><input type="range" id="inBarScale" min="0.5" max="2" step="0.05" oninput="updateState('barScale', this.value)"></div>
+                <div class="control-group"><label style="color: var(--accent2);">Масштаб Текста</label><input type="range" id="inTextScale" min="0.5" max="2" step="0.05" oninput="updateState('textScale', this.value)"></div>
                 <div class="control-group"><label>Размер аватарки</label><input type="range" id="inAvaSize" min="0.2" max="2.5" step="0.1" oninput="updateState('avatarSize', this.value)"></div>
                 <div class="control-group"><label>Высота плашки</label><input type="range" id="inBarHeight" min="0.5" max="3" step="0.1" oninput="updateState('barHeightMultiplier', this.value)"></div>
                 <div class="control-group"><label>Выравнивание текста</label><select id="inAlign" onchange="updateState('align', this.value)"><option value="left">Слева</option><option value="center">По центру</option><option value="right">Справа</option></select></div>
-                <div class="control-group"><label style="color: transparent;">Сброс</label><button class="btn-action" style="margin:0; background:rgba(255,100,100,0.2); color:#ff6464;" onclick="resetOffsets()">Сбросить X/Y сдвиги</button></div>
+                <div class="control-group"><label style="color: transparent;">Сброс</label><button class="btn-action" style="margin:0; background:rgba(255,100,100,0.2); color:#ff6464;" onclick="resetOffsets()">Сбросить сдвиги</button></div>
             </div>
 
-            <div class="section-title" style="color: #00ff88; margin-top: 30px;">Анимация и Экспорт</div>
-            
-            <button class="btn-preview-anim" onclick="playAddPointsAnimation()">▶ ПРЕДПРОСМОТР АНИМАЦИИ</button>
+            <div class="section-title" style="color: #ff4d4d; margin-top: 30px;">Анимация и Экспорт</div>
             
             <div class="export-buttons">
+                <button class="btn-preview-anim" onclick="playAddPointsAnimation()">▶ ПРЕДПРОСМОТР АНИМАЦИИ</button>
                 <button class="btn-render-img" onclick="downloadImage()">🖼️ СКАЧАТЬ КАРТИНКУ</button>
                 <button class="btn-render-vid" id="btnExport" onclick="exportVideoHardware()">🎬 СКАЧАТЬ ВИДЕО (WebM)</button>
             </div>
@@ -449,7 +492,7 @@
                     <div class="bg-layer bg-layer-clear" id="bgClear"></div>
                     
                     <!-- Видео вынесено из области html2canvas, чтобы избежать бага Canvas 0x0 -->
-                    <!-- Оно будет подменяться канвасом перед рендером -->
+                    <video id="bgVideoObj" data-html2canvas-ignore="true" loop muted playsinline style="display:none;"></video>
                     
                     <div class="bg-overlay"></div>
                     
@@ -462,20 +505,22 @@
                     </div>
                 </div>
             </div>
-            <!-- Скрытый элемент видео для проигрывания фона -->
-            <video id="bgVideoObj" loop muted playsinline style="display:none;"></video>
         </div>
     </div>
 
-    <!-- Загрузочный экран (Видеорендер с Консолью) -->
+    <!-- Загрузочный экран -->
     <div id="renderOverlay">
         <h2 style="font-family: Montserrat; font-weight: 900; margin-bottom: 5px;">Рендеринг видео...</h2>
         <div class="progress-bar"><div class="progress-fill" id="renderProgress"></div></div>
-        <p id="renderStatus" style="color: var(--accent3); margin-top: 10px; font-weight: 700;">Инициализация...</p>
         
+        <!-- Live-Превью -->
+        <div class="render-preview-box">
+            <canvas id="renderLiveCanvas"></canvas>
+        </div>
+
+        <p id="renderStatus" style="color: var(--accent3); margin-top: 15px; font-weight: 700;">Инициализация...</p>
         <!-- Live-Консоль -->
         <div class="render-console" id="renderConsole"></div>
-        
         <button class="btn-cancel" onclick="cancelRender()">Отменить рендер</button>
     </div>
 
@@ -536,13 +581,9 @@
             { file: "potuzhnost.jpg", name: "Потужн." }, { file: "mashonka.jpg", name: "Машонка" }, { file: "balepa.jpg", name: "Balepa" }
         ];
 
-        function hexToRgba(hex, alpha) { 
-            let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16); 
-            return `rgba(${r}, ${g}, ${b}, ${alpha})`; 
-        }
+        function hexToRgba(hex, alpha) { let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
         function rgbToHex(r, g, b) { return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase(); }
 
-        // --- Админка ---
         function checkAdminUI() {
             const btn = document.getElementById('btnAdminAuth');
             if(sessionStorage.getItem('isAdmin') === 'true') { btn.innerText = "🛠 DEBUG Админка"; btn.classList.add('logged-in'); } 
@@ -581,7 +622,6 @@
             state.title = p.title; state.subtitle = p.subtitle; state.bgType = p.bgType; state.viewMode = p.viewMode; 
             state.participants = JSON.parse(JSON.stringify(p.participants));
             state.participants.forEach(x => { if(x.addScore === undefined) x.addScore = 0; });
-            
             if(id === 'sv7') { for (let i = state.participants.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [state.participants[i], state.participants[j]] = [state.participants[j], state.participants[i]]; } }
             syncUI(); renderEditor(); updatePreview();
         }
@@ -590,7 +630,6 @@
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) { try { state = { ...DEFAULT_STATE, ...JSON.parse(saved) }; } catch(e) {} }
             if(!state.customPresets) state.customPresets = [];
-            // Поддержка старых сохранений
             if(state.fontTitle === undefined) state.fontTitle = "Playfair Display"; if(state.fontBoard === undefined) state.fontBoard = "Montserrat";
             if(state.textUppercase === undefined) state.textUppercase = true;
             if(state.animStyle === undefined) state.animStyle = "smooth";
@@ -738,7 +777,11 @@
         
         function addParticipant() { const nId = state.participants.length>0 ? Math.max(...state.participants.map(p=>p.id))+1 : 1; state.participants.push({ id: nId, name: "Новый", score: 0, addScore: 0, note: "", avatar: "default.jpg" }); renderEditor(); updatePreview(); }
         function removeParticipant(id) { state.participants = state.participants.filter(p=>p.id!==id); renderEditor(); updatePreview(); }
-        function randomizeParticipants() { for (let i = state.participants.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [state.participants[i], state.participants[j]] = [state.participants[j], state.participants[i]]; } renderEditor(); updatePreview(); }
+        
+        function randomizeParticipants() {
+            for (let i = state.participants.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [state.participants[i], state.participants[j]] = [state.participants[j], state.participants[i]]; }
+            renderEditor(); updatePreview();
+        }
 
         // === ГЕНЕРАЦИЯ МАКЕТА ===
         function updatePreview(skipSave = false) {
@@ -793,7 +836,11 @@
             }
 
             const bgBlurNode = document.getElementById('bgBlur');
-            if (isRendering) { bgBlurNode.style.filter = 'none'; } else { bgBlurNode.style.filter = 'blur(30px) brightness(0.6)'; }
+            if (isRendering) {
+                bgBlurNode.style.filter = 'none'; 
+            } else {
+                bgBlurNode.style.filter = 'blur(30px) brightness(0.6)'; 
+            }
 
             bgBlurNode.style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
             document.getElementById('bgClear').style.backgroundImage = bgUrl ? `url('${bgUrl}')` : 'none';
@@ -849,7 +896,10 @@
                 let scoreBlock = '';
                 if (state.viewMode === 'results' && state.showScores) {
                     let fillPercent = Math.max((p.score / maxScore) * 100, 0.1); 
-                    let barHtml = state.showScoreBars ? `<div class="score-bar"><div class="score-bar-fill" id="scoreBar-${p.id}" style="${fillPercent>0.1?`width:${fillPercent}%; min-width:2px;`:'display:none;'}"></div></div>` : '';
+                    let barHtml = '';
+                    if (state.showScoreBars && fillPercent > 0.1) {
+                        barHtml = `<div class="score-bar"><div class="score-bar-fill" id="scoreBar-${p.id}" style="width:${fillPercent}%;"></div></div>`;
+                    }
                     scoreBlock = `
                         <div class="score">
                             <div class="add-score-float" id="float-${p.id}">+${p.addScore} БАЛЛОВ</div>
@@ -901,6 +951,7 @@
         function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
         function easeOutElastic(x) { const c4 = (2 * Math.PI) / 3; return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1; }
 
+        // === ПРЕДПРОСМОТР АНИМАЦИИ (БЕЗ РЕНДЕРА) ===
         async function playAddPointsAnimation() {
             const hasPointsToAdd = state.participants.some(p => p.addScore > 0);
             if (!hasPointsToAdd) { alert("Укажите баллы в колонке '+ Добавить' (зеленое поле)!"); return; }
@@ -1030,6 +1081,8 @@
             const pFill = document.getElementById('renderProgress');
             const pStatus = document.getElementById('renderStatus');
             const con = document.getElementById('renderConsole');
+            const liveCanvas = document.getElementById('renderLiveCanvas');
+            const liveCtx = liveCanvas.getContext('2d');
             
             con.innerHTML = ''; 
             logRender("Инициализация движка Whammy.js (v0.0.1)...");
@@ -1051,6 +1104,9 @@
             let bgVid = document.getElementById('bgVideoObj');
             let innerDiv = document.getElementById('captureInner');
 
+            liveCanvas.width = captureDiv.offsetWidth;
+            liveCanvas.height = captureDiv.offsetHeight;
+
             logRender("Оптимизация DOM: Снятие визуального масштаба...");
             const oldTransform = captureDiv.style.transform;
             captureDiv.style.transform = 'none';
@@ -1060,6 +1116,7 @@
             updatePreview(true); 
 
             let startScores = state.participants.map(p => p.score);
+            
             const canvasOpts = { 
                 scale: 1, 
                 width: captureDiv.offsetWidth,
@@ -1095,9 +1152,9 @@
                     if(frame <= framesScore) {
                         let prog = frame / framesScore;
                         if(p.addScore > 0) {
-                            if (numEl) numEl.innerText = Math.floor(startScores[p.id-1] + (p.addScore * prog));
+                            if(numEl) numEl.innerText = Math.floor(startScores[p.id-1] + (p.addScore * prog));
                             let op = prog < 0.2 ? prog*5 : (prog > 0.8 ? (1-prog)*5 : 1);
-                            if (floatEl) {
+                            if(floatEl) {
                                 floatEl.style.opacity = op;
                                 floatEl.style.transform = `translateY(${prog * -30}px)`;
                             }
@@ -1105,25 +1162,25 @@
                         }
                     } 
                     else if (frame > framesScore + framesPause1 && frame <= framesScore + framesPause1 + framesMove) {
-                        if (floatEl) floatEl.style.opacity = 0; 
-                        if (rowEl) rowEl.classList.remove('is-gold');
+                        if(floatEl) floatEl.style.opacity = 0; 
+                        if(rowEl) rowEl.classList.remove('is-gold');
                         let prog = (frame - (framesScore + framesPause1)) / framesMove;
                         let eased = state.animStyle === 'bounce' ? easeOutElastic(prog) : easeOutCubic(prog);
                         
-                        if (rowEl) {
+                        if(rowEl) {
                             rowEl.style.left = ld.startX + ((ld.endX - ld.startX) * eased) + 'px';
                             rowEl.style.top = ld.startY + ((ld.endY - ld.startY) * eased) + 'px';
                         }
                     }
                     else if (frame > framesScore + framesPause1 + framesMove) {
-                        if (rowEl) {
+                        if(rowEl) {
                             rowEl.style.left = ld.endX + 'px'; 
                             rowEl.style.top = ld.endY + 'px';
                         }
                         if(state.showPositions) {
                             let finalIndex = [...state.participants].sort((a,b)=>(b.score+b.addScore)-(a.score+a.addScore)).findIndex(x=>x.id===p.id);
                             let posEl = document.getElementById(`pos-${p.id}`);
-                            if (posEl) posEl.innerText = finalIndex + 1;
+                            if(posEl) posEl.innerText = finalIndex + 1;
                         }
                     }
                 });
@@ -1132,6 +1189,10 @@
                 
                 try {
                     const domCanvas = await html2canvas(captureDiv, canvasOpts);
+                    
+                    liveCtx.clearRect(0,0, liveCanvas.width, liveCanvas.height);
+                    liveCtx.drawImage(domCanvas, 0,0);
+
                     video.add(domCanvas.toDataURL('image/webp', 0.9));
                     if (frame % 10 === 0 || frame === totalFrames - 1) {
                         logRender(`[html2canvas] Успешно захвачен кадр ${frame + 1}/${totalFrames}`);
