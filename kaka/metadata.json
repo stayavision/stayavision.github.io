@@ -1,0 +1,6 @@
+{
+  "name": "Генератор Скорборда",
+  "description": "Генератор таблиц результатов (скорбордов) с предпросмотром анимации и экспортом видео и изображений.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
