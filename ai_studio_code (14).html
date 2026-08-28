@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Стаявидение — Официальный архив</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
+            --bg-dark: #0a0a1a; --bg-card: #12122a;
+            --accent1: #7B2FBE; --accent2: #E91E8C; --accent3: #00D4FF;
+            --text-primary: #ffffff; --text-secondary: #b0b0cc;
+            --danger: #ff4d4d;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-dark); color: var(--text-primary);
+            overflow-x: hidden; transition: all 0.3s ease;
+        }
+
+        /* Динамический фон */
+        .dynamic-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            z-index: -2; opacity: 0.85; filter: blur(2px);
+            transition: opacity 0.4s ease-in-out, background-image 0.4s ease-in-out;
+        }
+        
+        .bg-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 26, 0.4); z-index: -1; pointer-events: none;
+        }
+
+        .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden; pointer-events: none; }
+        .bg-animation .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; animation: floatOrb 20s infinite ease-in-out; }
+        .bg-animation .orb:nth-child(1) { width: 600px; height: 600px; background: var(--accent1); top: -200px; left: -200px; animation-delay: 0s; }
+        .bg-animation .orb:nth-child(2) { width: 500px; height: 500px; background: var(--accent2); top: 50%; right: -200px; animation-delay: -7s; }
+        .bg-animation .orb:nth-child(3) { width: 400px; height: 400px; background: var(--accent3); bottom: -150px; left: 30%; animation-delay: -14s; }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(100px, 50px) scale(1.1); }
+            50% { transform: translate(-50px, 100px) scale(0.9); }
+            75% { transform: translate(80px, -60px) scale(1.05); }
+        }
+
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .particle { position: absolute; background: rgba(255, 255, 255, 0.5); border-radius: 50%; animation: sparkle linear infinite; }
+
+        @keyframes sparkle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        header { position: relative; z-index: 10; text-align: center; padding: 80px 20px 40px; background: linear-gradient(180deg, rgba(123, 47, 190, 0.4) 0%, transparent 100%); }
+        
+        .logo-icon { width: 120px; height: 120px; margin: 0 auto 20px; position: relative; animation: logoPulse 3s infinite ease-in-out; }
+        @keyframes logoPulse { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(233, 30, 140, 0.5)); } 50% { transform: scale(1.05); filter: drop-shadow(0 0 40px rgba(233, 30, 140, 0.8)); } }
+
+        h1.main-title {
+            font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), var(--accent2), var(--accent3), var(--accent1));
+            background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: gradientShift 4s ease-in-out infinite; letter-spacing: 2px; text-transform: uppercase; line-height: 1.1;
+            text-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .subtitle { font-size: 1.2rem; color: var(--text-secondary); margin-top: 15px; letter-spacing: 5px; text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+
+        .header-actions { margin-top: 30px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .tg-btn {
+            display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #0088cc, #00D4FF);
+            color: white; padding: 12px 25px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 0.95rem;
+            box-shadow: 0 10px 30px rgba(0, 136, 204, 0.4); transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .tg-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(0, 136, 204, 0.6); }
+
+        nav { position: sticky; top: 20px; z-index: 100; padding: 0 15px; margin-bottom: 30px; }
+        .nav-inner { 
+            max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: center; 
+            gap: 8px; padding: 10px 15px; flex-wrap: wrap; 
+            background: rgba(18, 18, 42, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 40px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .nav-btn {
+            min-width: 55px; padding: 10px 15px; border: none; background: transparent; color: var(--text-secondary);
+            font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer;
+            border-radius: 25px; transition: all 0.3s ease; white-space: nowrap; text-align: center;
+        }
+        .nav-btn:hover, .nav-btn.active { 
+            background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; 
+            transform: translateY(-2px); box-shadow: 0 5px 15px rgba(233, 30, 140, 0.4); 
+        }
+
+        main { position: relative; z-index: 10; max-width: 1000px; margin: 0 auto; padding: 10px 20px 100px; }
+
+        .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 50px; }
+        .stat-card { background: linear-gradient(135deg, rgba(123, 47, 190, 0.3), rgba(233, 30, 140, 0.15)); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 25px 15px; text-align: center; transition: transform 0.3s; backdrop-filter: blur(10px); }
+        .stat-number { font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg, var(--gold), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 0.75rem; color: var(--text-secondary); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .edition-section { display: none; animation: fadeInUp 0.6s ease; }
+        .edition-section.active { display: block; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .era-title { text-align: center; font-size: 2rem; font-weight: 900; margin: 50px 0 20px; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 5px 15px rgba(0,0,0,0.8); }
+        .era-title.silver { color: var(--silver); margin-top: 100px; } 
+        
+        .edition-header { text-align: center; margin-bottom: 40px; }
+        .edition-number { font-size: 1rem; color: var(--accent2); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.8);}
+        .edition-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 10px; text-shadow: 0 5px 15px rgba(0,0,0,0.8); }
+        
+        .badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 10px; }
+        .badge-lost { background: rgba(255, 100, 100, 0.2); border: 1px solid #ff6464; color: #ff6464; }
+        .badge-pending { background: rgba(0, 212, 255, 0.2); border: 1px solid var(--accent3); color: var(--accent3); }
+
+        .edition-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .watch-btn { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,0,0,0.2); border: 1px solid rgba(255,0,0,0.5); color: #ff4d4d; padding: 10px 20px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: all 0.3s; backdrop-filter: blur(5px); }
+        .watch-btn:hover { background: #ff4d4d; color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,0,0,0.3); }
+        .watch-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+        .results-container { display: flex; flex-direction: column; gap: 12px; }
+        .results-container.transparent { opacity: 0.8; }
+        
+        .result-row { 
+            display: flex; align-items: center; padding: 15px 25px; transition: all 0.3s ease; 
+            background: rgba(18, 18, 42, 0.85); border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px); cursor: pointer;
+        }
+        .result-row:hover { transform: translateY(-3px) scale(1.02); border-color: rgba(255,255,255,0.2); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); z-index: 5;}
+        
+        .result-row.place-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), rgba(18, 18, 42, 0.85)); border-left: 4px solid var(--gold); }
+        .result-row.place-2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), rgba(18, 18, 42, 0.85)); border-left: 4px solid var(--silver); }
+        .result-row.place-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), rgba(18, 18, 42, 0.85)); border-left: 4px solid var(--bronze); }
+        .result-row.eliminated { opacity: 0.7; background: rgba(255,0,0,0.05); border-left: 4px solid #ff4d4d; }
+
+        .position { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem; margin-right: 20px; flex-shrink: 0; }
+        .position-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #1a1a1a; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); animation: winnerGlow 2s infinite ease-in-out; }
+        .position-2 { background: linear-gradient(135deg, #E8E8E8, #A0A0A0); color: #1a1a1a; box-shadow: 0 0 15px rgba(192, 192, 192, 0.3); }
+        .position-3 { background: linear-gradient(135deg, #CD7F32, #8B5A2B); color: white; box-shadow: 0 0 15px rgba(205, 127, 50, 0.3); }
+        .position-other { background: rgba(255, 255, 255, 0.1); color: var(--text-secondary); }
+
+        @keyframes winnerGlow { 0%, 100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); } 50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); } }
+
+        .double-avatar { display: flex; margin-right: 20px; }
+        .double-avatar img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid var(--bg-card); position: relative; }
+        .double-avatar img:last-child { margin-left: -20px; z-index: 1; }
+        .double-avatar img:first-child { z-index: 2; }
+        
+        .participant-avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; margin-right: 20px; border: 2px solid rgba(255, 255, 255, 0.1); flex-shrink: 0; background: #2a2a4a; }
+        .place-1 .participant-avatar, .place-1 .double-avatar img { border-color: var(--gold); box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+
+        .participant-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .participant-name { font-size: 1.3rem; font-weight: 700; margin-bottom: 2px; }
+        .place-1 .participant-name { color: var(--gold); }
+        .participant-flag { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; }
+
+        .score { text-align: right; margin-left: 15px; flex-shrink: 0; }
+        .score-number { font-size: 2rem; font-weight: 900; line-height: 1; }
+        .place-1 .score-number { background: linear-gradient(135deg, var(--gold), #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .winner-showcase { text-align: center; padding: 20px; margin-bottom: 20px; }
+        .winner-crown { font-size: 3rem; margin-bottom: 10px; animation: crownBounce 2s infinite ease-in-out; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        @keyframes crownBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .winner-name-big { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; background: linear-gradient(135deg, var(--gold), #FFA500, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
+        .winner-label { color: var(--text-secondary); font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 5px; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.8);}
+
+        .notice-box { border-radius: 12px; padding: 20px 25px; display: flex; align-items: center; gap: 15px; margin: 20px 0; backdrop-filter: blur(10px); }
+        .notice-lost { background: rgba(255, 100, 100, 0.15); border: 1px solid rgba(255, 100, 100, 0.3); color: #ff9999; }
+        .notice-pending { background: rgba(0, 212, 255, 0.15); border: 1px solid rgba(0, 212, 255, 0.3); color: var(--accent3); }
+        .notice-icon { font-size: 1.5rem; flex-shrink: 0; }
+        .notice-text { font-size: 0.95rem; line-height: 1.5; }
+
+        .all-editions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .edition-mini-card { background: rgba(18, 18, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 25px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
+        .edition-mini-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3)); }
+        .edition-mini-card:hover { transform: translateY(-5px); border-color: rgba(233, 30, 140, 0.5); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); }
+        .mini-card-number { font-size: 0.75rem; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; font-weight: 700; display: flex; align-items: center; gap: 8px;}
+        .mini-card-title { font-size: 1.4rem; font-weight: 900; margin: 8px 0 15px; }
+        .mini-card-winner { display: flex; align-items: center; gap: 10px; }
+        .mini-card-winner-name { font-weight: 700; color: var(--gold); }
+
+        .hall-of-fame { margin-bottom: 50px; }
+        .hall-title { text-align: center; font-size: 2.5rem; font-weight: 900; margin-bottom: 10px; background: linear-gradient(135deg, var(--gold), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hall-subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 40px; letter-spacing: 3px; text-transform: uppercase; font-size: 0.8rem; font-weight: 700;}
+        .hall-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
+        .hall-card { background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(233, 30, 140, 0.1)); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 16px; padding: 30px 20px; text-align: center; transition: all 0.3s; backdrop-filter: blur(10px); }
+        .hall-card:hover { transform: scale(1.05); border-color: rgba(255, 215, 0, 0.5); box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); }
+        .hall-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 15px; border: 3px solid var(--gold); box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+        .hall-card-name { font-size: 1.3rem; font-weight: 900; color: var(--gold); margin-bottom: 5px; }
+        .hall-card-wins { font-size: 0.8rem; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; font-weight: 600;}
+
+        /* Участники - История */
+        .part-track-list { display: flex; flex-direction: column; gap: 15px; }
+        .participant-track-card { background: rgba(18, 18, 42, 0.7); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; display: flex; gap: 20px; align-items: stretch; backdrop-filter: blur(10px); transition: 0.3s; scroll-margin-top: 100px; }
+        .participant-track-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.15); }
+        .ptc-profile { width: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 20px; text-align: center; }
+        .ptc-avatar { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); margin-bottom: 10px; background: #2a2a4a; }
+        .ptc-name { font-weight: 800; font-size: 1.1rem; color: white; margin-bottom: 5px; }
+        .ptc-total { font-size: 0.7rem; color: var(--accent3); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        .ptc-history { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; flex: 1; align-content: center; }
+        .ptc-ed { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 10px 5px; text-align: center; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; justify-content: center; min-height: 60px; }
+        .ptc-ed-name { font-size: 0.65rem; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        .ptc-ed-res { font-size: 0.8rem; font-weight: 800; }
+
+        .history-gold { border-color: rgba(255, 215, 0, 0.4); background: linear-gradient(135deg, rgba(255,215,0,0.1), transparent); }
+        .history-gold .ptc-ed-res { color: var(--gold); }
+        .history-silver { border-color: rgba(192, 192, 192, 0.3); background: linear-gradient(135deg, rgba(192,192,192,0.05), transparent); }
+        .history-silver .ptc-ed-res { color: var(--silver); }
+        .history-bronze { border-color: rgba(205, 127, 50, 0.3); background: linear-gradient(135deg, rgba(205,127,50,0.05), transparent); }
+        .history-bronze .ptc-ed-res { color: var(--bronze); }
+        .history-base { border-color: rgba(255,255,255,0.1); }
+        .history-base .ptc-ed-res { color: white; }
+        .history-eliminated { border-color: rgba(255, 77, 77, 0.2); }
+        .history-eliminated .ptc-ed-res { color: var(--danger); }
+        .history-none { opacity: 0.4; }
+        .history-none .ptc-ed-res { color: var(--text-secondary); font-weight: 600; font-size: 0.7rem; }
+        .history-pending { border-color: rgba(0, 212, 255, 0.3); border-style: dashed; }
+        .history-pending .ptc-ed-res { color: var(--accent3); font-size: 0.7rem; }
+
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(0,212,255,0.7); } 70% { box-shadow: 0 0 0 20px rgba(0,212,255,0); } 100% { box-shadow: 0 0 0 0 rgba(0,212,255,0); } }
+        .highlight-pulse { animation: pulseGlow 1s ease-out 2; border-color: var(--accent3) !important; background: rgba(0,212,255,0.1) !important;}
+
+        .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; overflow: hidden; }
+        .confetti-piece { position: absolute; width: 10px; height: 10px; top: -10px; animation: confettiFall linear forwards; }
+        @keyframes confettiFall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
+        /* Умная Мобильная Адаптация */
+        body.mobile-mode .result-row { padding: 15px; flex-wrap: wrap; }
+        body.mobile-mode .position { width: 40px; height: 40px; font-size: 1rem; margin-right: 15px; }
+        body.mobile-mode .participant-avatar, body.mobile-mode .double-avatar img { width: 50px; height: 50px; }
+        body.mobile-mode .double-avatar { margin-right: 15px; }
+        body.mobile-mode .participant-info { min-width: 150px; margin-bottom: 10px; }
+        body.mobile-mode .score { margin-left: 0; text-align: left; flex-basis: 100%; display: flex; align-items: center; gap: 15px; justify-content: flex-end; }
+        body.mobile-mode .nav-btn { padding: 8px 12px; font-size: 0.8rem; min-width: 45px; }
+        
+        body.mobile-mode .participant-track-card { flex-direction: column; padding: 15px; }
+        body.mobile-mode .ptc-profile { width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding-right: 0; padding-bottom: 15px; margin-bottom: 10px; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; text-align: left; gap: 15px; }
+        body.mobile-mode .ptc-avatar { margin-bottom: 0; width: 55px; height: 55px; }
+        body.mobile-mode .ptc-history { grid-template-columns: repeat(4, 1fr); }
+
+        @media (max-width: 480px) {
+            body.mobile-mode .ptc-history { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        footer { text-align: center; padding: 40px 20px; color: var(--text-secondary); font-size: 0.85rem; z-index: 10; position: relative; font-weight: 600;}
+        footer a { color: var(--text-secondary); text-decoration: none; transition: 0.3s; opacity: 0.7;}
+        footer a:hover { color: white; opacity: 1;}
+        
+        .scroll-top { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--accent1), var(--accent2)); border: none; color: white; font-size: 1.5rem; cursor: pointer; z-index: 100; opacity: 0; transition: all 0.3s; box-shadow: 0 5px 20px rgba(233, 30, 140, 0.4); }
+        .scroll-top.visible { opacity: 1; }
+        .scroll-top:hover { transform: translateY(-3px) scale(1.1); }
+    </style>
+</head>
+<body>
+    <div class="dynamic-bg" id="dynamicBg"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="bg-animation">
+        <div class="orb"></div><div class="orb"></div><div class="orb"></div>
+    </div>
+    <div class="particles" id="particles"></div>
+    <div class="confetti-container" id="confetti"></div>
+
+    <header>
+        <div class="logo-icon">
+            <svg class="logo-star" width="120" height="120" viewBox="0 0 120 120" style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%);">
+                <defs>
+                    <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#FFD700"/><stop offset="50%" style="stop-color:#E91E8C"/><stop offset="100%" style="stop-color:#7B2FBE"/>
+                    </linearGradient>
+                </defs>
+                <polygon points="60,5 72,42 110,42 79,65 90,102 60,80 30,102 41,65 10,42 48,42" fill="url(#starGrad)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                <circle cx="60" cy="60" r="55" fill="none" stroke="rgba(255,215,0,0.15)" stroke-width="1" stroke-dasharray="5,5">
+                    <animateTransform attributeName="transform" type="rotate" from="0 60 60" to="360 60 60" dur="30s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+        <h1 class="main-title">Стаявидение</h1>
+        <p class="subtitle">Музыкальный конкурс</p>
+        
+        <div class="header-actions" id="headerActions">
+            <a href="https://t.me/+ewb2OfjSIeoxYmVi" target="_blank" class="tg-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.888-.666 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
+                Следить за Стаявидением
+            </a>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-inner" id="navContainer"></div>
+    </nav>
+
+    <main id="appContainer"></main>
+
+    <footer>
+        <p>Создано с любовью для друзей ❤️</p>
+        <p style="margin-top: 8px; font-size: 0.75rem;">Официальный архив | <a href="generator.html">Генератор Скорборда</a></p>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
+
+    <script>
+        const DATA = {
+            editions: [
+                {
+                    id: "edition1", shortName: "1", name: "Стаявидение 1", location: "Дюшесово", date: "17 Апреля",
+                    started: true, isLost: false, winner: { name: "Гира", avatar: "gira.jpg" },
+                    links: {},
+                    final: [
+                        { place: 1, name: "Гира", avatar: "gira.jpg", score: 6, note: "🏆 Победитель" },
+                        { place: 2, name: "Егорь и Обалена", participantsKeys: ["Егорь", "Обалена"], avatarMulti: ["egor.jpg", "obalena.jpg"], score: 3, note: "Серебряная ничья" }
+                    ]
+                },
+                {
+                    id: "edition2", shortName: "2", name: "Стаявидение 2", location: "Дюшесово", date: "17 Апреля",
+                    started: true, isLost: false, winner: { name: "Ритикс", avatar: "ritix.jpg" },
+                    links: {},
+                    final: [
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 8, note: "🏆 Победитель" },
+                        { name: "Обалена", avatar: "obalena.jpg", score: 6, note: "" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 3, note: "" },
+                        { name: "Гира", avatar: "gira.jpg", score: 2, note: "" }
+                    ]
+                },
+                {
+                    id: "edition3", shortName: "3", name: "Стаявидение 3", location: "Дюшесово", date: "19 Апреля",
+                    started: true, isLost: false, winner: { name: "Егорь", avatar: "egor.jpg" },
+                    links: {},
+                    final: [
+                        { name: "Егорь", avatar: "egor.jpg", score: 9, note: "🏆 Победитель" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 6, note: "" },
+                        { name: "Обалена", avatar: "obalena.jpg", score: 3, note: "" }
+                    ]
+                },
+                {
+                    id: "edition4", shortName: "4", name: "Стаявидение 4", location: "Дюшесово", date: "21 Апреля",
+                    started: true, isLost: false, winner: { name: "Гира", avatar: "gira.jpg" },
+                    links: {},
+                    final: [
+                        { name: "Гира", avatar: "gira.jpg", score: 16, note: "🏆 Победитель" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 9, note: "" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 7, note: "" },
+                        { name: "Обалена", avatar: "obalena.jpg", score: 3, note: "" }
+                    ]
+                },
+                {
+                    id: "edition5", shortName: "5", name: "Стаявидение 5", location: "Стаево", date: "10 Мая",
+                    started: true, isLost: false, winner: { name: "Егорь", avatar: "egor.jpg" },
+                    links: {},
+                    final: [
+                        { name: "Егорь", avatar: "egor.jpg", score: 7, note: "🏆 Победитель" },
+                        { name: "Обалена", avatar: "obalena.jpg", score: 5, note: "" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 4, note: "" }
+                    ]
+                },
+                {
+                    id: "edition6", shortName: "6", name: "Стаявидение 6", location: "Дюшесово", date: "28 Июня",
+                    started: true, isLost: false, winner: { name: "Обалена", avatar: "obalena.jpg" },
+                    links: { final: "https://youtube.com/финал_ссылка" },
+                    final: [
+                        { name: "Обалена", avatar: "obalena.jpg", score: 16, note: "🏆 Победитель" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 14, note: "" },
+                        { name: "Гира", avatar: "gira.jpg", score: 12, note: "" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 8, note: "" },
+                        { name: "Енька", avatar: "enka.jpg", score: 4, note: "" },
+                        { name: "Иван Потуга", avatar: "potuzhnost.jpg", score: 4, note: "" }
+                    ]
+                },
+                {
+                    id: "edition7", shortName: "7", name: "Стаявидение 7", location: "Дюшесово", date: "28 Июля",
+                    started: true, isLost: false, winner: { name: "Егорь", avatar: "egor.jpg" },
+                    links: {},
+                    final: [
+                        { name: "Егорь", avatar: "egor.jpg", score: 30, note: "🏆 Победитель" },
+                        { name: "Обалена", avatar: "obalena.jpg", score: 28, note: "" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 22, note: "" },
+                        { name: "Енька", avatar: "enka.jpg", score: 16, note: "" },
+                        { name: "Машонка", avatar: "mashonka.jpg", score: 15, note: "" },
+                        { name: "Balepa", avatar: "balepa.jpg", score: 15, note: "" },
+                        { name: "Иван Потуга", avatar: "potuzhnost.jpg", score: 9, note: "" }
+                    ]
+                },
+                {
+                    id: "edition8", shortName: "8", name: "Стаявидение 8", location: "Дюшесово", date: "26 Августа",
+                    started: true, isLost: false, winner: { name: "Гира", avatar: "gira.jpg" },
+                    links: {},
+                    final: [
+                        { name: "Гира", avatar: "gira.jpg", score: 37, note: "🏆 Победитель" },
+                        { name: "Обалена", avatar: "obalena.jpg", score: 26, note: "" },
+                        { name: "Balepa", avatar: "balepa.jpg", score: 25, note: "" },
+                        { name: "Машонка", avatar: "mashonka.jpg", score: 20, note: "" },
+                        { name: "Егорь", avatar: "egor.jpg", score: 18, note: "" },
+                        { name: "Ритикс", avatar: "ritix.jpg", score: 17, note: "" },
+                        { name: "Енька", avatar: "enka.jpg", score: 15, note: "" },
+                        { name: "Иван Потуга", avatar: "potuzhnost.jpg", score: 15, note: "" }
+                    ]
+                }
+            ],
+            hallOfFame: [
+                { name: "Егорь", avatar: "egor.jpg", wins: "3 победы (3, 5, 7)" },
+                { name: "Гира", avatar: "gira.jpg", wins: "3 победы (1, 4, 8)" },
+                { name: "Обалена", avatar: "obalena.jpg", wins: "1 победа (6)" },
+                { name: "Ритикс", avatar: "ritix.jpg", wins: "1 победа (2)" }
+            ]
+        };
+
+        function init() {
+            renderNavigation();
+            renderAllSections();
+            setupWindowResizeOptimizer();
+            showSection('overview');
+        }
+
+        function renderNavigation() {
+            let html = `<button class="nav-btn" onclick="showSection('overview')">Обзор</button>`;
+            DATA.editions.forEach(ed => {
+                html += `<button class="nav-btn" onclick="showSection('${ed.id}')">${ed.shortName}</button>`;
+            });
+            navContainer.innerHTML = html;
+        }
+
+        function renderAllSections() {
+            let html = renderOverviewSection();
+            DATA.editions.forEach(ed => html += renderEditionHTML(ed));
+            appContainer.innerHTML = html;
+        }
+
+        function renderOverviewSection() {
+            let html = `<section class="edition-section active" id="overview">`;
+
+            html += `
+                <div class="hall-of-fame" style="margin-top: 0; margin-bottom: 60px; grid-column: 1 / -1;">
+                    <h2 class="hall-title">Зал Славы</h2>
+                    <p class="hall-subtitle">Все победители Стаявидения</p>
+                    <div class="hall-grid">
+            `;
+            DATA.hallOfFame.forEach(h => {
+                html += `
+                    <div class="hall-card">
+                        <img src="${h.avatar}" alt="${h.name}" class="hall-avatar">
+                        <div class="hall-card-name">${h.name}</div>
+                        <div class="hall-card-wins">${h.wins}</div>
+                    </div>
+                `;
+            });
+            html += `</div></div>`;
+
+            let prehistoric = DATA.editions.slice(0, 5).reverse(); 
+            let newEra = DATA.editions.slice(5).reverse();
+
+            html += `
+                <div style="grid-column: 1 / -1;">
+                    <h2 class="era-title">Новая эра</h2>
+                </div>
+                <div class="all-editions-grid">
+            `;
+            newEra.forEach(ed => { html += generateMiniCard(ed); });
+            html += `</div>`;
+
+            html += `
+                <div style="grid-column: 1 / -1;">
+                    <h2 class="era-title silver">Доисторическая эра</h2>
+                </div>
+                <div class="all-editions-grid">
+            `;
+            prehistoric.forEach(ed => { html += generateMiniCard(ed); });
+            html += `</div>`;
+
+            let allParticipants = {};
+
+            DATA.editions.forEach(ed => {
+                let pool = [];
+                if (ed.final) {
+                    ed.final.forEach(p => {
+                        if (p.participantsKeys) {
+                            p.participantsKeys.forEach((key, index) => {
+                                pool.push({ name: key, avatar: p.avatarMulti[index] });
+                            });
+                        } else {
+                            pool.push(p);
+                        }
+                    });
+                }
+                if (ed.semifinal) pool.push(...ed.semifinal);
+                if (ed.participants) pool.push(...ed.participants);
+
+                pool.forEach(p => {
+                    if (!allParticipants[p.name]) {
+                        allParticipants[p.name] = { name: p.name, avatar: p.avatar, participations: 0, history: [] };
+                    }
+                });
+            });
+
+            for (const pName in allParticipants) {
+                let pData = allParticipants[pName];
+
+                DATA.editions.forEach((ed) => {
+                    let historyEntry = {
+                        edName: ed.shortName,
+                        statusClass: "history-none",
+                        resultText: "Нет участия"
+                    };
+
+                    if (!ed.started) {
+                        let isParticipating = ed.participants && ed.participants.find(x => x.name === pName);
+                        if (isParticipating) {
+                            historyEntry.statusClass = "history-pending";
+                            historyEntry.resultText = "В планах ⏳";
+                        } else {
+                            historyEntry.statusClass = "history-none";
+                            historyEntry.resultText = "Не заявлен";
+                        }
+                    } else {
+                        let finalPos = -1;
+                        let totalParts = 0;
+
+                        if (ed.final) {
+                            totalParts = 0;
+                            ed.final.forEach(p => { totalParts += p.participantsKeys ? p.participantsKeys.length : 1; });
+                            
+                            let foundIndex = ed.final.findIndex(x => x.name === pName || (x.participantsKeys && x.participantsKeys.includes(pName)));
+                            if(foundIndex !== -1) {
+                                finalPos = ed.final[foundIndex].place ? ed.final[foundIndex].place - 1 : foundIndex;
+                            }
+                        }
+
+                        if (finalPos !== -1) {
+                            pData.participations++;
+                            let place = finalPos + 1;
+                            let isBronze = place === 3 && totalParts > 3;
+
+                            if (place === 1) { historyEntry.statusClass = "history-gold"; historyEntry.resultText = "1 Место 🏆"; } 
+                            else if (place === 2) { historyEntry.statusClass = "history-silver"; historyEntry.resultText = "2 Место 🥈"; } 
+                            else if (isBronze) { historyEntry.statusClass = "history-bronze"; historyEntry.resultText = "3 Место 🥉"; } 
+                            else { historyEntry.statusClass = "history-base"; historyEntry.resultText = place + " Место"; }
+                        }
+                    }
+                    pData.history.push(historyEntry);
+                });
+            }
+
+            let sortedParts = Object.values(allParticipants).sort((a,b) => b.participations - a.participations);
+
+            html += `
+                <div style="grid-column: 1 / -1; margin-top: 70px;">
+                    <h2 class="era-title" style="color: var(--accent3);">История Участников</h2>
+                    <div class="part-track-list">
+            `;
+            
+            sortedParts.forEach(p => {
+                let ending = (p.participations === 1) ? 'конкурс' : ((p.participations >= 2 && p.participations <= 4) ? 'конкурса' : 'конкурсов');
+                let safeId = p.name.replace(/\s+/g, '-').replace(/\./g, '');
+
+                html += `
+                    <div class="participant-track-card" id="hist-${safeId}">
+                        <div class="ptc-profile">
+                            <img src="${p.avatar}" alt="${p.name}" class="ptc-avatar">
+                            <div>
+                                <div class="ptc-name">${p.name}</div>
+                                <div class="ptc-total">${p.participations} ${ending}</div>
+                            </div>
+                        </div>
+                        <div class="ptc-history">
+                `;
+                
+                p.history.forEach(h => {
+                    html += `
+                        <div class="ptc-ed ${h.statusClass}">
+                            <span class="ptc-ed-name">${h.edName}</span>
+                            <span class="ptc-ed-res">${h.resultText}</span>
+                        </div>
+                    `;
+                });
+                
+                html += `</div></div>`;
+            });
+            
+            html += `</div></div></section>`;
+            return html;
+        }
+
+        function generateMiniCard(ed) {
+            let badge = "";
+            if (!ed.started) badge = `<span class="badge badge-pending">Не началось</span>`;
+            else if (ed.isLost) badge = `<span class="badge badge-lost">Потеряно</span>`;
+
+            let winnerIcon = ed.winner ? '👑' : '⏳';
+            let winnerName = ed.winner ? ed.winner.name : 'Скоро';
+
+            return `
+                <div class="edition-mini-card" onclick="showSection('${ed.id}')">
+                    <div class="mini-card-number">📍 ${ed.location} &nbsp;|&nbsp; 🗓️ ${ed.date}</div>
+                    <div class="mini-card-title">${ed.name}</div>
+                    <div class="mini-card-winner">
+                        <span style="font-size: 1.2rem;">${winnerIcon}</span>
+                        <span class="mini-card-winner-name" style="${!ed.winner ? 'color: var(--text-secondary);' : ''}">${winnerName}</span>
+                        ${badge ? `<div style="margin-left: auto;">${badge}</div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderEditionHTML(ed) {
+            let html = `
+                <section class="edition-section" id="${ed.id}">
+                    <div class="edition-header">
+                        <div class="edition-number">📍 ${ed.location} &nbsp;|&nbsp; 🗓️ ${ed.date}</div>
+                        <h2 class="edition-title">${ed.name}</h2>
+                    </div>
+            `;
+
+            if (ed.winner) {
+                html += `
+                    <div class="winner-showcase">
+                        <div class="winner-crown">👑</div>
+                        <div class="winner-name-big">${ed.winner.name}</div>
+                        <div class="winner-label">Победитель</div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="winner-showcase">
+                        <div class="winner-crown" style="animation:none;">⏳</div>
+                        <div class="winner-name-big" style="background: none; color: var(--text-primary); -webkit-text-fill-color: unset;">Ожидание</div>
+                    </div>
+                `;
+            }
+
+            if (ed.links && ed.links.final) {
+                html += `<div class="edition-links">`;
+                html += `<a href="${ed.links.final}" target="_blank" class="watch-btn"><svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Смотреть Финал</a>`;
+                html += `</div>`;
+            }
+
+            if (!ed.started && ed.participants) {
+                html += `<div class="results-container transparent">`;
+                let totalParts = ed.participants.length;
+                ed.participants.forEach(p => html += renderParticipantRow(p, null, true, 10, totalParts));
+                html += `</div>`;
+            } else if (ed.started) {
+                html += `<div class="results-container">`;
+                let maxScore = Math.max(...ed.final.map(p => p.score || 1));
+                
+                let totalParts = 0;
+                ed.final.forEach(p => { totalParts += p.participantsKeys ? p.participantsKeys.length : 1; });
+
+                ed.final.forEach((p, index) => {
+                    let pos = p.place ? p.place : index + 1;
+                    html += renderParticipantRow(p, pos, false, maxScore, totalParts);
+                });
+                html += `</div>`;
+            }
+
+            html += `</section>`;
+            return html;
+        }
+
+        function renderParticipantRow(p, position, isPending = false, maxScore = 10, totalParts = 0) {
+            let classes = "result-row";
+            let isBronze = position === 3 && totalParts > 3;
+
+            if (position === 1 && !isPending) classes += " place-1";
+            else if (position === 2 && !isPending) classes += " place-2";
+            else if (isBronze && !isPending) classes += " place-3";
+            
+            if (p.eliminated) classes += " eliminated";
+
+            let posClass = 'position-other';
+            if (!isPending) {
+                if (position === 1) posClass = 'position-1';
+                else if (position === 2) posClass = 'position-2';
+                else if (isBronze) posClass = 'position-3';
+            }
+
+            let posHTML = isPending ? '' : `<div class="position ${posClass}">${position}</div>`;
+            
+            let scoreHTML = isPending ? '' : `
+                <div class="score">
+                    <div class="score-number">${p.score !== null ? p.score : '—'}</div>
+                </div>
+            `;
+
+            let avatarHTML = '';
+            let nameHTML = `<div class="participant-name">${p.name}</div>`;
+
+            if (p.participantsKeys) {
+                avatarHTML = `<div class="double-avatar">`;
+                p.avatarMulti.forEach(img => { avatarHTML += `<img src="${img}">`; });
+                avatarHTML += `</div>`;
+                nameHTML = `<div class="participant-name" style="font-size: 1.1rem;">${p.name}</div>`;
+            } else {
+                avatarHTML = `<img src="${p.avatar}" alt="${p.name}" class="participant-avatar">`;
+            }
+
+            let noteColor = 'var(--text-secondary)';
+            if(p.ready === true) noteColor = '#00ff88';
+            if(p.ready === false) noteColor = '#ffb700';
+            
+            let onClickAttr = "";
+            if(!isPending) {
+                if (p.participantsKeys) {
+                    onClickAttr = `onclick="scrollToHistory('${p.participantsKeys[0]}')" title="Нажмите, чтобы увидеть историю"`;
+                } else {
+                    onClickAttr = `onclick="scrollToHistory('${p.name}')" title="Нажмите, чтобы увидеть историю"`;
+                }
+            }
+
+            return `
+                <div class="${classes}" ${onClickAttr}>
+                    ${posHTML}
+                    ${avatarHTML}
+                    <div class="participant-info">
+                        ${nameHTML}
+                        <div class="participant-flag" style="color: ${noteColor}; font-weight: ${p.ready !== undefined ? '800' : '600'};">${p.note || ''}</div>
+                    </div>
+                    ${scoreHTML}
+                </div>
+            `;
+        }
+
+        window.scrollToHistory = function(name) {
+            showSection('overview');
+            setTimeout(() => {
+                const safeId = name.replace(/\s+/g, '-').replace(/\./g, '');
+                const el = document.getElementById('hist-' + safeId);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.classList.add('highlight-pulse');
+                    setTimeout(() => el.classList.remove('highlight-pulse'), 2000);
+                }
+            }, 100);
+        };
+
+        window.showSection = function(sectionId) {
+            document.querySelectorAll('.edition-section').forEach(s => s.classList.remove('active'));
+            let target = document.getElementById(sectionId);
+            if(target) target.classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            let buttons = document.querySelectorAll('.nav-btn');
+            for(let b of buttons) {
+                if(b.getAttribute('onclick').includes(sectionId)) { b.classList.add('active'); break; }
+            }
+
+            const bgEl = document.getElementById('dynamicBg');
+            bgEl.style.opacity = '0'; 
+            
+            setTimeout(() => {
+                let bgUrl = 'wolfs.jpg';
+                if (sectionId === 'edition6') bgUrl = 'sv6.webp';
+                if (sectionId === 'edition7') bgUrl = 'sv7.webp';
+                if (sectionId === 'edition8') bgUrl = 'sv8.webp';
+                
+                bgEl.style.backgroundImage = `url('${bgUrl}')`;
+                bgEl.style.opacity = '0.85'; 
+            }, 300);
+
+            window.scrollTo({ top: document.querySelector('nav').offsetTop - 20, behavior: 'smooth' });
+
+            let edData = DATA.editions.find(e => e.id === sectionId);
+            if (edData && edData.started && !edData.isLost) triggerConfetti();
+        };
+
+        function setupWindowResizeOptimizer() {
+            const checkRes = () => { document.body.classList.toggle('mobile-mode', window.innerWidth <= 768); };
+            window.addEventListener('resize', checkRes); checkRes(); 
+        }
+
+        function triggerConfetti() {
+            const container = document.getElementById('confetti');
+            container.innerHTML = '';
+            const colors = ['#FFD700', '#E91E8C', '#7B2FBE', '#00D4FF'];
+            for (let i = 0; i < 70; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                piece.style.animationDelay = (Math.random() * 1) + 's';
+                piece.style.width = (Math.random() * 8 + 5) + 'px';
+                piece.style.height = piece.style.width;
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                container.appendChild(piece);
+            }
+            setTimeout(() => container.innerHTML = '', 4000);
+        }
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                particle.style.animationDelay = (Math.random() * 15) + 's';
+                particle.style.width = (Math.random() * 3 + 1) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollTop');
+            if (window.scrollY > 300) btn.classList.add('visible'); else btn.classList.remove('visible');
+        });
+
+        createParticles();
+        init();
+    </script>
+</body>
+</html>
