@@ -6,103 +6,42 @@
     <title>Стаявидение — Официальный архив</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32; --bg-dark: #0a0a1a; --bg-card: #12122a; --accent1: #7B2FBE; --accent2: #E91E8C; --accent3: #00D4FF; --text-primary: #ffffff; --text-secondary: #b0b0cc; --danger: #ff4d4d; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg-dark); color: var(--text-primary); overflow-x: hidden; transition: all 0.3s ease; }
 
-        :root {
-            --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
-            --bg-dark: #0a0a1a; --bg-card: #12122a;
-            --accent1: #7B2FBE; --accent2: #E91E8C; --accent3: #00D4FF;
-            --text-primary: #ffffff; --text-secondary: #b0b0cc;
-            --danger: #ff4d4d;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: var(--bg-dark); color: var(--text-primary);
-            overflow-x: hidden; transition: all 0.3s ease;
-        }
-
-        /* Динамический фон */
-        .dynamic-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover; background-position: center;
-            z-index: -2; opacity: 0.85; filter: blur(2px);
-            transition: opacity 0.4s ease-in-out, background-image 0.4s ease-in-out;
-        }
-        
-        .bg-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 26, 0.4); z-index: -1; pointer-events: none;
-        }
-
+        .dynamic-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: -2; opacity: 0.85; filter: blur(2px); transition: opacity 0.4s, background-image 0.4s; }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 26, 0.4); z-index: -1; pointer-events: none; }
         .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden; pointer-events: none; }
         .bg-animation .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; animation: floatOrb 20s infinite ease-in-out; }
         .bg-animation .orb:nth-child(1) { width: 600px; height: 600px; background: var(--accent1); top: -200px; left: -200px; animation-delay: 0s; }
         .bg-animation .orb:nth-child(2) { width: 500px; height: 500px; background: var(--accent2); top: 50%; right: -200px; animation-delay: -7s; }
         .bg-animation .orb:nth-child(3) { width: 400px; height: 400px; background: var(--accent3); bottom: -150px; left: 30%; animation-delay: -14s; }
 
-        @keyframes floatOrb {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(100px, 50px) scale(1.1); }
-            50% { transform: translate(-50px, 100px) scale(0.9); }
-            75% { transform: translate(80px, -60px) scale(1.05); }
-        }
+        @keyframes floatOrb { 0%, 100% { transform: translate(0, 0) scale(1); } 25% { transform: translate(100px, 50px) scale(1.1); } 50% { transform: translate(-50px, 100px) scale(0.9); } 75% { transform: translate(80px, -60px) scale(1.05); } }
 
         .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
         .particle { position: absolute; background: rgba(255, 255, 255, 0.5); border-radius: 50%; animation: sparkle linear infinite; }
-
-        @keyframes sparkle {
-            0% { transform: translateY(100vh) scale(0); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
-        }
+        @keyframes sparkle { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-10vh) scale(1); opacity: 0; } }
 
         header { position: relative; z-index: 10; text-align: center; padding: 80px 20px 40px; background: linear-gradient(180deg, rgba(123, 47, 190, 0.4) 0%, transparent 100%); }
-        
         .logo-icon { width: 120px; height: 120px; margin: 0 auto 20px; position: relative; animation: logoPulse 3s infinite ease-in-out; }
         @keyframes logoPulse { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(233, 30, 140, 0.5)); } 50% { transform: scale(1.05); filter: drop-shadow(0 0 40px rgba(233, 30, 140, 0.8)); } }
 
-        h1.main-title {
-            font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900;
-            background: linear-gradient(135deg, var(--gold), var(--accent2), var(--accent3), var(--accent1));
-            background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: gradientShift 4s ease-in-out infinite; letter-spacing: 2px; text-transform: uppercase; line-height: 1.1;
-            text-shadow: 0 5px 20px rgba(0,0,0,0.5);
-        }
+        h1.main-title { font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900; background: linear-gradient(135deg, var(--gold), var(--accent2), var(--accent3), var(--accent1)); background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 4s ease-in-out infinite; letter-spacing: 2px; text-transform: uppercase; line-height: 1.1; text-shadow: 0 5px 20px rgba(0,0,0,0.5); }
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         .subtitle { font-size: 1.2rem; color: var(--text-secondary); margin-top: 15px; letter-spacing: 5px; text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
-
         .header-actions { margin-top: 30px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        .tg-btn {
-            display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #0088cc, #00D4FF);
-            color: white; padding: 12px 25px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 0.95rem;
-            box-shadow: 0 10px 30px rgba(0, 136, 204, 0.4); transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
-        }
+        .tg-btn { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #0088cc, #00D4FF); color: white; padding: 12px 25px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 0.95rem; box-shadow: 0 10px 30px rgba(0, 136, 204, 0.4); transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
         .tg-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(0, 136, 204, 0.6); }
 
         nav { position: sticky; top: 20px; z-index: 100; padding: 0 15px; margin-bottom: 30px; }
-        .nav-inner { 
-            max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: center; 
-            gap: 8px; padding: 10px 15px; flex-wrap: wrap; 
-            background: rgba(18, 18, 42, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 40px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .nav-btn {
-            min-width: 55px; padding: 10px 15px; border: none; background: transparent; color: var(--text-secondary);
-            font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer;
-            border-radius: 25px; transition: all 0.3s ease; white-space: nowrap; text-align: center;
-        }
-        .nav-btn:hover, .nav-btn.active { 
-            background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; 
-            transform: translateY(-2px); box-shadow: 0 5px 15px rgba(233, 30, 140, 0.4); 
-        }
+        .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 15px; flex-wrap: wrap; background: rgba(18, 18, 42, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .nav-btn { min-width: 55px; padding: 10px 15px; border: none; background: transparent; color: var(--text-secondary); font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; border-radius: 25px; transition: all 0.3s ease; white-space: nowrap; text-align: center; }
+        .nav-btn:hover, .nav-btn.active { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(233, 30, 140, 0.4); }
 
         main { position: relative; z-index: 10; max-width: 1000px; margin: 0 auto; padding: 10px 20px 100px; }
-
         .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 50px; }
         .stat-card { background: linear-gradient(135deg, rgba(123, 47, 190, 0.3), rgba(233, 30, 140, 0.15)); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 25px 15px; text-align: center; transition: transform 0.3s; backdrop-filter: blur(10px); }
         .stat-number { font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg, var(--gold), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -113,8 +52,7 @@
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         .era-title { text-align: center; font-size: 2rem; font-weight: 900; margin: 50px 0 20px; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 5px 15px rgba(0,0,0,0.8); }
-        .era-title.silver { color: var(--silver); margin-top: 100px; } 
-        
+        .era-title.silver { color: var(--silver); margin-top: 100px; }
         .edition-header { text-align: center; margin-bottom: 40px; }
         .edition-number { font-size: 1rem; color: var(--accent2); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.8);}
         .edition-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 10px; text-shadow: 0 5px 15px rgba(0,0,0,0.8); }
@@ -128,21 +66,24 @@
         .watch-btn:hover { background: #ff4d4d; color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,0,0,0.3); }
         .watch-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
+        .stage-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 30px; width: max-content; margin-left: auto; margin-right: auto; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
+        .stage-tab { padding: 10px 25px; border: none; background: transparent; color: var(--text-secondary); border-radius: 25px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; }
+        .stage-tab.active { background: rgba(255,255,255,0.15); color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        
+        .stage-content { display: none; animation: fadeIn 0.4s ease; }
+        .stage-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         .results-container { display: flex; flex-direction: column; gap: 12px; }
         .results-container.transparent { opacity: 0.8; }
         
-        .result-row { 
-            display: flex; align-items: center; padding: 15px 25px; transition: all 0.3s ease; 
-            background: rgba(18, 18, 42, 0.85); border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(15px); cursor: pointer;
-        }
+        .result-row { display: flex; align-items: center; padding: 15px 25px; transition: all 0.3s ease; background: rgba(18, 18, 42, 0.85); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); backdrop-filter: blur(15px); cursor: pointer; }
         .result-row:hover { transform: translateY(-3px) scale(1.02); border-color: rgba(255,255,255,0.2); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); z-index: 5;}
         
         .result-row.place-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), rgba(18, 18, 42, 0.85)); border-left: 4px solid var(--gold); }
         .result-row.place-2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), rgba(18, 18, 42, 0.85)); border-left: 4px solid var(--silver); }
         .result-row.place-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), rgba(18, 18, 42, 0.85)); border-left: 4px solid var(--bronze); }
-        .result-row.eliminated { opacity: 0.7; background: rgba(255,0,0,0.05); border-left: 4px solid #ff4d4d; }
+        .result-row.eliminated { opacity: 0.7; background: rgba(255,0,0,0.05); border-left: 3px solid #ff4d4d; }
 
         .position { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem; margin-right: 20px; flex-shrink: 0; }
         .position-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #1a1a1a; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); animation: winnerGlow 2s infinite ease-in-out; }
@@ -200,7 +141,6 @@
         .hall-card-name { font-size: 1.3rem; font-weight: 900; color: var(--gold); margin-bottom: 5px; }
         .hall-card-wins { font-size: 0.8rem; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; font-weight: 600;}
 
-        /* Участники - История */
         .part-track-list { display: flex; flex-direction: column; gap: 15px; }
         .participant-track-card { background: rgba(18, 18, 42, 0.7); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; display: flex; gap: 20px; align-items: stretch; backdrop-filter: blur(10px); transition: 0.3s; scroll-margin-top: 100px; }
         .participant-track-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.15); }
@@ -236,7 +176,6 @@
         .confetti-piece { position: absolute; width: 10px; height: 10px; top: -10px; animation: confettiFall linear forwards; }
         @keyframes confettiFall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
 
-        /* Умная Мобильная Адаптация */
         body.mobile-mode .result-row { padding: 15px; flex-wrap: wrap; }
         body.mobile-mode .position { width: 40px; height: 40px; font-size: 1rem; margin-right: 15px; }
         body.mobile-mode .participant-avatar, body.mobile-mode .double-avatar img { width: 50px; height: 50px; }
@@ -250,9 +189,7 @@
         body.mobile-mode .ptc-avatar { margin-bottom: 0; width: 55px; height: 55px; }
         body.mobile-mode .ptc-history { grid-template-columns: repeat(4, 1fr); }
 
-        @media (max-width: 480px) {
-            body.mobile-mode .ptc-history { grid-template-columns: repeat(2, 1fr); }
-        }
+        @media (max-width: 480px) { body.mobile-mode .ptc-history { grid-template-columns: repeat(2, 1fr); } }
 
         footer { text-align: center; padding: 40px 20px; color: var(--text-secondary); font-size: 0.85rem; z-index: 10; position: relative; font-weight: 600;}
         footer a { color: var(--text-secondary); text-decoration: none; transition: 0.3s; opacity: 0.7;}
@@ -408,6 +345,15 @@
                         { name: "Енька", avatar: "enka.jpg", score: 15, note: "" },
                         { name: "Иван Потуга", avatar: "potuzhnost.jpg", score: 15, note: "" }
                     ]
+                },
+                {
+                    id: "edition9", shortName: "9", name: "Стаявидение 9", location: "Ожидается", date: "10 Октября",
+                    started: false, isLost: false, winner: null,
+                    links: {},
+                    participants: [
+                        { name: "Егорь", avatar: "egor.jpg", note: "Участие подтверждено" },
+                        { name: "Енька", avatar: "enka.jpg", note: "Участие подтверждено" }
+                    ]
                 }
             ],
             hallOfFame: [
@@ -472,7 +418,7 @@
             html += `</div>`;
 
             html += `
-                <div style="grid-column: 1 / -1;">
+                <div style="grid-column: 1 / -1; margin-top: 100px;">
                     <h2 class="era-title silver">Доисторическая эра</h2>
                 </div>
                 <div class="all-editions-grid">
@@ -649,7 +595,7 @@
             if (!ed.started && ed.participants) {
                 html += `<div class="results-container transparent">`;
                 let totalParts = ed.participants.length;
-                ed.participants.forEach(p => html += renderParticipantRow(p, null, true, 10, totalParts));
+                ed.participants.forEach((p, index) => html += renderParticipantRow(p, null, true, 10, totalParts));
                 html += `</div>`;
             } else if (ed.started) {
                 html += `<div class="results-container">`;
@@ -677,8 +623,6 @@
             else if (position === 2 && !isPending) classes += " place-2";
             else if (isBronze && !isPending) classes += " place-3";
             
-            if (p.eliminated) classes += " eliminated";
-
             let posClass = 'position-other';
             if (!isPending) {
                 if (position === 1) posClass = 'position-1';
@@ -764,39 +708,18 @@
                 if (sectionId === 'edition6') bgUrl = 'sv6.webp';
                 if (sectionId === 'edition7') bgUrl = 'sv7.webp';
                 if (sectionId === 'edition8') bgUrl = 'sv8.webp';
+                if (sectionId === 'edition9') bgUrl = 'sv9.webp';
                 
                 bgEl.style.backgroundImage = `url('${bgUrl}')`;
                 bgEl.style.opacity = '0.85'; 
             }, 300);
 
             window.scrollTo({ top: document.querySelector('nav').offsetTop - 20, behavior: 'smooth' });
-
-            let edData = DATA.editions.find(e => e.id === sectionId);
-            if (edData && edData.started && !edData.isLost) triggerConfetti();
         };
 
         function setupWindowResizeOptimizer() {
             const checkRes = () => { document.body.classList.toggle('mobile-mode', window.innerWidth <= 768); };
             window.addEventListener('resize', checkRes); checkRes(); 
-        }
-
-        function triggerConfetti() {
-            const container = document.getElementById('confetti');
-            container.innerHTML = '';
-            const colors = ['#FFD700', '#E91E8C', '#7B2FBE', '#00D4FF'];
-            for (let i = 0; i < 70; i++) {
-                const piece = document.createElement('div');
-                piece.className = 'confetti-piece';
-                piece.style.left = Math.random() * 100 + '%';
-                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-                piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                piece.style.animationDelay = (Math.random() * 1) + 's';
-                piece.style.width = (Math.random() * 8 + 5) + 'px';
-                piece.style.height = piece.style.width;
-                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                container.appendChild(piece);
-            }
-            setTimeout(() => container.innerHTML = '', 4000);
         }
 
         function createParticles() {
